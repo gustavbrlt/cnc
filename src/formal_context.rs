@@ -196,6 +196,24 @@ impl<A: Eq, B: Eq> FormalContext<A, B> {
         };
         self.relation[obj_idx][attr_idx]
     }
+    pub fn extent_from_objects(&self, objs: impl IntoIterator<Item = A>) -> BitVec {
+        let mut extent = BitVec::repeat(false, self.objects.len());
+        for obj in objs {
+            if let Some(idx) = self.objects.iter().position(|o| *o == obj) {
+                extent.set(idx, true);
+            }
+        }
+        extent
+    }
+    pub fn intent_from_attributes(&self, attrs: impl IntoIterator<Item = B>) -> BitVec {
+        let mut intent = BitVec::repeat(false, self.attributes.len());
+        for attr in attrs {
+            if let Some(idx) = self.attributes.iter().position(|a| *a == attr) {
+                intent.set(idx, true);
+            }
+        }
+        intent
+    }
     pub fn modify_relation(&mut self, obj: &A, attr: &B, value: bool) {
         let obj_idx = self
             .objects
