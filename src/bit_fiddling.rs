@@ -28,9 +28,3 @@ pub fn redundant_row(x: &Vec<BitVec>) -> Option<usize> {
     }
     None
 }
-
-// pub fn one_hot(n: usize, i: usize) -> BitVec {
-//     let mut result = BitVec::repeat(false, n);
-//     result.set(i, true);
-//     result
-// }
