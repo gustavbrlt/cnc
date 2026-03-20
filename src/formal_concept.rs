@@ -34,7 +34,7 @@ impl RawFormalConcept {
 impl<A: std::fmt::Debug, B: std::fmt::Debug> std::fmt::Display for FormalConcept<A, B> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let extent: Vec<_> = self.extent_names_iter().collect();
-        let intent: Vec<_> = self.extent_names_iter().collect();
+        let intent: Vec<_> = self.intent_names_iter().collect();
         write!(f, "Extent: {:?}, Intent: {:?}", extent, intent)
     }
 }
