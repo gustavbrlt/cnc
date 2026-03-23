@@ -7,17 +7,20 @@ mod bit_fiddling;
 mod formal_concept;
 mod formal_context;
 mod pcbo;
-#[cfg(feature = "random")]
-mod random;
 
 pub use formal_concept::*;
 pub use formal_context::*;
 
+pub mod cnc;
+
 // Tests
 #[cfg(test)]
 mod tests {
+    use cnc::*;
     use super::*;
     use bitvec::prelude::*;
+    use std::collections::HashMap;
+
     #[test]
     fn test_pcbo_1() {
         let context = FormalContext::new(
@@ -68,5 +71,140 @@ mod tests {
             ],
         );
         assert_eq!(context.num_concepts(), 19);
+    }
+
+    #[test]
+    fn cnc_1() {
+
+        let objects = vec![
+            "humpty".to_string(), "dumpty".to_string(), "sat".to_string(),
+            "on".to_string(), "a".to_string(), "wall".to_string()
+        ];
+        
+        let attributes = vec![
+            "StringAtt1".to_string(),
+            "NominalAtt1".to_string(),
+            "class".to_string()
+        ];
+        
+        let class_attribute = "class".to_string();
+        
+        let data = vec![
+            create_hashmap(vec![
+                ("StringAtt1".to_string(), "humpty".to_string()),
+                ("NominalAtt1".to_string(), "g".to_string()),
+                ("class".to_string(), "A".to_string())
+            ]),
+            create_hashmap(vec![
+                ("StringAtt1".to_string(), "dumpty".to_string()),
+                ("NominalAtt1".to_string(), "g".to_string()),
+                ("class".to_string(), "A".to_string())
+            ]),
+            create_hashmap(vec![
+                ("StringAtt1".to_string(), "sat".to_string()),
+                ("NominalAtt1".to_string(), "r".to_string()),
+                ("class".to_string(), "B".to_string())
+            ]),
+            create_hashmap(vec![
+                ("StringAtt1".to_string(), "on".to_string()),
+                ("NominalAtt1".to_string(), "r".to_string()),
+                ("class".to_string(), "B".to_string())
+            ]),
+            create_hashmap(vec![
+                ("StringAtt1".to_string(), "a".to_string()),
+                ("NominalAtt1".to_string(), "g".to_string()),
+                ("class".to_string(), "A".to_string())
+            ]),
+            create_hashmap(vec![
+                ("StringAtt1".to_string(), "wall".to_string()),
+                ("NominalAtt1".to_string(), "r".to_string()),
+                ("class".to_string(), "B".to_string())
+            ]),
+        ];
+        
+        let dataset = NominalDataset::new(objects, attributes, class_attribute, data);
+        
+        println!("Context:\n{}", dataset);
+        dataset.display_summary();
+        println!();
+        
+        // Run CNC algorithm
+        let results = cnc_nominal_classify(&dataset);
+        display_cnc_results(&dataset, &results);
+
+        assert_eq!(8, results.len());
+        //TODO: to add more assert_eq.
+    }
+
+    // Helper function to create test data
+    fn create_hashmap(entries: Vec<(String, String)>) -> HashMap<String, String> {
+        let mut map = HashMap::new();
+        for (key, value) in entries {
+            map.insert(key, value);
+        }
+        map
+    }
+
+    #[test]
+    fn cnc_2() {
+
+        let animal_objects = vec![
+            "animal1".to_string(), "animal2".to_string(), "animal3".to_string(),
+            "animal4".to_string(), "animal5".to_string()
+        ];
+        
+        let animal_attributes = vec![
+            "has_fur".to_string(),
+            "can_fly".to_string(), 
+            "lives_in_water".to_string(),
+            "class".to_string()
+        ];
+        
+        let animal_data = vec![
+            create_hashmap(vec![
+                ("has_fur".to_string(), "yes".to_string()),
+                ("can_fly".to_string(), "no".to_string()),
+                ("lives_in_water".to_string(), "no".to_string()),
+                ("class".to_string(), "mammal".to_string())
+            ]),
+            create_hashmap(vec![
+                ("has_fur".to_string(), "no".to_string()),
+                ("can_fly".to_string(), "yes".to_string()),
+                ("lives_in_water".to_string(), "no".to_string()),
+                ("class".to_string(), "bird".to_string())
+            ]),
+            create_hashmap(vec![
+                ("has_fur".to_string(), "no".to_string()),
+                ("can_fly".to_string(), "no".to_string()),
+                ("lives_in_water".to_string(), "yes".to_string()),
+                ("class".to_string(), "fish".to_string())
+            ]),
+            create_hashmap(vec![
+                ("has_fur".to_string(), "yes".to_string()),
+                ("can_fly".to_string(), "no".to_string()),
+                ("lives_in_water".to_string(), "yes".to_string()),
+                ("class".to_string(), "mammal".to_string())
+            ]),
+            create_hashmap(vec![
+                ("has_fur".to_string(), "no".to_string()),
+                ("can_fly".to_string(), "yes".to_string()),
+                ("lives_in_water".to_string(), "yes".to_string()),
+                ("class".to_string(), "bird".to_string())
+            ]),
+        ];
+        
+        let animal_dataset = NominalDataset::new(
+            animal_objects, animal_attributes, "class".to_string(), animal_data
+        );
+        
+        println!("Context:\n{}", animal_dataset);
+        animal_dataset.display_summary();
+        println!();
+        
+        let animal_results = cnc_nominal_classify(&animal_dataset);
+        display_cnc_results(&animal_dataset, &animal_results);
+    
+        assert_eq!(2, animal_results.len());
+        //TODO: to add more assert_eq.
     }
 }
