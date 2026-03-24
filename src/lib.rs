@@ -207,4 +207,79 @@ mod tests {
         assert_eq!(2, animal_results.len());
         //TODO: to add more assert_eq.
     }
+
+    #[test]
+    fn cnc_3() {
+
+        let objects = vec![
+            "o2".to_string(), "o6".to_string(), "o9".to_string(),
+            "o10".to_string(), "o13".to_string()
+        ];
+        
+        let attributes = vec![
+            "Outlook".to_string(),
+            "Temperature".to_string(),
+            "Humidity".to_string(),
+            "Windy".to_string(),
+            "Play".to_string(),
+        ];
+        
+        let class_attribute = "Play".to_string();
+        
+        let data = vec![
+            create_hashmap(vec![
+                ("Outlook".to_string(), "Sunny".to_string()),
+                ("Temperature".to_string(), "Hot".to_string()),
+                ("Humidity".to_string(), "High".to_string()),
+                ("Windy".to_string(), "True".to_string()),
+                ("Play".to_string(), "No".to_string()),
+                ("class".to_string(), "?".to_string())
+            ]),
+            create_hashmap(vec![
+                ("Outlook".to_string(), "Rainy".to_string()),
+                ("Temperature".to_string(), "Cool".to_string()),
+                ("Humidity".to_string(), "Normal".to_string()),
+                ("Windy".to_string(), "True".to_string()),
+                ("Play".to_string(), "No".to_string()),
+                ("class".to_string(), "?".to_string())
+            ]),
+            create_hashmap(vec![
+                ("Outlook".to_string(), "Sunny".to_string()),
+                ("Temperature".to_string(), "Cool".to_string()),
+                ("Humidity".to_string(), "Normal".to_string()),
+                ("Windy".to_string(), "False".to_string()),
+                ("Play".to_string(), "Yes".to_string()),
+                ("class".to_string(), "?".to_string())
+            ]),
+            create_hashmap(vec![
+                ("Outlook".to_string(), "Rainy".to_string()),
+                ("Temperature".to_string(), "Mild".to_string()),
+                ("Humidity".to_string(), "Normal".to_string()),
+                ("Windy".to_string(), "False".to_string()),
+                ("Play".to_string(), "Yes".to_string()),
+                ("class".to_string(), "?".to_string())
+            ]),
+            create_hashmap(vec![
+                ("Outlook".to_string(), "Overcast".to_string()),
+                ("Temperature".to_string(), "Hot".to_string()),
+                ("Humidity".to_string(), "Normal".to_string()),
+                ("Windy".to_string(), "False".to_string()),
+                ("Play".to_string(), "Yes".to_string()),
+                ("class".to_string(), "?".to_string())
+            ]),
+        ];
+        
+        let dataset = NominalDataset::new(objects, attributes, class_attribute, data);
+        
+        println!("Context:\n{}", dataset);
+        dataset.display_summary();
+        println!();
+        
+        // Run CNC algorithm
+        let results = cnc_nominal_classify(&dataset);
+        display_cnc_results(&dataset, &results);
+
+        assert_eq!(1, results.len());
+        //TODO: to add more assert_eq.
+    }
 }
