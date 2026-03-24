@@ -232,40 +232,35 @@ mod tests {
                 ("Temperature".to_string(), "Hot".to_string()),
                 ("Humidity".to_string(), "High".to_string()),
                 ("Windy".to_string(), "True".to_string()),
-                ("Play".to_string(), "No".to_string()),
-                ("class".to_string(), "?".to_string())
+                ("Play".to_string(), "No".to_string())
             ]),
             create_hashmap(vec![
                 ("Outlook".to_string(), "Rainy".to_string()),
                 ("Temperature".to_string(), "Cool".to_string()),
                 ("Humidity".to_string(), "Normal".to_string()),
                 ("Windy".to_string(), "True".to_string()),
-                ("Play".to_string(), "No".to_string()),
-                ("class".to_string(), "?".to_string())
+                ("Play".to_string(), "No".to_string())
             ]),
             create_hashmap(vec![
                 ("Outlook".to_string(), "Sunny".to_string()),
                 ("Temperature".to_string(), "Cool".to_string()),
                 ("Humidity".to_string(), "Normal".to_string()),
                 ("Windy".to_string(), "False".to_string()),
-                ("Play".to_string(), "Yes".to_string()),
-                ("class".to_string(), "?".to_string())
+                ("Play".to_string(), "Yes".to_string())
             ]),
             create_hashmap(vec![
                 ("Outlook".to_string(), "Rainy".to_string()),
                 ("Temperature".to_string(), "Mild".to_string()),
                 ("Humidity".to_string(), "Normal".to_string()),
                 ("Windy".to_string(), "False".to_string()),
-                ("Play".to_string(), "Yes".to_string()),
-                ("class".to_string(), "?".to_string())
+                ("Play".to_string(), "Yes".to_string())
             ]),
             create_hashmap(vec![
                 ("Outlook".to_string(), "Overcast".to_string()),
                 ("Temperature".to_string(), "Hot".to_string()),
                 ("Humidity".to_string(), "Normal".to_string()),
                 ("Windy".to_string(), "False".to_string()),
-                ("Play".to_string(), "Yes".to_string()),
-                ("class".to_string(), "?".to_string())
+                ("Play".to_string(), "Yes".to_string())
             ]),
         ];
         
