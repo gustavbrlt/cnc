@@ -238,7 +238,7 @@ mod tests {
         
         NominalDataset::new(objects, attributes, class_attribute, data)
     }
-
+    
     #[test]
     fn cnc_foo() {
 
@@ -250,9 +250,9 @@ mod tests {
         
         // Run CNC algorithm
         let results = cnc(&dataset);
-        display_cnc_results(&dataset, &results);
+        display_cnc_results(&dataset, &results.concepts);
 
-        assert_eq!(8, results.len());
+        assert_eq!(8, results.concepts.len());
         //TODO: to add more assert_eq.
     }
 
@@ -266,9 +266,9 @@ mod tests {
         println!();
         
         let animal_results = cnc(&animal_dataset);
-        display_cnc_results(&animal_dataset, &animal_results);
+        display_cnc_results(&animal_dataset, &animal_results.concepts);
     
-        assert_eq!(2, animal_results.len());
+        assert_eq!(2, animal_results.concepts.len());
         //TODO: to add more assert_eq.
     }
 
@@ -283,9 +283,9 @@ mod tests {
         
         // Run CNC algorithm
         let results = cnc(&dataset);
-        display_cnc_results(&dataset, &results);
+        display_cnc_results(&dataset, &results.concepts);
 
-        assert_eq!(1, results.len());
+        assert_eq!(1, results.concepts.len());
         //TODO: to add more assert_eq.
     }
 
@@ -295,19 +295,27 @@ mod tests {
         
         // Test cnc_bp with all classes (should behave like regular CNC)
         let bp_all_results = cnc_bp(&dataset, 3);
-        assert_eq!(8, bp_all_results.len());
+        println!("Keeping {} most minority classes: {:?}", 3, bp_all_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_all_results.filtered_size, bp_all_results.original_size);
+        assert_eq!(8, bp_all_results.cnc_result.concepts.len());
         
         // Test cnc_bp with n > total classes (should behave like all classes)
         let bp_overflow_results = cnc_bp(&dataset, 5);
-        assert_eq!(8, bp_overflow_results.len());
+        println!("Keeping {} most minority classes: {:?}", 5, bp_overflow_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_overflow_results.filtered_size, bp_overflow_results.original_size);
+        assert_eq!(8, bp_overflow_results.cnc_result.concepts.len());
         
         // Test cnc_bp with 2 classes (two most minority)
         let bp_2_results = cnc_bp(&dataset, 2);
-        assert_eq!(8, bp_2_results.len());
+        println!("Keeping {} most minority classes: {:?}", 2, bp_2_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_2_results.filtered_size, bp_2_results.original_size);
+        assert_eq!(8, bp_2_results.cnc_result.concepts.len());
         
         // Test cnc_bp with 1 class (most minority)
         let bp_1_results = cnc_bp(&dataset, 1);
-        assert!(bp_1_results.len() < 8);
+        println!("Keeping {} most minority classes: {:?}", 1, bp_1_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_1_results.filtered_size, bp_1_results.original_size);
+        assert!(bp_1_results.cnc_result.concepts.len() < 8);
     }
     
     #[test]
@@ -316,15 +324,21 @@ mod tests {
         
         // Test cnc_bp with all classes
         let bp_all_results = cnc_bp(&dataset, 3);
-        assert_eq!(2, bp_all_results.len());
+        println!("Keeping {} most minority classes: {:?}", 3, bp_all_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_all_results.filtered_size, bp_all_results.original_size);
+        assert_eq!(2, bp_all_results.cnc_result.concepts.len());
         
         // Test cnc_bp with 2 classes (two most minority)
         let bp_2_results = cnc_bp(&dataset, 2);
-        assert_eq!(2, bp_2_results.len());
+        println!("Keeping {} most minority classes: {:?}", 2, bp_2_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_2_results.filtered_size, bp_2_results.original_size);
+        assert_eq!(2, bp_2_results.cnc_result.concepts.len());
         
         // Test cnc_bp with 1 class (most minority)
         let bp_1_results = cnc_bp(&dataset, 1);
-        assert_eq!(2, bp_1_results.len());
+        println!("Keeping {} most minority classes: {:?}", 1, bp_1_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_1_results.filtered_size, bp_1_results.original_size);
+        assert_eq!(2, bp_1_results.cnc_result.concepts.len());
     }
     
     #[test]
@@ -333,10 +347,14 @@ mod tests {
         
         // Test cnc_bp with all classes (should behave like regular CNC)
         let bp_all_results = cnc_bp(&dataset, 2);
-        assert_eq!(1, bp_all_results.len());
+        println!("Keeping {} most minority classes: {:?}", 2, bp_all_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_all_results.filtered_size, bp_all_results.original_size);
+        assert_eq!(1, bp_all_results.cnc_result.concepts.len());
         
         // Test cnc_bp with 1 class (most minority)
         let bp_1_results = cnc_bp(&dataset, 1);
-        assert_eq!(1, bp_1_results.len());
+        println!("Keeping {} most minority classes: {:?}", 1, bp_1_results.minority_classes);
+        println!("Filtered dataset: {} objects (was {})", bp_1_results.filtered_size, bp_1_results.original_size);
+        assert_eq!(1, bp_1_results.cnc_result.concepts.len());
     }
 }

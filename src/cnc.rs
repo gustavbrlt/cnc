@@ -1,5 +1,22 @@
 use std::collections::{HashMap, HashSet};
 
+/// Result structure for CNC containing both the concepts and debug information
+#[derive(Debug)]
+pub struct CncResult {
+    pub concepts: Vec<(String, String, Vec<usize>, HashMap<String, String>)>,
+    pub pertinent_attrs: Vec<String>,
+}
+
+/// Result structure for CNC-BP containing both the concepts and debug information
+/// Uses CncResult to avoid duplication and maintain consistency
+#[derive(Debug)]
+pub struct CncBpResult {
+    pub cnc_result: CncResult,
+    pub minority_classes: HashSet<String>,
+    pub original_size: usize,
+    pub filtered_size: usize,
+}
+
 /// CNC (Classifier Nominal Concept)
 /// A classifier that uses Formal Concept Analysis to extract concepts from nominal (multi-valued) data.
 /// The algorithm finds the most pertinent attribute and computes its closure (concept).
@@ -299,28 +316,28 @@ pub fn compute_nominal_closure(dataset: &NominalDataset, attr_name: &str, attr_v
 
 /// CNC algorithm.
 /// Returns all concepts when there are ties in pertinence or frequency
-pub fn cnc(dataset: &NominalDataset) -> Vec<(String, String, Vec<usize>, HashMap<String, String>)> {
+pub fn cnc(dataset: &NominalDataset) -> CncResult {
     
     // Step 1: Find all most pertinent attributes (handle ties)
     let pertinent_attrs = find_most_pertinent_attributes(dataset);
     
     if pertinent_attrs.is_empty() {
-        return Vec::new();
+        return CncResult {
+            concepts: Vec::new(),
+            pertinent_attrs: Vec::new(),
+        };
     }
-    println!("Most pertinent attribute(s): {:?}", pertinent_attrs);
     
     // Steps 2 and 3 there.
     cnc_core(pertinent_attrs, dataset)
 }
 
-fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> Vec<(String, String, Vec<usize>, HashMap<String, String>)> {
+fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> CncResult {
     let mut results = Vec::new();
 
     // Step 2 of the CNC algorithm: For each pertinent attribute, find all most frequent values (handle ties)
     for pertinent_attr in &pertinent_attrs {
         let most_frequent_values = find_most_frequent_values(dataset, pertinent_attr);
-        
-        println!("  Most frequent value(s) for '{}': {:?}", pertinent_attr, most_frequent_values);
         
         // Step 3: Compute closure for each attribute-value pair
         for value in &most_frequent_values {
@@ -329,7 +346,10 @@ fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> Vec<(Stri
         }
     }
     
-    results
+    CncResult {
+        concepts: results,
+        pertinent_attrs,
+    }
 }
 
 /// CNC-BP : CNC Bottom-Pertinent Attributes. Keeps only the n most minority classes.
@@ -344,16 +364,11 @@ fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> Vec<(Stri
 /// - Keeps D (most minority with 1 object)
 /// - Keeps both B and C (both have 2 objects, tie at second most minority)
 /// - Total: 3 classes kept (D, B, C)
-pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> Vec<(String, String, Vec<usize>, HashMap<String, String>)> {
+pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> CncBpResult {
 
     // We first get the G.I to not interfere on CNC.
     let pertinent_attrs = find_most_pertinent_attributes(&dataset);
     
-    if pertinent_attrs.is_empty() {
-        return Vec::new();
-    }
-    println!("Most pertinent attribute(s) on filtered data: {:?}", pertinent_attrs);
-
     // Step 1: Get all class values and their distribution
     let all_class_values = dataset.get_class_values(&(0..dataset.objects.len()).collect::<Vec<_>>());
     let mut class_counts: HashMap<String, usize> = HashMap::new();
@@ -398,12 +413,23 @@ pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> Vec<(String, String, Vec<us
         class_attribute: dataset.class_attribute.clone(),
         data: filtered_data,
     };
-    
-    println!("Keeping {} most minority classes: {:?}", n, minority_classes);
-    println!("Filtered dataset: {} objects (was {})", filtered_dataset.objects.len(), dataset.objects.len());
 
     // Apply CNC on filtered dataset
-    cnc_core(pertinent_attrs, &filtered_dataset)
+    let cnc_result = if pertinent_attrs.is_empty() {
+        CncResult {
+            concepts: Vec::new(),
+            pertinent_attrs: Vec::new(),
+        }
+    } else {
+        cnc_core(pertinent_attrs.clone(), &filtered_dataset)
+    };
+    
+    CncBpResult {
+        cnc_result,
+        minority_classes,
+        original_size: dataset.objects.len(),
+        filtered_size: filtered_dataset.objects.len(),
+    }
 }
 
 /// Display CNC results in a standardized format
