@@ -147,6 +147,9 @@ impl NominalDataset {
     
     /// Display summary statistics about the dataset
     pub fn display_summary(&self) {
+
+        println!("Context:\n{}", &self);
+
         // Count descriptive attributes (excluding class)
         let desc_attrs: Vec<_> = self.attributes.iter()
             .filter(|attr| attr != &&self.class_attribute)
@@ -429,6 +432,18 @@ pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> CncBpResult {
         minority_classes,
         original_size: dataset.objects.len(),
         filtered_size: filtered_dataset.objects.len(),
+    }
+}
+
+pub fn display_cnc_chosen_attribute(dataset : &NominalDataset, results : &CncResult) {
+
+    println!("Most pertinent attribute(s): {:?}", results.pertinent_attrs);
+
+    for pertinent_attr in &results.pertinent_attrs {
+
+        let most_frequent_values = dataset.get_attribute_values(pertinent_attr);
+        println!("  Most frequent value(s) for '{}': {:?}", 
+            pertinent_attr, most_frequent_values);
     }
 }
 

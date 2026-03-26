@@ -238,24 +238,24 @@ mod tests {
         
         NominalDataset::new(objects, attributes, class_attribute, data)
     }
-    
-    #[test]
-    fn cnc_foo() {
 
-        let dataset = create_foo_dataset();
-        
-        println!("Context:\n{}", dataset);
+    fn cnc_run_test(dataset : &NominalDataset) -> CncResult {
         dataset.display_summary();
         println!();
         
         // Run CNC algorithm
         let results = cnc(&dataset);
-        println!("Most pertinent attribute(s): {:?}", results.pertinent_attrs);
-        for pertinent_attr in &results.pertinent_attrs {
-            let most_frequent_values = dataset.get_attribute_values(pertinent_attr);
-            println!("  Most frequent value(s) for '{}': {:?}", pertinent_attr, most_frequent_values);
-        }
+        display_cnc_chosen_attribute(&dataset, &results);
         display_cnc_results(&dataset, &results.concepts);
+
+        results
+    }
+    
+    #[test]
+    fn cnc_foo() {
+
+        let dataset = create_foo_dataset();
+        let results = cnc_run_test(&dataset);
 
         assert_eq!(8, results.concepts.len());
         //TODO: to add more assert_eq.
@@ -264,21 +264,10 @@ mod tests {
     #[test]
     fn cnc_animal() {
 
-        let animal_dataset = create_animal_dataset();
-        
-        println!("Context:\n{}", animal_dataset);
-        animal_dataset.display_summary();
-        println!();
-        
-        let animal_results = cnc(&animal_dataset);
-        println!("Most pertinent attribute(s): {:?}", animal_results.pertinent_attrs);
-        for pertinent_attr in &animal_results.pertinent_attrs {
-            let most_frequent_values = animal_dataset.get_attribute_values(pertinent_attr);
-            println!("  Most frequent value(s) for '{}': {:?}", pertinent_attr, most_frequent_values);
-        }
-        display_cnc_results(&animal_dataset, &animal_results.concepts);
+        let dataset = create_animal_dataset();
+        let results = cnc_run_test(&dataset);
     
-        assert_eq!(2, animal_results.concepts.len());
+        assert_eq!(2, results.concepts.len());
         //TODO: to add more assert_eq.
     }
 
@@ -286,19 +275,7 @@ mod tests {
     fn cnc_weather() {
 
         let dataset = create_weather_dataset();
-        
-        println!("Context:\n{}", dataset);
-        dataset.display_summary();
-        println!();
-        
-        // Run CNC algorithm
-        let results = cnc(&dataset);
-        println!("Most pertinent attribute(s): {:?}", results.pertinent_attrs);
-        for pertinent_attr in &results.pertinent_attrs {
-            let most_frequent_values = dataset.get_attribute_values(pertinent_attr);
-            println!("  Most frequent value(s) for '{}': {:?}", pertinent_attr, most_frequent_values);
-        }
-        display_cnc_results(&dataset, &results.concepts);
+        let results = cnc_run_test(&dataset);
 
         assert_eq!(1, results.concepts.len());
         //TODO: to add more assert_eq.
