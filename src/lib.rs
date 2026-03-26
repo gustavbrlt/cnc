@@ -250,6 +250,11 @@ mod tests {
         
         // Run CNC algorithm
         let results = cnc(&dataset);
+        println!("Most pertinent attribute(s): {:?}", results.pertinent_attrs);
+        for pertinent_attr in &results.pertinent_attrs {
+            let most_frequent_values = dataset.get_attribute_values(pertinent_attr);
+            println!("  Most frequent value(s) for '{}': {:?}", pertinent_attr, most_frequent_values);
+        }
         display_cnc_results(&dataset, &results.concepts);
 
         assert_eq!(8, results.concepts.len());
@@ -266,6 +271,11 @@ mod tests {
         println!();
         
         let animal_results = cnc(&animal_dataset);
+        println!("Most pertinent attribute(s): {:?}", animal_results.pertinent_attrs);
+        for pertinent_attr in &animal_results.pertinent_attrs {
+            let most_frequent_values = animal_dataset.get_attribute_values(pertinent_attr);
+            println!("  Most frequent value(s) for '{}': {:?}", pertinent_attr, most_frequent_values);
+        }
         display_cnc_results(&animal_dataset, &animal_results.concepts);
     
         assert_eq!(2, animal_results.concepts.len());
@@ -283,6 +293,11 @@ mod tests {
         
         // Run CNC algorithm
         let results = cnc(&dataset);
+        println!("Most pertinent attribute(s): {:?}", results.pertinent_attrs);
+        for pertinent_attr in &results.pertinent_attrs {
+            let most_frequent_values = dataset.get_attribute_values(pertinent_attr);
+            println!("  Most frequent value(s) for '{}': {:?}", pertinent_attr, most_frequent_values);
+        }
         display_cnc_results(&dataset, &results.concepts);
 
         assert_eq!(1, results.concepts.len());
