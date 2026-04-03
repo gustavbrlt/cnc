@@ -355,7 +355,7 @@ fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> CncResult
     }
 }
 
-/// CNC-BP : CNC Bottom-Pertinent Attributes. Keeps only the n most minority classes.
+/// CNC-BP : CNC Bottom-Pertinent Classes. Keeps only the n most minority classes.
 ///
 /// n: number of minority classes to keep.
 ///
