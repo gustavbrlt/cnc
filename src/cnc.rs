@@ -406,11 +406,11 @@ pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> CncBpResult {
     let filtered_objects_names: Vec<String> = filtered_objects.iter()
         .map(|&obj_idx| dataset.objects[obj_idx].clone())
         .collect();
-    
+
     let filtered_data: Vec<HashMap<String, String>> = filtered_objects.iter()
         .map(|&obj_idx| dataset.data[obj_idx].clone())
         .collect();
-    
+
     let filtered_dataset = NominalDataset {
         objects: filtered_objects_names,
         attributes: dataset.attributes.clone(),
@@ -419,7 +419,7 @@ pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> CncBpResult {
     };
 
     // Apply CNC on filtered dataset
-    let cnc_result = if pertinent_attrs.is_empty() {
+    let mut cnc_result = if pertinent_attrs.is_empty() {
         CncResult {
             concepts: Vec::new(),
             pertinent_attrs: Vec::new(),
@@ -427,7 +427,14 @@ pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> CncBpResult {
     } else {
         cnc_core(pertinent_attrs.clone(), &filtered_dataset)
     };
-    
+
+    // Map filtered indices back to original indices
+    for concept in &mut cnc_result.concepts {
+        concept.2 = concept.2.iter()
+            .map(|&filtered_idx| filtered_objects[filtered_idx])
+            .collect();
+    }
+
     CncBpResult {
         cnc_result,
         minority_classes,
