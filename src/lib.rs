@@ -12,12 +12,14 @@ pub use formal_concept::*;
 pub use formal_context::*;
 
 pub mod cnc;
+pub mod metrics;
 
 // Tests
 #[cfg(test)]
 mod tests {
     use cnc::*;
     use super::*;
+    use super::metrics::{evaluate_cnc, display_metrics_table};
     use bitvec::prelude::*;
     use std::collections::HashMap;
 
@@ -83,21 +85,25 @@ mod tests {
         map
     }
 
-    // Helper function to run CNC and display results
+    // Helper function to run CNC and display results with metrics
     fn run_cnc_test(dataset: &NominalDataset) -> CncResult {
-        dataset.display_summary();
+        // dataset.display_summary();
 
         println!("\n--- Running CNC ---");
         let result = cnc(dataset);
         display_cnc_chosen_attribute(dataset, &result);
         display_cnc_results(dataset, &result.concepts);
 
+        // Calculate and display classification metrics
+        let metrics = evaluate_cnc(dataset, &result);
+        display_metrics_table(&metrics);
+
         result
     }
 
-    // Helper function to run CNC-BP and display results
+    // Helper function to run CNC-BP and display results with metrics
     fn run_cnc_bp_test(dataset: &NominalDataset, n: usize) -> CncBpResult {
-        dataset.display_summary();
+        // dataset.display_summary();
 
         println!("\n--- Running CNC-BP (n={}) ---", n);
         let result = cnc_bp(dataset, n);
@@ -106,6 +112,10 @@ mod tests {
                  result.filtered_size, result.original_size,
                  (result.filtered_size as f64 / result.original_size as f64) * 100.0);
         display_cnc_results(dataset, &result.cnc_result.concepts);
+
+        // Calculate and display classification metrics
+        let metrics = evaluate_cnc(dataset, &result.cnc_result);
+        display_metrics_table(&metrics);
 
         result
     }
@@ -351,33 +361,66 @@ mod tests {
     }
     */
 
+    // Weather.
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn cnc_arff_weather() {
+    fn t01_cnc_arff_weather() {
         run_arff_cnc_test("data-examples/weather.nominal.arff", None);
     }
-
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn cnc_bp_arff_weather() {
+    fn t02_cnc_bp_arff_weather() {
         run_arff_cnc_bp_test("data-examples/weather.nominal.arff", None, 1);
     }
 
+    // Contact Lenses
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn cnc_bp_arff_contact_lenses() {
+    fn t03_cnc_arff_contact_lenses() {
+        run_arff_cnc_test("data-examples/contact-lenses.arff", Some("contact-lenses"));
+    }
+    #[test]
+    #[ignore] // Nécessite fichier .arff
+    fn t04_cnc_bp_arff_contact_lenses_1() {
+        run_arff_cnc_bp_test("data-examples/contact-lenses.arff", Some("contact-lenses"), 1);
+    }
+    #[test]
+    #[ignore] // Nécessite fichier .arff
+    fn t05_cnc_bp_arff_contact_lenses_2() {
         run_arff_cnc_bp_test("data-examples/contact-lenses.arff", Some("contact-lenses"), 2);
     }
 
+    // Breast Cancer
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn cnc_arff_breast_cancer() {
+    fn t06_cnc_arff_breast_cancer() {
         run_arff_cnc_test("data-examples/breast-cancer.arff", Some("Class"));
     }
-
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn cnc_bp_arff_breast_cancer() {
+    fn t07_cnc_bp_arff_breast_cancer_1() {
         run_arff_cnc_bp_test("data-examples/breast-cancer.arff", Some("Class"), 1);
+    }
+    #[test]
+    #[ignore] // Nécessite fichier .arff
+    fn t08_cnc_bp_arff_breast_cancer_2() {
+        run_arff_cnc_bp_test("data-examples/breast-cancer.arff", Some("Class"), 2);
+    }
+
+    // Unbalanced.
+    #[test]
+    #[ignore] // Nécessite fichier .arff
+    fn t09_cnc_arff_unbalanced() {
+        run_arff_cnc_test("data-examples/unbalanced.arff", None);
+    }
+    #[test]
+    #[ignore] // Nécessite fichier .arff
+    fn t10_cnc_bp_arff_unbalanced_1() {
+        run_arff_cnc_bp_test("data-examples/unbalanced.arff", None, 1);
+    }
+    #[test]
+    #[ignore] // Nécessite fichier .arff
+    fn t11_cnc_bp_arff_unbalanced_2() {
+        run_arff_cnc_bp_test("data-examples/unbalanced.arff", None, 2);
     }
 }

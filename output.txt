@@ -1,0 +1,1491 @@
+
+running 11 tests
+test tests::t01_cnc_arff_weather ... ok
+test tests::t02_cnc_bp_arff_weather ... ok
+test tests::t03_cnc_arff_contact_lenses ... ok
+test tests::t04_cnc_bp_arff_contact_lenses_1 ... ok
+test tests::t05_cnc_bp_arff_contact_lenses_2 ... ok
+test tests::t06_cnc_arff_breast_cancer ... ok
+test tests::t07_cnc_bp_arff_breast_cancer_1 ... ok
+test tests::t08_cnc_bp_arff_breast_cancer_2 ... ok
+test tests::t09_cnc_arff_unbalanced ... ok
+test tests::t10_cnc_bp_arff_unbalanced_1 ... ok
+test tests::t11_cnc_bp_arff_unbalanced_2 ... ok
+
+successes:
+
+---- tests::t01_cnc_arff_weather stdout ----
+
+--- Running CNC ---
+Most pertinent attribute(s): ["outlook"]
+  Most frequent value(s) for 'outlook': ["rainy", "sunny"]
+
+2 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'outlook' with value 'rainy'
+  Extent of the pertinent attribute(s): ["obj_3", "obj_4", "obj_5", "obj_9", "obj_13"]
+  Extent size: 5/14 objects (35.7%)
+  Intent (common attributes) of the found extent : {"outlook": "rainy"}
+  Intent size: 1/4 attributes (25.0%)
+  Class distribution in extent:
+    yes: 3 (60.0%) (majority class)
+    no: 2 (40.0%)
+
+Concept 2:
+  Pertinent attribute: 'outlook' with value 'sunny'
+  Extent of the pertinent attribute(s): ["obj_0", "obj_1", "obj_7", "obj_8", "obj_10"]
+  Extent size: 5/14 objects (35.7%)
+  Intent (common attributes) of the found extent : {"outlook": "sunny"}
+  Intent size: 1/4 attributes (25.0%)
+  Class distribution in extent:
+    yes: 2 (40.0%)
+    no: 3 (60.0%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:      10 /     14 ( 71.43%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.7143                          ║
+║  Recall:           0.6889  (macro-averaged)        ║
+║  F1-score:         0.6889  (macro-averaged)        ║
+║  MCC:              0.3778                          ║
+║  PRC Area:         0.4664                          ║
+║  ROC Area:         0.3333                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t02_cnc_bp_arff_weather stdout ----
+
+--- Running CNC-BP (n=1) ---
+Minority classes kept: {"no"}
+Filtered: 5/14 objects (35.7%)
+
+1 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'outlook' with value 'sunny'
+  Extent of the pertinent attribute(s): ["obj_0", "obj_1", "obj_7"]
+  Extent size: 3/14 objects (21.4%)
+  Intent (common attributes) of the found extent : {"outlook": "sunny", "humidity": "high"}
+  Intent size: 2/4 attributes (50.0%)
+  Class distribution in extent:
+    no: 3 (100.0%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:       3 /     14 ( 21.43%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.8571                          ║
+║  Recall:           0.8000  (macro-averaged)        ║
+║  F1-score:         0.8250  (macro-averaged)        ║
+║  MCC:              0.7006                          ║
+║  PRC Area:         0.5871                          ║
+║  ROC Area:         0.5000                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t03_cnc_arff_contact_lenses stdout ----
+
+--- Running CNC ---
+Most pertinent attribute(s): ["tear-prod-rate"]
+  Most frequent value(s) for 'tear-prod-rate': ["reduced", "normal"]
+
+2 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'tear-prod-rate' with value 'reduced'
+  Extent of the pertinent attribute(s): ["obj_0", "obj_2", "obj_4", "obj_6", "obj_8", "obj_10", "obj_12", "obj_14", "obj_16", "obj_18", "obj_20", "obj_22"]
+  Extent size: 12/24 objects (50.0%)
+  Intent (common attributes) of the found extent : {"tear-prod-rate": "reduced"}
+  Intent size: 1/4 attributes (25.0%)
+  Class distribution in extent:
+    none: 12 (100.0%) (majority class)
+
+Concept 2:
+  Pertinent attribute: 'tear-prod-rate' with value 'normal'
+  Extent of the pertinent attribute(s): ["obj_1", "obj_3", "obj_5", "obj_7", "obj_9", "obj_11", "obj_13", "obj_15", "obj_17", "obj_19", "obj_21", "obj_23"]
+  Extent size: 12/24 objects (50.0%)
+  Intent (common attributes) of the found extent : {"tear-prod-rate": "normal"}
+  Intent size: 1/4 attributes (25.0%)
+  Class distribution in extent:
+    soft: 5 (41.7%) (majority class)
+    hard: 4 (33.3%)
+    none: 3 (25.0%)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:      24 /     24 (100.00%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.7083                          ║
+║  Recall:           0.6000  (macro-averaged)        ║
+║  F1-score:         0.4924  (macro-averaged)        ║
+║  MCC:              0.5623                          ║
+║  PRC Area:         0.6393                          ║
+║  ROC Area:         0.8511                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t04_cnc_bp_arff_contact_lenses_1 stdout ----
+
+--- Running CNC-BP (n=1) ---
+Minority classes kept: {"hard"}
+Filtered: 4/24 objects (16.7%)
+
+1 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'tear-prod-rate' with value 'normal'
+  Extent of the pertinent attribute(s): ["obj_3", "obj_7", "obj_11", "obj_19"]
+  Extent size: 4/24 objects (16.7%)
+  Intent (common attributes) of the found extent : {"astigmatism": "yes", "tear-prod-rate": "normal"}
+  Intent size: 2/4 attributes (50.0%)
+  Class distribution in extent:
+    hard: 4 (100.0%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:       4 /     24 ( 16.67%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.7917                          ║
+║  Recall:           0.6667  (macro-averaged)        ║
+║  F1-score:         0.6190  (macro-averaged)        ║
+║  MCC:              0.6286                          ║
+║  PRC Area:         0.3576                          ║
+║  ROC Area:         0.5541                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t05_cnc_bp_arff_contact_lenses_2 stdout ----
+
+--- Running CNC-BP (n=2) ---
+Minority classes kept: {"soft", "hard"}
+Filtered: 9/24 objects (37.5%)
+
+1 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'tear-prod-rate' with value 'normal'
+  Extent of the pertinent attribute(s): ["obj_1", "obj_3", "obj_5", "obj_7", "obj_9", "obj_11", "obj_13", "obj_19", "obj_21"]
+  Extent size: 9/24 objects (37.5%)
+  Intent (common attributes) of the found extent : {"tear-prod-rate": "normal"}
+  Intent size: 1/4 attributes (25.0%)
+  Class distribution in extent:
+    soft: 5 (55.6%) (majority class)
+    hard: 4 (44.4%)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:       9 /     24 ( 37.50%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.8333                          ║
+║  Recall:           0.6667  (macro-averaged)        ║
+║  F1-score:         0.5714  (macro-averaged)        ║
+║  MCC:              0.7259                          ║
+║  PRC Area:         0.2090                          ║
+║  ROC Area:         0.0768                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t06_cnc_arff_breast_cancer stdout ----
+
+--- Running CNC ---
+Most pertinent attribute(s): ["deg-malig"]
+  Most frequent value(s) for 'deg-malig': ["'2'"]
+
+1 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'deg-malig' with value ''2''
+  Extent of the pertinent attribute(s): ["obj_2", "obj_4", "obj_5", "obj_7", "obj_8", "obj_9", "obj_10", "obj_11", "obj_13", "obj_14", "obj_17", "obj_18", "obj_21", "obj_22", "obj_25", "obj_26", "obj_36", "obj_41", "obj_42", "obj_46", "obj_48", "obj_54", "obj_59", "obj_61", "obj_64", "obj_66", "obj_67", "obj_68", "obj_77", "obj_79", "obj_80", "obj_81", "obj_83", "obj_84", "obj_87", "obj_93", "obj_94", "obj_95", "obj_100", "obj_101", "obj_103", "obj_105", "obj_106", "obj_107", "obj_109", "obj_111", "obj_112", "obj_118", "obj_121", "obj_122", "obj_124", "obj_126", "obj_127", "obj_128", "obj_129", "obj_130", "obj_131", "obj_133", "obj_141", "obj_142", "obj_143", "obj_144", "obj_146", "obj_148", "obj_150", "obj_151", "obj_152", "obj_154", "obj_156", "obj_157", "obj_161", "obj_162", "obj_165", "obj_166", "obj_167", "obj_168", "obj_169", "obj_170", "obj_172", "obj_175", "obj_176", "obj_178", "obj_180", "obj_188", "obj_189", "obj_190", "obj_191", "obj_193", "obj_194", "obj_195", "obj_200", "obj_206", "obj_212", "obj_214", "obj_217", "obj_219", "obj_222", "obj_223", "obj_227", "obj_228", "obj_229", "obj_230", "obj_231", "obj_232", "obj_234", "obj_235", "obj_238", "obj_241", "obj_242", "obj_243", "obj_245", "obj_246", "obj_251", "obj_256", "obj_258", "obj_259", "obj_262", "obj_263", "obj_265", "obj_272", "obj_273", "obj_275", "obj_276", "obj_277", "obj_278", "obj_279", "obj_281", "obj_282", "obj_283", "obj_284"]
+  Extent size: 130/286 objects (45.5%)
+  Intent (common attributes) of the found extent : {"deg-malig": "'2'"}
+  Intent size: 1/9 attributes (11.1%)
+  Class distribution in extent:
+    'recurrence-events': 28 (21.5%)
+    'no-recurrence-events': 102 (78.5%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:     130 /    286 ( 45.45%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.7028                          ║
+║  Recall:           0.5000  (macro-averaged)        ║
+║  F1-score:         0.4127  (macro-averaged)        ║
+║  MCC:              0.0000                          ║
+║  PRC Area:         0.5459                          ║
+║  ROC Area:         0.5890                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t07_cnc_bp_arff_breast_cancer_1 stdout ----
+
+--- Running CNC-BP (n=1) ---
+Minority classes kept: {"'recurrence-events'"}
+Filtered: 85/286 objects (29.7%)
+
+1 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'deg-malig' with value ''3''
+  Extent of the pertinent attribute(s): ["obj_0", "obj_24", "obj_29", "obj_30", "obj_40", "obj_43", "obj_45", "obj_60", "obj_63", "obj_70", "obj_73", "obj_74", "obj_78", "obj_91", "obj_98", "obj_116", "obj_120", "obj_123", "obj_132", "obj_138", "obj_140", "obj_153", "obj_164", "obj_171", "obj_177", "obj_181", "obj_183", "obj_187", "obj_192", "obj_199", "obj_205", "obj_207", "obj_208", "obj_210", "obj_216", "obj_224", "obj_237", "obj_239", "obj_240", "obj_250", "obj_255", "obj_257", "obj_267", "obj_270", "obj_271"]
+  Extent size: 45/286 objects (15.7%)
+  Intent (common attributes) of the found extent : {"deg-malig": "'3'"}
+  Intent size: 1/9 attributes (11.1%)
+  Class distribution in extent:
+    'recurrence-events': 45 (100.0%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:      45 /    286 ( 15.73%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.8601                          ║
+║  Recall:           0.7647  (macro-averaged)        ║
+║  F1-score:         0.8009  (macro-averaged)        ║
+║  MCC:              0.6645                          ║
+║  PRC Area:         0.5051                          ║
+║  ROC Area:         0.5000                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t08_cnc_bp_arff_breast_cancer_2 stdout ----
+
+--- Running CNC-BP (n=2) ---
+Minority classes kept: {"'recurrence-events'", "'no-recurrence-events'"}
+Filtered: 286/286 objects (100.0%)
+
+1 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'deg-malig' with value ''2''
+  Extent of the pertinent attribute(s): ["obj_2", "obj_4", "obj_5", "obj_7", "obj_8", "obj_9", "obj_10", "obj_11", "obj_13", "obj_14", "obj_17", "obj_18", "obj_21", "obj_22", "obj_25", "obj_26", "obj_36", "obj_41", "obj_42", "obj_46", "obj_48", "obj_54", "obj_59", "obj_61", "obj_64", "obj_66", "obj_67", "obj_68", "obj_77", "obj_79", "obj_80", "obj_81", "obj_83", "obj_84", "obj_87", "obj_93", "obj_94", "obj_95", "obj_100", "obj_101", "obj_103", "obj_105", "obj_106", "obj_107", "obj_109", "obj_111", "obj_112", "obj_118", "obj_121", "obj_122", "obj_124", "obj_126", "obj_127", "obj_128", "obj_129", "obj_130", "obj_131", "obj_133", "obj_141", "obj_142", "obj_143", "obj_144", "obj_146", "obj_148", "obj_150", "obj_151", "obj_152", "obj_154", "obj_156", "obj_157", "obj_161", "obj_162", "obj_165", "obj_166", "obj_167", "obj_168", "obj_169", "obj_170", "obj_172", "obj_175", "obj_176", "obj_178", "obj_180", "obj_188", "obj_189", "obj_190", "obj_191", "obj_193", "obj_194", "obj_195", "obj_200", "obj_206", "obj_212", "obj_214", "obj_217", "obj_219", "obj_222", "obj_223", "obj_227", "obj_228", "obj_229", "obj_230", "obj_231", "obj_232", "obj_234", "obj_235", "obj_238", "obj_241", "obj_242", "obj_243", "obj_245", "obj_246", "obj_251", "obj_256", "obj_258", "obj_259", "obj_262", "obj_263", "obj_265", "obj_272", "obj_273", "obj_275", "obj_276", "obj_277", "obj_278", "obj_279", "obj_281", "obj_282", "obj_283", "obj_284"]
+  Extent size: 130/286 objects (45.5%)
+  Intent (common attributes) of the found extent : {"deg-malig": "'2'"}
+  Intent size: 1/9 attributes (11.1%)
+  Class distribution in extent:
+    'recurrence-events': 28 (21.5%)
+    'no-recurrence-events': 102 (78.5%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:     130 /    286 ( 45.45%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.7028                          ║
+║  Recall:           0.5000  (macro-averaged)        ║
+║  F1-score:         0.4127  (macro-averaged)        ║
+║  MCC:              0.0000                          ║
+║  PRC Area:         0.5459                          ║
+║  ROC Area:         0.5890                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t09_cnc_arff_unbalanced stdout ----
+
+--- Running CNC ---
+Most pertinent attribute(s): ["WBN_GC_H_1.00", "WBN_EN_H_0.75", "WBN_EN_L_1.00", "WBN_EN_H_1.00", "WBN_LP_H_0.50", "WBN_LP_H_0.75", "WBN_LP_H_1.00"]
+  Most frequent value(s) for 'WBN_GC_H_1.00': ["3.7818"]
+  Most frequent value(s) for 'WBN_EN_H_0.75': ["3.2312"]
+  Most frequent value(s) for 'WBN_EN_L_1.00': ["-3.5048"]
+  Most frequent value(s) for 'WBN_EN_H_1.00': ["4.0325", "3.6233"]
+  Most frequent value(s) for 'WBN_LP_H_0.50': ["2.0478", "2.0745", "1.9217", "2.0507", "1.9632", "1.8487", "2.0303"]
+  Most frequent value(s) for 'WBN_LP_H_0.75': ["2.9919", "2.8871", "2.7505", "2.7838"]
+  Most frequent value(s) for 'WBN_LP_H_1.00': ["3.6551", "3.6794", "3.5523", "3.5573"]
+
+20 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.7818'
+  Extent of the pertinent attribute(s): ["obj_58", "obj_557", "obj_665"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"BBB": "0", "WBN_GC_H_1.00": "3.7818"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 2:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '3.2312'
+  Extent of the pertinent attribute(s): ["obj_94", "obj_108", "obj_525", "obj_799"]
+  Extent size: 4/856 objects (0.5%)
+  Intent (common attributes) of the found extent : {"BadGroup": "0", "WBN_EN_H_0.75": "3.2312"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 4 (100.0%) (majority class)
+
+Concept 3:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.5048'
+  Extent of the pertinent attribute(s): ["obj_137", "obj_138", "obj_139", "obj_140", "obj_141", "obj_143", "obj_144", "obj_145", "obj_147", "obj_148", "obj_149", "obj_150", "obj_334", "obj_491", "obj_504", "obj_528"]
+  Extent size: 16/856 objects (1.9%)
+  Intent (common attributes) of the found extent : {"NumHBD": "1", "WBN_EN_L_0.25": "-0.8538", "WBN_EN_L_0.75": "-2.612", "BadGroup": "0", "WBN_GC_L_1.00": "-3.7163", "WBN_EN_L_1.00": "-3.5048", "WBN_GC_L_0.75": "-2.93"}
+  Intent size: 7/32 attributes (21.9%)
+  Class distribution in extent:
+    Inactive: 16 (100.0%) (majority class)
+
+Concept 4:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '4.0325'
+  Extent of the pertinent attribute(s): ["obj_229", "obj_244", "obj_350"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_1.00": "4.0325"}
+  Intent size: 1/32 attributes (3.1%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 5:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.6233'
+  Extent of the pertinent attribute(s): ["obj_186", "obj_392", "obj_658"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_1.00": "3.6233"}
+  Intent size: 1/32 attributes (3.1%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 6:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0507'
+  Extent of the pertinent attribute(s): ["obj_76", "obj_97", "obj_328"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "2.0507", "BadGroup": "0"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 7:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0745'
+  Extent of the pertinent attribute(s): ["obj_89", "obj_403", "obj_719"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "2.0745", "BBB": "0", "BadGroup": "0"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 8:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.8487'
+  Extent of the pertinent attribute(s): ["obj_290", "obj_583", "obj_690"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"NumHBA": "6", "BBB": "0", "PSA": "76.66", "WBN_EN_L_0.25": "-0.7765", "WBN_LP_H_0.50": "1.8487", "NumHBD": "2"}
+  Intent size: 6/32 attributes (18.8%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 9:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0303'
+  Extent of the pertinent attribute(s): ["obj_118", "obj_326", "obj_614"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "2.0303", "BBB": "0"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 10:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9217'
+  Extent of the pertinent attribute(s): ["obj_284", "obj_407", "obj_533"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"NumHBA": "6", "WBN_LP_H_0.50": "1.9217", "BBB": "0"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 11:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0478'
+  Extent of the pertinent attribute(s): ["obj_256", "obj_434", "obj_676"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "2.0478"}
+  Intent size: 1/32 attributes (3.1%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 12:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9632'
+  Extent of the pertinent attribute(s): ["obj_297", "obj_388", "obj_567"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"BadGroup": "1", "WBN_LP_H_0.50": "1.9632", "BBB": "0"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 13:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.9919'
+  Extent of the pertinent attribute(s): ["obj_76", "obj_302", "obj_486"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"BadGroup": "0", "WBN_LP_H_0.75": "2.9919"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 14:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.8871'
+  Extent of the pertinent attribute(s): ["obj_12", "obj_451", "obj_796"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.75": "2.8871", "NumHBD": "0", "BadGroup": "0"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 15:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.7838'
+  Extent of the pertinent attribute(s): ["obj_43", "obj_391", "obj_615"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.75": "2.7838"}
+  Intent size: 1/32 attributes (3.1%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 16:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.7505'
+  Extent of the pertinent attribute(s): ["obj_193", "obj_407", "obj_595"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"NumHBD": "1", "BadGroup": "0", "WBN_GC_H_0.25": "1.85", "PSA": "81.7", "BBB": "0", "NumRot": "6", "NumHBA": "6", "WBN_LP_H_0.75": "2.7505"}
+  Intent size: 8/32 attributes (25.0%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 17:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.6794'
+  Extent of the pertinent attribute(s): ["obj_92", "obj_94", "obj_717"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"NumHBA": "8", "NumHBD": "2", "BBB": "0", "WBN_LP_H_1.00": "3.6794"}
+  Intent size: 4/32 attributes (12.5%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 18:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.5573'
+  Extent of the pertinent attribute(s): ["obj_28", "obj_197", "obj_364"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_1.00": "3.5573", "NumHBD": "1"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 19:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.6551'
+  Extent of the pertinent attribute(s): ["obj_57", "obj_590", "obj_665"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_1.00": "3.6551", "NumHBD": "1", "BBB": "0"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 20:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.5523'
+  Extent of the pertinent attribute(s): ["obj_345", "obj_408", "obj_633"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_1.00": "3.5523", "BBB": "0"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:      70 /    856 (  8.18%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.9860                          ║
+║  Recall:           0.5000  (macro-averaged)        ║
+║  F1-score:         0.4965  (macro-averaged)        ║
+║  MCC:              0.0000                          ║
+║  PRC Area:         0.9833                          ║
+║  ROC Area:         0.5415                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t10_cnc_bp_arff_unbalanced_1 stdout ----
+
+--- Running CNC-BP (n=1) ---
+Minority classes kept: {"Active"}
+Filtered: 12/856 objects (1.4%)
+
+84 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.913'
+  Extent of the pertinent attribute(s): ["obj_8"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.75": "2.865", "XLogP": "5.264", "WBN_GC_L_0.25": "-1.3097", "WBN_GC_H_1.00": "3.913", "WBN_GC_L_0.75": "-2.336", "NumHBD": "2", "WBN_LP_L_1.00": "-3.2289", "WBN_EN_L_0.25": "-0.8001", "BBB": "1", "WBN_EN_H_1.00": "3.7339", "PSA": "66.4", "MW": "370.792", "WBN_LP_L_0.50": "-1.5954", "WBN_GC_H_0.25": "2.0952", "WBN_GC_H_0.50": "2.5105", "NumRot": "3", "WBN_LP_L_0.75": "-2.4062", "BadGroup": "1", "WBN_EN_H_0.50": "2.19", "WBN_GC_L_0.50": "-1.6319", "WBN_LP_L_0.25": "-0.8413", "WBN_EN_H_0.75": "2.9274", "WBN_EN_L_1.00": "-3.2675", "WBN_GC_H_0.75": "3.1396", "NumHBA": "6", "WBN_LP_H_1.00": "3.7213", "WBN_EN_H_0.25": "1.5206", "WBN_EN_L_0.50": "-1.617", "WBN_EN_L_0.75": "-2.4406", "WBN_LP_H_0.25": "1.4337", "WBN_LP_H_0.50": "2.0515", "WBN_GC_L_1.00": "-3.1309"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 2:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '4.2833'
+  Extent of the pertinent attribute(s): ["obj_1"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"NumHBD": "1", "WBN_LP_H_0.50": "2.0906", "WBN_GC_L_1.00": "-3.736", "PSA": "50.44", "WBN_EN_L_0.50": "-1.7694", "WBN_EN_L_0.25": "-0.8664", "WBN_EN_H_1.00": "4.0094", "BadGroup": "0", "WBN_GC_L_0.75": "-3.0632", "WBN_GC_H_0.25": "2.3811", "WBN_LP_H_0.25": "1.1629", "WBN_LP_L_0.50": "-1.7613", "WBN_GC_H_0.75": "3.4052", "BBB": "1", "WBN_EN_H_0.50": "2.6741", "NumRot": "2", "WBN_GC_H_1.00": "4.2833", "WBN_EN_L_0.75": "-2.6826", "WBN_EN_H_0.75": "3.1567", "WBN_LP_L_1.00": "-3.5822", "WBN_LP_L_0.75": "-2.6669", "XLogP": "4.954", "MW": "320.266", "WBN_LP_H_1.00": "3.9886", "WBN_LP_H_0.75": "3.037", "NumHBA": "2", "WBN_GC_H_0.50": "2.742", "WBN_EN_H_0.25": "2.4012", "WBN_EN_L_1.00": "-3.6", "WBN_GC_L_0.50": "-2.6012", "WBN_GC_L_0.25": "-2.3342", "WBN_LP_L_0.25": "-0.9068"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 3:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '4.1221'
+  Extent of the pertinent attribute(s): ["obj_9"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.25": "1.1528", "WBN_GC_H_0.50": "2.6606", "WBN_EN_L_0.25": "-0.8529", "WBN_EN_L_1.00": "-3.5282", "NumRot": "8", "WBN_GC_H_1.00": "4.1221", "WBN_GC_L_0.50": "-2.4932", "WBN_EN_H_1.00": "3.9423", "WBN_GC_L_0.25": "-2.3568", "NumHBD": "1", "WBN_GC_L_1.00": "-3.7603", "MW": "344.407", "BBB": "0", "WBN_EN_L_0.75": "-2.6291", "WBN_GC_L_0.75": "-3.0328", "WBN_LP_L_0.50": "-1.6981", "PSA": "76.74", "WBN_GC_H_0.25": "2.2433", "WBN_LP_H_0.50": "2.075", "WBN_LP_H_0.75": "3.0075", "WBN_LP_H_1.00": "3.9434", "WBN_LP_L_0.25": "-0.8717", "WBN_LP_L_0.75": "-2.5847", "WBN_EN_L_0.50": "-1.7353", "WBN_GC_H_0.75": "3.2686", "WBN_EN_H_0.50": "2.1273", "XLogP": "5.299", "NumHBA": "4", "WBN_EN_H_0.75": "3.0224", "WBN_LP_L_1.00": "-3.4836", "WBN_EN_H_0.25": "1.3219", "BadGroup": "0"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 4:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.4909'
+  Extent of the pertinent attribute(s): ["obj_10"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"BadGroup": "2", "WBN_LP_H_0.50": "1.9305", "XLogP": "3.054", "WBN_LP_L_0.25": "-0.9607", "WBN_GC_L_0.75": "-2.4446", "WBN_EN_H_0.50": "1.8576", "WBN_EN_L_0.75": "-2.3429", "WBN_EN_L_1.00": "-3.128", "WBN_LP_H_1.00": "3.5456", "MW": "447.369", "WBN_EN_H_1.00": "3.4306", "WBN_LP_H_0.25": "1.1486", "NumRot": "3", "NumHBA": "4", "WBN_GC_H_0.75": "2.7014", "NumHBD": "0", "BBB": "1", "WBN_LP_L_0.75": "-2.3846", "WBN_LP_L_1.00": "-3.1206", "WBN_GC_H_1.00": "3.4909", "WBN_GC_H_0.50": "1.9436", "WBN_GC_H_0.25": "1.2505", "WBN_EN_L_0.50": "-1.5587", "WBN_EN_L_0.25": "-0.7764", "WBN_LP_L_0.50": "-1.6595", "WBN_LP_H_0.75": "2.7346", "WBN_GC_L_1.00": "-3.134", "WBN_GC_L_0.25": "-1.5995", "WBN_GC_L_0.50": "-1.9376", "WBN_EN_H_0.75": "2.6272", "WBN_EN_H_0.25": "1.1992", "PSA": "68.28"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 5:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.8005'
+  Extent of the pertinent attribute(s): ["obj_6"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_1.00": "-2.9879", "WBN_GC_H_0.75": "3.0251", "NumHBD": "2", "WBN_EN_H_0.75": "2.7701", "WBN_EN_L_0.25": "-0.7119", "WBN_GC_H_0.50": "2.3933", "MW": "435.586", "WBN_LP_H_0.25": "1.001", "PSA": "120.94", "WBN_EN_H_0.25": "1.2422", "BadGroup": "0", "WBN_LP_H_1.00": "3.5526", "WBN_EN_H_1.00": "3.6162", "WBN_LP_H_0.75": "2.6945", "WBN_LP_L_0.25": "-0.877", "WBN_GC_L_0.75": "-2.629", "NumRot": "8", "WBN_LP_H_0.50": "1.8405", "WBN_EN_L_0.75": "-2.1779", "XLogP": "5.652", "WBN_GC_H_0.25": "1.9814", "WBN_GC_L_0.50": "-2.3829", "WBN_GC_L_0.25": "-2.2628", "WBN_GC_L_1.00": "-3.0576", "WBN_EN_H_0.50": "1.9496", "WBN_EN_L_1.00": "-2.92", "WBN_LP_L_0.50": "-1.557", "WBN_EN_L_0.50": "-1.4406", "BBB": "0", "WBN_LP_L_0.75": "-2.2626", "NumHBA": "6", "WBN_GC_H_1.00": "3.8005"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 6:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '4.379'
+  Extent of the pertinent attribute(s): ["obj_5"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.25": "1.1101", "WBN_GC_L_0.75": "-2.7671", "NumRot": "7", "NumHBA": "7", "WBN_LP_H_1.00": "3.8828", "WBN_EN_L_0.25": "-0.7758", "WBN_LP_L_0.75": "-2.7446", "BBB": "0", "WBN_GC_H_0.50": "2.7371", "WBN_LP_H_0.75": "2.9397", "PSA": "122.29", "WBN_GC_L_1.00": "-3.5578", "WBN_LP_L_0.50": "-1.8608", "WBN_GC_H_0.25": "2.279", "WBN_LP_L_0.25": "-1.0489", "WBN_GC_H_1.00": "4.379", "WBN_EN_L_0.50": "-1.5918", "WBN_LP_H_0.50": "2.0074", "WBN_EN_L_1.00": "-3.35", "NumHBD": "2", "MW": "488.422", "WBN_GC_H_0.75": "3.5045", "XLogP": "4.089", "WBN_EN_L_0.75": "-2.4609", "WBN_EN_H_0.50": "2.6759", "WBN_EN_H_1.00": "4.1802", "BadGroup": "0", "WBN_EN_H_0.75": "3.2619", "WBN_LP_L_1.00": "-3.6403", "WBN_GC_L_0.25": "-2.4154", "WBN_EN_H_0.25": "2.4015", "WBN_GC_L_0.50": "-2.5368"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 7:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.9734'
+  Extent of the pertinent attribute(s): ["obj_0"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_H_0.50": "2.3536", "WBN_LP_H_1.00": "3.8086", "XLogP": "4.924", "WBN_GC_H_0.25": "1.8819", "WBN_LP_L_0.25": "-0.885", "WBN_EN_L_0.75": "-2.5874", "WBN_GC_L_0.50": "-2.5208", "WBN_GC_L_0.75": "-2.7698", "WBN_GC_H_1.00": "3.9734", "WBN_EN_L_1.00": "-3.4677", "WBN_LP_H_0.75": "2.8987", "NumHBD": "1", "WBN_GC_L_0.25": "-2.3941", "WBN_LP_H_0.50": "1.9939", "WBN_GC_L_1.00": "-3.4568", "WBN_EN_L_0.50": "-1.7103", "WBN_EN_H_0.50": "2.0127", "WBN_LP_H_0.25": "1.1079", "BBB": "1", "WBN_EN_H_0.75": "2.8944", "NumRot": "6", "WBN_LP_L_1.00": "-3.4355", "BadGroup": "0", "WBN_LP_L_0.50": "-1.694", "NumHBA": "4", "PSA": "60.45", "WBN_EN_L_0.25": "-0.8412", "WBN_EN_H_0.25": "1.2385", "WBN_EN_H_1.00": "3.7962", "WBN_GC_H_0.75": "3.1048", "MW": "362.857", "WBN_LP_L_0.75": "-2.5592"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 8:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '4.081'
+  Extent of the pertinent attribute(s): ["obj_7"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "2.0459", "WBN_GC_L_0.75": "-2.7657", "WBN_LP_L_0.25": "-0.8799", "WBN_EN_L_0.25": "-0.7885", "XLogP": "4.922", "BadGroup": "1", "WBN_LP_H_0.75": "2.9696", "NumHBA": "4", "NumRot": "3", "NumHBD": "1", "WBN_LP_L_0.50": "-1.6394", "MW": "415.493", "WBN_GC_H_1.00": "4.081", "WBN_EN_H_1.00": "4.069", "WBN_GC_H_0.25": "1.6878", "WBN_EN_L_0.50": "-1.5931", "WBN_GC_H_0.50": "2.3744", "WBN_LP_L_1.00": "-3.2668", "WBN_EN_H_0.25": "1.4674", "WBN_LP_H_0.25": "1.1381", "WBN_EN_L_1.00": "-3.2278", "WBN_EN_L_0.75": "-2.4073", "WBN_LP_L_0.75": "-2.4447", "WBN_GC_L_0.50": "-2.5268", "PSA": "76.12", "WBN_EN_H_0.50": "2.2771", "BBB": "0", "WBN_GC_L_0.25": "-2.3987", "WBN_GC_H_0.75": "3.2023", "WBN_GC_L_1.00": "-3.4197", "WBN_EN_H_0.75": "3.1608", "WBN_LP_H_1.00": "3.8984"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 9:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.9377'
+  Extent of the pertinent attribute(s): ["obj_11"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_0.25": "-2.3987", "WBN_LP_L_0.25": "-0.8846", "MW": "328.412", "XLogP": "4.302", "PSA": "60.45", "WBN_GC_H_0.50": "2.3508", "NumRot": "6", "WBN_LP_H_0.50": "1.9739", "WBN_LP_H_0.25": "1.0886", "WBN_EN_H_0.25": "1.2365", "WBN_GC_L_0.75": "-2.7775", "WBN_EN_H_1.00": "3.7724", "WBN_EN_L_1.00": "-3.4515", "WBN_EN_L_0.25": "-0.8382", "WBN_LP_H_1.00": "3.7783", "NumHBD": "1", "BadGroup": "0", "WBN_GC_L_0.50": "-2.5266", "WBN_GC_L_1.00": "-3.46", "WBN_EN_L_0.50": "-1.7029", "WBN_EN_L_0.75": "-2.5755", "BBB": "1", "NumHBA": "4", "WBN_GC_H_1.00": "3.9377", "WBN_LP_L_1.00": "-3.4237", "WBN_EN_H_0.75": "2.8768", "WBN_LP_L_0.75": "-2.5517", "WBN_EN_H_0.50": "2.0021", "WBN_GC_H_0.25": "1.8818", "WBN_LP_L_0.50": "-1.6905", "WBN_GC_H_0.75": "3.0836", "WBN_LP_H_0.75": "2.8738"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 10:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.8454'
+  Extent of the pertinent attribute(s): ["obj_2"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.25": "1.0694", "MW": "376.459", "WBN_EN_H_0.50": "2.01", "WBN_GC_H_0.75": "3.0664", "NumHBD": "1", "WBN_EN_L_1.00": "-3.2077", "WBN_LP_L_0.75": "-2.395", "WBN_GC_L_0.50": "-1.8538", "WBN_LP_H_0.50": "1.8963", "WBN_GC_H_1.00": "3.8454", "NumRot": "3", "WBN_LP_L_0.25": "-0.878", "BadGroup": "1", "WBN_EN_L_0.75": "-2.4012", "WBN_EN_L_0.25": "-0.794", "NumHBA": "6", "XLogP": "1.399", "WBN_EN_H_0.75": "2.843", "WBN_LP_H_1.00": "3.6222", "WBN_GC_L_0.75": "-2.4116", "WBN_LP_L_0.50": "-1.6188", "WBN_GC_L_1.00": "-3.1338", "BBB": "0", "WBN_GC_H_0.50": "2.4877", "WBN_EN_H_0.25": "1.2701", "WBN_GC_H_0.25": "2.0782", "WBN_LP_H_0.75": "2.7538", "WBN_LP_L_1.00": "-3.1842", "WBN_EN_L_0.50": "-1.5962", "WBN_EN_H_1.00": "3.7018", "PSA": "103.22", "WBN_GC_L_0.25": "-1.4709"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 11:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.8043'
+  Extent of the pertinent attribute(s): ["obj_3"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.25": "-0.8036", "WBN_LP_L_0.50": "-1.5729", "WBN_LP_H_1.00": "3.7461", "WBN_EN_H_0.50": "1.9642", "WBN_EN_H_0.25": "1.2421", "WBN_EN_H_1.00": "3.6865", "WBN_LP_H_0.25": "1.1344", "WBN_LP_L_0.75": "-2.2973", "NumRot": "7", "NumHBA": "6", "WBN_LP_L_1.00": "-3.0552", "WBN_LP_L_0.25": "-0.9124", "WBN_EN_H_0.75": "2.8119", "WBN_EN_L_1.00": "-3.223", "WBN_EN_L_0.50": "-1.6093", "XLogP": "4.721", "WBN_GC_H_0.25": "1.9812", "WBN_GC_L_1.00": "-3.2212", "WBN_GC_L_0.25": "-1.4722", "WBN_GC_L_0.75": "-2.4193", "WBN_GC_H_1.00": "3.8043", "WBN_GC_H_0.50": "2.3885", "WBN_EN_L_0.75": "-2.4159", "WBN_GC_L_0.50": "-1.7911", "WBN_GC_H_0.75": "2.9938", "WBN_LP_H_0.75": "2.8646", "MW": "442.581", "WBN_LP_H_0.50": "1.9904", "BBB": "0", "BadGroup": "0", "NumHBD": "3", "PSA": "137.73"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 12:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.8418'
+  Extent of the pertinent attribute(s): ["obj_4"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_0.25": "-2.2448", "BadGroup": "0", "NumHBA": "6", "WBN_GC_L_1.00": "-3.1991", "WBN_GC_H_1.00": "3.8418", "WBN_EN_L_1.00": "-3.2035", "WBN_GC_H_0.50": "2.3951", "WBN_LP_L_1.00": "-3.0147", "WBN_EN_L_0.50": "-1.5995", "PSA": "120.94", "WBN_GC_H_0.25": "1.9814", "WBN_LP_H_0.75": "2.846", "WBN_EN_H_0.50": "1.9529", "WBN_GC_L_0.75": "-2.6219", "NumHBD": "2", "WBN_EN_H_0.25": "1.2426", "WBN_LP_L_0.50": "-1.557", "MW": "401.484", "WBN_EN_H_0.75": "2.7843", "WBN_EN_H_1.00": "3.6445", "WBN_LP_L_0.25": "-0.877", "WBN_EN_L_0.75": "-2.4012", "WBN_GC_L_0.50": "-2.3705", "WBN_LP_H_1.00": "3.7151", "XLogP": "3.912", "WBN_GC_H_0.75": "3.0475", "WBN_LP_L_0.75": "-2.2671", "WBN_EN_L_0.25": "-0.7988", "NumRot": "7", "WBN_LP_H_0.50": "1.9837", "BBB": "0", "WBN_LP_H_0.25": "1.1364"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 13:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '2.7701'
+  Extent of the pertinent attribute(s): ["obj_6"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"NumHBD": "2", "WBN_LP_H_0.50": "1.8405", "BBB": "0", "WBN_GC_H_0.25": "1.9814", "NumRot": "8", "WBN_EN_L_0.50": "-1.4406", "MW": "435.586", "WBN_LP_L_0.75": "-2.2626", "WBN_GC_H_0.75": "3.0251", "WBN_GC_L_1.00": "-3.0576", "PSA": "120.94", "NumHBA": "6", "WBN_GC_L_0.75": "-2.629", "WBN_LP_L_1.00": "-2.9879", "WBN_GC_H_0.50": "2.3933", "BadGroup": "0", "XLogP": "5.652", "WBN_EN_H_0.50": "1.9496", "WBN_EN_L_0.75": "-2.1779", "WBN_LP_L_0.50": "-1.557", "WBN_GC_L_0.50": "-2.3829", "WBN_LP_H_1.00": "3.5526", "WBN_LP_H_0.25": "1.001", "WBN_GC_H_1.00": "3.8005", "WBN_EN_L_1.00": "-2.92", "WBN_EN_H_1.00": "3.6162", "WBN_LP_H_0.75": "2.6945", "WBN_GC_L_0.25": "-2.2628", "WBN_LP_L_0.25": "-0.877", "WBN_EN_H_0.25": "1.2422", "WBN_EN_L_0.25": "-0.7119", "WBN_EN_H_0.75": "2.7701"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 14:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '2.7843'
+  Extent of the pertinent attribute(s): ["obj_4"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_1.00": "3.6445", "WBN_LP_L_1.00": "-3.0147", "NumRot": "7", "WBN_LP_L_0.50": "-1.557", "WBN_EN_L_0.25": "-0.7988", "WBN_EN_L_0.75": "-2.4012", "NumHBA": "6", "WBN_GC_L_0.75": "-2.6219", "MW": "401.484", "BBB": "0", "PSA": "120.94", "BadGroup": "0", "WBN_LP_H_0.75": "2.846", "WBN_LP_H_1.00": "3.7151", "WBN_GC_H_0.75": "3.0475", "WBN_GC_L_1.00": "-3.1991", "WBN_LP_L_0.25": "-0.877", "WBN_LP_H_0.25": "1.1364", "NumHBD": "2", "WBN_GC_L_0.25": "-2.2448", "WBN_EN_H_0.25": "1.2426", "WBN_EN_L_0.50": "-1.5995", "WBN_GC_H_1.00": "3.8418", "WBN_EN_H_0.50": "1.9529", "WBN_EN_H_0.75": "2.7843", "WBN_LP_L_0.75": "-2.2671", "WBN_GC_H_0.50": "2.3951", "XLogP": "3.912", "WBN_LP_H_0.50": "1.9837", "WBN_GC_L_0.50": "-2.3705", "WBN_EN_L_1.00": "-3.2035", "WBN_GC_H_0.25": "1.9814"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 15:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '3.0224'
+  Extent of the pertinent attribute(s): ["obj_9"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"XLogP": "5.299", "WBN_GC_H_1.00": "4.1221", "WBN_EN_H_1.00": "3.9423", "NumRot": "8", "BadGroup": "0", "WBN_LP_L_0.25": "-0.8717", "WBN_LP_H_0.75": "3.0075", "WBN_GC_H_0.25": "2.2433", "WBN_EN_H_0.75": "3.0224", "WBN_LP_H_1.00": "3.9434", "WBN_LP_H_0.50": "2.075", "WBN_LP_L_1.00": "-3.4836", "WBN_EN_L_0.75": "-2.6291", "WBN_GC_L_0.25": "-2.3568", "WBN_GC_L_0.50": "-2.4932", "WBN_GC_H_0.75": "3.2686", "BBB": "0", "WBN_GC_L_0.75": "-3.0328", "WBN_LP_L_0.75": "-2.5847", "WBN_EN_L_0.50": "-1.7353", "WBN_EN_H_0.25": "1.3219", "WBN_GC_L_1.00": "-3.7603", "NumHBA": "4", "WBN_EN_L_0.25": "-0.8529", "WBN_EN_H_0.50": "2.1273", "WBN_LP_H_0.25": "1.1528", "PSA": "76.74", "MW": "344.407", "NumHBD": "1", "WBN_GC_H_0.50": "2.6606", "WBN_LP_L_0.50": "-1.6981", "WBN_EN_L_1.00": "-3.5282"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 16:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '2.6272'
+  Extent of the pertinent attribute(s): ["obj_10"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.128", "WBN_EN_H_1.00": "3.4306", "BBB": "1", "NumHBA": "4", "WBN_LP_L_0.25": "-0.9607", "BadGroup": "2", "WBN_EN_L_0.25": "-0.7764", "WBN_GC_L_0.25": "-1.5995", "WBN_EN_L_0.50": "-1.5587", "WBN_EN_H_0.75": "2.6272", "WBN_LP_H_1.00": "3.5456", "WBN_LP_L_1.00": "-3.1206", "WBN_GC_H_0.50": "1.9436", "WBN_GC_H_1.00": "3.4909", "WBN_LP_H_0.25": "1.1486", "WBN_LP_L_0.75": "-2.3846", "XLogP": "3.054", "MW": "447.369", "PSA": "68.28", "WBN_GC_L_0.75": "-2.4446", "NumRot": "3", "WBN_EN_H_0.50": "1.8576", "WBN_LP_L_0.50": "-1.6595", "WBN_LP_H_0.50": "1.9305", "WBN_GC_H_0.75": "2.7014", "WBN_LP_H_0.75": "2.7346", "WBN_EN_L_0.75": "-2.3429", "WBN_EN_H_0.25": "1.1992", "WBN_GC_H_0.25": "1.2505", "WBN_GC_L_1.00": "-3.134", "NumHBD": "0", "WBN_GC_L_0.50": "-1.9376"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 17:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '3.2619'
+  Extent of the pertinent attribute(s): ["obj_5"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"XLogP": "4.089", "WBN_GC_H_0.25": "2.279", "NumRot": "7", "WBN_GC_H_0.75": "3.5045", "BadGroup": "0", "NumHBA": "7", "WBN_GC_H_1.00": "4.379", "WBN_LP_L_0.25": "-1.0489", "WBN_LP_L_1.00": "-3.6403", "WBN_GC_L_0.75": "-2.7671", "WBN_EN_H_0.75": "3.2619", "WBN_LP_L_0.75": "-2.7446", "WBN_GC_L_0.50": "-2.5368", "WBN_EN_L_0.75": "-2.4609", "PSA": "122.29", "WBN_EN_L_0.50": "-1.5918", "WBN_LP_H_1.00": "3.8828", "NumHBD": "2", "BBB": "0", "WBN_EN_H_0.25": "2.4015", "WBN_EN_H_1.00": "4.1802", "WBN_LP_H_0.25": "1.1101", "WBN_LP_H_0.50": "2.0074", "WBN_EN_L_0.25": "-0.7758", "WBN_LP_H_0.75": "2.9397", "WBN_EN_H_0.50": "2.6759", "MW": "488.422", "WBN_GC_L_1.00": "-3.5578", "WBN_LP_L_0.50": "-1.8608", "WBN_GC_H_0.50": "2.7371", "WBN_EN_L_1.00": "-3.35", "WBN_GC_L_0.25": "-2.4154"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 18:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '2.843'
+  Extent of the pertinent attribute(s): ["obj_2"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_1.00": "3.6222", "WBN_EN_H_0.50": "2.01", "WBN_GC_H_0.50": "2.4877", "PSA": "103.22", "XLogP": "1.399", "WBN_EN_H_0.75": "2.843", "WBN_EN_H_0.25": "1.2701", "NumHBD": "1", "WBN_LP_L_0.75": "-2.395", "WBN_EN_L_0.50": "-1.5962", "WBN_LP_L_0.50": "-1.6188", "BadGroup": "1", "WBN_EN_H_1.00": "3.7018", "WBN_LP_H_0.25": "1.0694", "WBN_EN_L_0.75": "-2.4012", "NumRot": "3", "NumHBA": "6", "WBN_GC_L_1.00": "-3.1338", "WBN_GC_H_1.00": "3.8454", "WBN_GC_L_0.50": "-1.8538", "WBN_LP_H_0.75": "2.7538", "WBN_GC_L_0.75": "-2.4116", "MW": "376.459", "WBN_EN_L_1.00": "-3.2077", "WBN_GC_H_0.25": "2.0782", "WBN_GC_H_0.75": "3.0664", "WBN_EN_L_0.25": "-0.794", "WBN_LP_L_0.25": "-0.878", "WBN_LP_H_0.50": "1.8963", "WBN_LP_L_1.00": "-3.1842", "WBN_GC_L_0.25": "-1.4709", "BBB": "0"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 19:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '2.8768'
+  Extent of the pertinent attribute(s): ["obj_11"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_0.25": "-0.8846", "PSA": "60.45", "WBN_EN_L_0.25": "-0.8382", "WBN_GC_L_1.00": "-3.46", "WBN_GC_L_0.75": "-2.7775", "WBN_LP_H_0.75": "2.8738", "WBN_LP_H_1.00": "3.7783", "WBN_EN_L_0.75": "-2.5755", "WBN_GC_L_0.50": "-2.5266", "WBN_GC_L_0.25": "-2.3987", "WBN_LP_H_0.25": "1.0886", "WBN_EN_H_1.00": "3.7724", "WBN_GC_H_0.25": "1.8818", "WBN_GC_H_1.00": "3.9377", "WBN_LP_L_0.50": "-1.6905", "NumHBD": "1", "WBN_EN_H_0.75": "2.8768", "BBB": "1", "NumRot": "6", "NumHBA": "4", "WBN_EN_L_1.00": "-3.4515", "WBN_LP_L_1.00": "-3.4237", "XLogP": "4.302", "WBN_LP_H_0.50": "1.9739", "MW": "328.412", "WBN_GC_H_0.50": "2.3508", "WBN_EN_H_0.50": "2.0021", "WBN_GC_H_0.75": "3.0836", "BadGroup": "0", "WBN_LP_L_0.75": "-2.5517", "WBN_EN_H_0.25": "1.2365", "WBN_EN_L_0.50": "-1.7029"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 20:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '2.9274'
+  Extent of the pertinent attribute(s): ["obj_8"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.75": "-2.4406", "WBN_LP_H_0.25": "1.4337", "BBB": "1", "WBN_EN_H_1.00": "3.7339", "WBN_EN_L_1.00": "-3.2675", "WBN_LP_H_0.75": "2.865", "WBN_LP_L_1.00": "-3.2289", "NumRot": "3", "WBN_GC_H_1.00": "3.913", "WBN_EN_L_0.25": "-0.8001", "WBN_GC_H_0.25": "2.0952", "WBN_LP_H_1.00": "3.7213", "WBN_GC_L_0.50": "-1.6319", "WBN_LP_L_0.50": "-1.5954", "WBN_GC_L_1.00": "-3.1309", "NumHBA": "6", "WBN_GC_L_0.75": "-2.336", "WBN_GC_L_0.25": "-1.3097", "WBN_LP_L_0.75": "-2.4062", "WBN_LP_L_0.25": "-0.8413", "WBN_EN_H_0.50": "2.19", "WBN_EN_H_0.75": "2.9274", "XLogP": "5.264", "WBN_GC_H_0.50": "2.5105", "PSA": "66.4", "BadGroup": "1", "WBN_GC_H_0.75": "3.1396", "WBN_LP_H_0.50": "2.0515", "NumHBD": "2", "WBN_EN_L_0.50": "-1.617", "WBN_EN_H_0.25": "1.5206", "MW": "370.792"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 21:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '3.1567'
+  Extent of the pertinent attribute(s): ["obj_1"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.6", "WBN_LP_L_0.50": "-1.7613", "WBN_GC_H_0.25": "2.3811", "WBN_EN_H_0.50": "2.6741", "WBN_EN_L_0.75": "-2.6826", "WBN_LP_L_1.00": "-3.5822", "WBN_LP_H_1.00": "3.9886", "WBN_GC_H_1.00": "4.2833", "WBN_GC_H_0.50": "2.742", "WBN_LP_L_0.25": "-0.9068", "NumRot": "2", "MW": "320.266", "WBN_GC_L_1.00": "-3.736", "WBN_EN_L_0.50": "-1.7694", "WBN_EN_H_0.25": "2.4012", "WBN_EN_L_0.25": "-0.8664", "WBN_GC_L_0.75": "-3.0632", "WBN_GC_L_0.25": "-2.3342", "WBN_LP_H_0.50": "2.0906", "NumHBD": "1", "PSA": "50.44", "WBN_EN_H_0.75": "3.1567", "WBN_LP_H_0.25": "1.1629", "WBN_GC_L_0.50": "-2.6012", "NumHBA": "2", "WBN_GC_H_0.75": "3.4052", "WBN_EN_H_1.00": "4.0094", "WBN_LP_H_0.75": "3.037", "BadGroup": "0", "XLogP": "4.954", "WBN_LP_L_0.75": "-2.6669", "BBB": "1"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 22:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '2.8944'
+  Extent of the pertinent attribute(s): ["obj_0"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_0.25": "-2.3941", "WBN_EN_L_0.25": "-0.8412", "WBN_EN_H_0.75": "2.8944", "XLogP": "4.924", "WBN_GC_H_0.50": "2.3536", "BadGroup": "0", "WBN_GC_L_1.00": "-3.4568", "WBN_EN_L_0.75": "-2.5874", "WBN_EN_H_0.50": "2.0127", "WBN_GC_L_0.50": "-2.5208", "WBN_GC_L_0.75": "-2.7698", "NumHBD": "1", "WBN_LP_L_0.50": "-1.694", "WBN_LP_L_1.00": "-3.4355", "WBN_LP_H_1.00": "3.8086", "WBN_EN_L_1.00": "-3.4677", "WBN_LP_H_0.25": "1.1079", "WBN_LP_L_0.75": "-2.5592", "WBN_GC_H_0.25": "1.8819", "WBN_LP_H_0.50": "1.9939", "WBN_EN_L_0.50": "-1.7103", "NumHBA": "4", "BBB": "1", "WBN_EN_H_0.25": "1.2385", "PSA": "60.45", "WBN_GC_H_0.75": "3.1048", "WBN_LP_L_0.25": "-0.885", "NumRot": "6", "WBN_GC_H_1.00": "3.9734", "WBN_EN_H_1.00": "3.7962", "WBN_LP_H_0.75": "2.8987", "MW": "362.857"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 23:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '2.8119'
+  Extent of the pertinent attribute(s): ["obj_3"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.25": "1.1344", "WBN_LP_H_1.00": "3.7461", "WBN_LP_L_0.75": "-2.2973", "WBN_GC_H_0.25": "1.9812", "NumRot": "7", "WBN_GC_H_1.00": "3.8043", "WBN_EN_H_1.00": "3.6865", "BadGroup": "0", "WBN_GC_H_0.50": "2.3885", "NumHBA": "6", "WBN_EN_H_0.75": "2.8119", "WBN_EN_H_0.25": "1.2421", "XLogP": "4.721", "WBN_GC_L_0.50": "-1.7911", "NumHBD": "3", "WBN_EN_L_0.50": "-1.6093", "WBN_EN_H_0.50": "1.9642", "BBB": "0", "WBN_GC_L_0.25": "-1.4722", "WBN_LP_L_0.50": "-1.5729", "WBN_LP_H_0.50": "1.9904", "PSA": "137.73", "WBN_GC_L_0.75": "-2.4193", "WBN_EN_L_1.00": "-3.223", "WBN_LP_H_0.75": "2.8646", "MW": "442.581", "WBN_EN_L_0.25": "-0.8036", "WBN_LP_L_0.25": "-0.9124", "WBN_GC_L_1.00": "-3.2212", "WBN_EN_L_0.75": "-2.4159", "WBN_GC_H_0.75": "2.9938", "WBN_LP_L_1.00": "-3.0552"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 24:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '3.1608'
+  Extent of the pertinent attribute(s): ["obj_7"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.25": "1.4674", "WBN_EN_H_0.75": "3.1608", "WBN_LP_L_0.50": "-1.6394", "MW": "415.493", "BBB": "0", "WBN_GC_L_0.50": "-2.5268", "XLogP": "4.922", "WBN_GC_H_0.25": "1.6878", "WBN_LP_L_1.00": "-3.2668", "WBN_GC_H_0.50": "2.3744", "WBN_GC_L_1.00": "-3.4197", "WBN_GC_H_1.00": "4.081", "WBN_LP_H_0.50": "2.0459", "WBN_GC_L_0.75": "-2.7657", "WBN_EN_L_0.75": "-2.4073", "BadGroup": "1", "NumRot": "3", "WBN_EN_H_0.50": "2.2771", "NumHBA": "4", "WBN_LP_H_0.25": "1.1381", "PSA": "76.12", "WBN_EN_L_0.25": "-0.7885", "NumHBD": "1", "WBN_EN_L_1.00": "-3.2278", "WBN_GC_L_0.25": "-2.3987", "WBN_LP_L_0.25": "-0.8799", "WBN_LP_H_1.00": "3.8984", "WBN_EN_L_0.50": "-1.5931", "WBN_GC_H_0.75": "3.2023", "WBN_LP_L_0.75": "-2.4447", "WBN_EN_H_1.00": "4.069", "WBN_LP_H_0.75": "2.9696"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 25:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.2077'
+  Extent of the pertinent attribute(s): ["obj_2"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"XLogP": "1.399", "WBN_GC_H_0.25": "2.0782", "WBN_LP_H_0.25": "1.0694", "WBN_EN_H_1.00": "3.7018", "WBN_LP_L_0.25": "-0.878", "NumRot": "3", "WBN_GC_L_1.00": "-3.1338", "BBB": "0", "NumHBA": "6", "WBN_EN_L_0.50": "-1.5962", "WBN_EN_H_0.75": "2.843", "WBN_LP_H_0.50": "1.8963", "WBN_GC_L_0.25": "-1.4709", "WBN_EN_H_0.50": "2.01", "WBN_LP_L_1.00": "-3.1842", "WBN_GC_H_0.50": "2.4877", "WBN_EN_L_0.75": "-2.4012", "WBN_LP_L_0.75": "-2.395", "MW": "376.459", "WBN_GC_L_0.50": "-1.8538", "WBN_GC_L_0.75": "-2.4116", "WBN_EN_L_0.25": "-0.794", "WBN_LP_H_1.00": "3.6222", "WBN_GC_H_1.00": "3.8454", "PSA": "103.22", "NumHBD": "1", "WBN_EN_L_1.00": "-3.2077", "BadGroup": "1", "WBN_GC_H_0.75": "3.0664", "WBN_EN_H_0.25": "1.2701", "WBN_LP_L_0.50": "-1.6188", "WBN_LP_H_0.75": "2.7538"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 26:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-2.92'
+  Extent of the pertinent attribute(s): ["obj_6"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_1.00": "3.6162", "NumHBD": "2", "WBN_GC_L_1.00": "-3.0576", "WBN_EN_L_0.50": "-1.4406", "WBN_GC_H_0.25": "1.9814", "WBN_GC_L_0.50": "-2.3829", "WBN_EN_H_0.75": "2.7701", "WBN_LP_H_0.25": "1.001", "WBN_LP_L_1.00": "-2.9879", "WBN_LP_L_0.25": "-0.877", "MW": "435.586", "WBN_EN_L_0.25": "-0.7119", "WBN_GC_H_1.00": "3.8005", "PSA": "120.94", "WBN_GC_H_0.75": "3.0251", "BBB": "0", "WBN_LP_H_1.00": "3.5526", "NumRot": "8", "WBN_LP_L_0.75": "-2.2626", "NumHBA": "6", "WBN_LP_H_0.75": "2.6945", "BadGroup": "0", "WBN_GC_L_0.25": "-2.2628", "WBN_EN_H_0.25": "1.2422", "WBN_EN_L_1.00": "-2.92", "XLogP": "5.652", "WBN_GC_L_0.75": "-2.629", "WBN_LP_L_0.50": "-1.557", "WBN_LP_H_0.50": "1.8405", "WBN_EN_H_0.50": "1.9496", "WBN_EN_L_0.75": "-2.1779", "WBN_GC_H_0.50": "2.3933"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 27:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.2675'
+  Extent of the pertinent attribute(s): ["obj_8"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.75": "2.9274", "WBN_LP_L_1.00": "-3.2289", "WBN_LP_H_0.75": "2.865", "WBN_EN_L_1.00": "-3.2675", "BBB": "1", "WBN_LP_H_1.00": "3.7213", "WBN_GC_L_0.75": "-2.336", "BadGroup": "1", "MW": "370.792", "WBN_EN_L_0.75": "-2.4406", "WBN_EN_H_0.25": "1.5206", "NumRot": "3", "WBN_GC_H_1.00": "3.913", "WBN_LP_L_0.50": "-1.5954", "XLogP": "5.264", "WBN_EN_H_0.50": "2.19", "NumHBD": "2", "WBN_GC_H_0.75": "3.1396", "WBN_GC_L_0.25": "-1.3097", "WBN_LP_H_0.25": "1.4337", "WBN_EN_L_0.50": "-1.617", "WBN_LP_H_0.50": "2.0515", "WBN_GC_L_1.00": "-3.1309", "NumHBA": "6", "WBN_GC_H_0.25": "2.0952", "WBN_GC_L_0.50": "-1.6319", "WBN_EN_H_1.00": "3.7339", "WBN_EN_L_0.25": "-0.8001", "PSA": "66.4", "WBN_GC_H_0.50": "2.5105", "WBN_LP_L_0.75": "-2.4062", "WBN_LP_L_0.25": "-0.8413"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 28:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.5282'
+  Extent of the pertinent attribute(s): ["obj_9"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_H_1.00": "4.1221", "WBN_GC_L_0.25": "-2.3568", "WBN_EN_L_0.50": "-1.7353", "BBB": "0", "WBN_EN_L_0.25": "-0.8529", "WBN_GC_H_0.50": "2.6606", "NumHBA": "4", "WBN_GC_L_0.75": "-3.0328", "XLogP": "5.299", "MW": "344.407", "WBN_EN_L_0.75": "-2.6291", "PSA": "76.74", "WBN_EN_L_1.00": "-3.5282", "WBN_LP_L_1.00": "-3.4836", "WBN_EN_H_0.50": "2.1273", "WBN_EN_H_1.00": "3.9423", "WBN_GC_L_1.00": "-3.7603", "WBN_LP_L_0.50": "-1.6981", "BadGroup": "0", "WBN_GC_H_0.75": "3.2686", "NumRot": "8", "WBN_GC_H_0.25": "2.2433", "WBN_LP_H_0.50": "2.075", "WBN_LP_L_0.75": "-2.5847", "WBN_LP_L_0.25": "-0.8717", "WBN_LP_H_0.25": "1.1528", "WBN_EN_H_0.75": "3.0224", "WBN_GC_L_0.50": "-2.4932", "NumHBD": "1", "WBN_LP_H_0.75": "3.0075", "WBN_LP_H_1.00": "3.9434", "WBN_EN_H_0.25": "1.3219"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 29:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.2035'
+  Extent of the pertinent attribute(s): ["obj_4"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.2035", "WBN_GC_L_0.25": "-2.2448", "NumHBA": "6", "WBN_GC_H_0.75": "3.0475", "WBN_EN_L_0.25": "-0.7988", "WBN_GC_L_1.00": "-3.1991", "PSA": "120.94", "WBN_GC_L_0.75": "-2.6219", "WBN_LP_H_0.50": "1.9837", "NumRot": "7", "WBN_GC_H_0.25": "1.9814", "WBN_LP_L_0.25": "-0.877", "BadGroup": "0", "WBN_GC_H_1.00": "3.8418", "WBN_EN_H_0.50": "1.9529", "WBN_LP_H_0.75": "2.846", "MW": "401.484", "BBB": "0", "WBN_EN_L_0.75": "-2.4012", "WBN_EN_H_0.75": "2.7843", "XLogP": "3.912", "NumHBD": "2", "WBN_LP_H_0.25": "1.1364", "WBN_LP_H_1.00": "3.7151", "WBN_EN_H_0.25": "1.2426", "WBN_GC_H_0.50": "2.3951", "WBN_EN_H_1.00": "3.6445", "WBN_LP_L_0.75": "-2.2671", "WBN_LP_L_1.00": "-3.0147", "WBN_GC_L_0.50": "-2.3705", "WBN_LP_L_0.50": "-1.557", "WBN_EN_L_0.50": "-1.5995"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 30:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.2278'
+  Extent of the pertinent attribute(s): ["obj_7"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.2278", "WBN_LP_L_1.00": "-3.2668", "WBN_GC_L_0.75": "-2.7657", "WBN_EN_L_0.75": "-2.4073", "WBN_EN_H_0.75": "3.1608", "WBN_GC_H_0.25": "1.6878", "WBN_LP_L_0.50": "-1.6394", "MW": "415.493", "WBN_GC_L_1.00": "-3.4197", "WBN_GC_L_0.50": "-2.5268", "NumHBA": "4", "WBN_GC_H_0.50": "2.3744", "WBN_EN_L_0.50": "-1.5931", "WBN_LP_H_1.00": "3.8984", "XLogP": "4.922", "NumRot": "3", "WBN_LP_L_0.75": "-2.4447", "WBN_EN_L_0.25": "-0.7885", "WBN_LP_H_0.50": "2.0459", "WBN_LP_L_0.25": "-0.8799", "WBN_EN_H_0.50": "2.2771", "WBN_GC_H_1.00": "4.081", "BBB": "0", "BadGroup": "1", "WBN_GC_H_0.75": "3.2023", "WBN_EN_H_0.25": "1.4674", "WBN_LP_H_0.25": "1.1381", "WBN_LP_H_0.75": "2.9696", "NumHBD": "1", "WBN_GC_L_0.25": "-2.3987", "WBN_EN_H_1.00": "4.069", "PSA": "76.12"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 31:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.128'
+  Extent of the pertinent attribute(s): ["obj_10"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.128", "WBN_GC_H_1.00": "3.4909", "WBN_LP_H_0.50": "1.9305", "WBN_GC_H_0.25": "1.2505", "WBN_LP_L_0.25": "-0.9607", "MW": "447.369", "WBN_LP_L_0.75": "-2.3846", "WBN_GC_L_0.50": "-1.9376", "XLogP": "3.054", "WBN_EN_L_0.50": "-1.5587", "WBN_LP_H_0.25": "1.1486", "WBN_LP_L_0.50": "-1.6595", "WBN_GC_H_0.75": "2.7014", "WBN_GC_H_0.50": "1.9436", "WBN_LP_H_1.00": "3.5456", "NumHBA": "4", "PSA": "68.28", "WBN_GC_L_0.75": "-2.4446", "WBN_EN_L_0.75": "-2.3429", "WBN_LP_L_1.00": "-3.1206", "WBN_EN_H_0.50": "1.8576", "WBN_EN_H_0.25": "1.1992", "NumHBD": "0", "WBN_EN_H_0.75": "2.6272", "WBN_GC_L_1.00": "-3.134", "BadGroup": "2", "WBN_GC_L_0.25": "-1.5995", "WBN_EN_H_1.00": "3.4306", "BBB": "1", "WBN_EN_L_0.25": "-0.7764", "WBN_LP_H_0.75": "2.7346", "NumRot": "3"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 32:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.35'
+  Extent of the pertinent attribute(s): ["obj_5"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.35", "WBN_GC_L_1.00": "-3.5578", "WBN_LP_H_0.75": "2.9397", "WBN_EN_H_0.25": "2.4015", "WBN_LP_L_0.25": "-1.0489", "WBN_EN_L_0.75": "-2.4609", "WBN_EN_L_0.25": "-0.7758", "WBN_LP_H_0.25": "1.1101", "NumHBD": "2", "MW": "488.422", "WBN_GC_H_1.00": "4.379", "WBN_LP_H_1.00": "3.8828", "WBN_EN_H_1.00": "4.1802", "WBN_EN_L_0.50": "-1.5918", "WBN_GC_L_0.50": "-2.5368", "WBN_GC_H_0.25": "2.279", "WBN_GC_L_0.75": "-2.7671", "WBN_GC_H_0.50": "2.7371", "WBN_LP_L_0.50": "-1.8608", "WBN_EN_H_0.50": "2.6759", "WBN_LP_L_0.75": "-2.7446", "BadGroup": "0", "PSA": "122.29", "NumHBA": "7", "WBN_EN_H_0.75": "3.2619", "BBB": "0", "WBN_LP_L_1.00": "-3.6403", "NumRot": "7", "WBN_GC_L_0.25": "-2.4154", "WBN_GC_H_0.75": "3.5045", "WBN_LP_H_0.50": "2.0074", "XLogP": "4.089"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 33:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.6'
+  Extent of the pertinent attribute(s): ["obj_1"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.75": "3.1567", "WBN_EN_L_0.25": "-0.8664", "WBN_LP_H_1.00": "3.9886", "WBN_LP_H_0.50": "2.0906", "WBN_EN_H_0.25": "2.4012", "WBN_LP_H_0.75": "3.037", "WBN_LP_H_0.25": "1.1629", "WBN_EN_L_0.50": "-1.7694", "WBN_LP_L_0.25": "-0.9068", "NumHBD": "1", "WBN_GC_H_1.00": "4.2833", "WBN_LP_L_0.75": "-2.6669", "WBN_GC_L_0.25": "-2.3342", "MW": "320.266", "WBN_GC_H_0.50": "2.742", "WBN_GC_L_0.75": "-3.0632", "WBN_EN_H_1.00": "4.0094", "WBN_EN_L_0.75": "-2.6826", "WBN_LP_L_0.50": "-1.7613", "PSA": "50.44", "WBN_GC_H_0.25": "2.3811", "WBN_EN_H_0.50": "2.6741", "WBN_EN_L_1.00": "-3.6", "NumHBA": "2", "BadGroup": "0", "WBN_LP_L_1.00": "-3.5822", "XLogP": "4.954", "WBN_GC_L_0.50": "-2.6012", "NumRot": "2", "BBB": "1", "WBN_GC_H_0.75": "3.4052", "WBN_GC_L_1.00": "-3.736"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 34:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.4515'
+  Extent of the pertinent attribute(s): ["obj_11"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.75": "2.8768", "WBN_LP_L_0.25": "-0.8846", "WBN_EN_L_0.50": "-1.7029", "NumHBD": "1", "WBN_GC_L_1.00": "-3.46", "WBN_GC_L_0.75": "-2.7775", "NumRot": "6", "WBN_GC_H_0.25": "1.8818", "WBN_LP_H_0.50": "1.9739", "WBN_GC_L_0.50": "-2.5266", "WBN_EN_H_0.50": "2.0021", "WBN_EN_L_0.75": "-2.5755", "NumHBA": "4", "WBN_LP_H_0.75": "2.8738", "WBN_LP_L_0.50": "-1.6905", "WBN_GC_L_0.25": "-2.3987", "WBN_LP_L_1.00": "-3.4237", "WBN_EN_L_1.00": "-3.4515", "WBN_EN_H_0.25": "1.2365", "WBN_LP_H_0.25": "1.0886", "WBN_GC_H_1.00": "3.9377", "WBN_LP_H_1.00": "3.7783", "XLogP": "4.302", "WBN_EN_H_1.00": "3.7724", "WBN_LP_L_0.75": "-2.5517", "WBN_EN_L_0.25": "-0.8382", "WBN_GC_H_0.75": "3.0836", "PSA": "60.45", "MW": "328.412", "BadGroup": "0", "BBB": "1", "WBN_GC_H_0.50": "2.3508"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 35:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.4677'
+  Extent of the pertinent attribute(s): ["obj_0"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_1.00": "3.7962", "WBN_LP_H_0.50": "1.9939", "WBN_LP_H_0.75": "2.8987", "WBN_GC_H_1.00": "3.9734", "PSA": "60.45", "NumHBA": "4", "WBN_LP_L_0.25": "-0.885", "WBN_LP_H_0.25": "1.1079", "WBN_LP_L_1.00": "-3.4355", "WBN_GC_L_0.50": "-2.5208", "WBN_LP_H_1.00": "3.8086", "NumHBD": "1", "BadGroup": "0", "WBN_GC_H_0.75": "3.1048", "WBN_EN_H_0.25": "1.2385", "MW": "362.857", "WBN_EN_L_1.00": "-3.4677", "WBN_LP_L_0.75": "-2.5592", "WBN_GC_H_0.50": "2.3536", "WBN_EN_L_0.25": "-0.8412", "WBN_GC_L_0.75": "-2.7698", "WBN_EN_H_0.75": "2.8944", "NumRot": "6", "WBN_EN_L_0.75": "-2.5874", "WBN_LP_L_0.50": "-1.694", "WBN_GC_H_0.25": "1.8819", "XLogP": "4.924", "WBN_EN_L_0.50": "-1.7103", "WBN_GC_L_1.00": "-3.4568", "WBN_GC_L_0.25": "-2.3941", "WBN_EN_H_0.50": "2.0127", "BBB": "1"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 36:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.223'
+  Extent of the pertinent attribute(s): ["obj_3"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_1.00": "-3.2212", "NumRot": "7", "WBN_LP_H_0.25": "1.1344", "MW": "442.581", "WBN_LP_L_0.25": "-0.9124", "NumHBD": "3", "WBN_EN_H_1.00": "3.6865", "WBN_GC_L_0.25": "-1.4722", "WBN_GC_L_0.50": "-1.7911", "WBN_EN_H_0.75": "2.8119", "BadGroup": "0", "PSA": "137.73", "XLogP": "4.721", "WBN_EN_H_0.25": "1.2421", "WBN_GC_H_0.50": "2.3885", "WBN_LP_H_1.00": "3.7461", "WBN_GC_L_0.75": "-2.4193", "WBN_GC_H_0.75": "2.9938", "WBN_LP_L_0.50": "-1.5729", "WBN_EN_L_0.75": "-2.4159", "BBB": "0", "WBN_GC_H_1.00": "3.8043", "WBN_EN_L_0.50": "-1.6093", "WBN_EN_L_0.25": "-0.8036", "WBN_GC_H_0.25": "1.9812", "WBN_EN_H_0.50": "1.9642", "WBN_EN_L_1.00": "-3.223", "NumHBA": "6", "WBN_LP_L_1.00": "-3.0552", "WBN_LP_H_0.50": "1.9904", "WBN_LP_H_0.75": "2.8646", "WBN_LP_L_0.75": "-2.2973"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 37:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.4306'
+  Extent of the pertinent attribute(s): ["obj_10"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_0.25": "-0.9607", "XLogP": "3.054", "PSA": "68.28", "WBN_GC_L_0.50": "-1.9376", "BBB": "1", "WBN_LP_L_0.50": "-1.6595", "WBN_GC_H_0.50": "1.9436", "WBN_EN_H_1.00": "3.4306", "WBN_GC_L_0.25": "-1.5995", "WBN_LP_L_1.00": "-3.1206", "NumHBA": "4", "WBN_EN_L_1.00": "-3.128", "WBN_GC_L_0.75": "-2.4446", "WBN_LP_H_0.50": "1.9305", "WBN_GC_H_1.00": "3.4909", "WBN_LP_H_0.75": "2.7346", "WBN_GC_H_0.75": "2.7014", "WBN_EN_H_0.25": "1.1992", "WBN_LP_H_0.25": "1.1486", "WBN_LP_H_1.00": "3.5456", "MW": "447.369", "NumHBD": "0", "WBN_EN_H_0.75": "2.6272", "WBN_EN_L_0.25": "-0.7764", "WBN_EN_L_0.75": "-2.3429", "WBN_EN_L_0.50": "-1.5587", "WBN_GC_H_0.25": "1.2505", "BadGroup": "2", "WBN_EN_H_0.50": "1.8576", "WBN_GC_L_1.00": "-3.134", "WBN_LP_L_0.75": "-2.3846", "NumRot": "3"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 38:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.6445'
+  Extent of the pertinent attribute(s): ["obj_4"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_1.00": "3.7151", "WBN_EN_L_1.00": "-3.2035", "WBN_LP_H_0.75": "2.846", "WBN_LP_H_0.50": "1.9837", "WBN_EN_H_1.00": "3.6445", "NumHBA": "6", "WBN_GC_L_0.25": "-2.2448", "WBN_GC_L_1.00": "-3.1991", "WBN_LP_L_0.25": "-0.877", "BadGroup": "0", "WBN_GC_L_0.50": "-2.3705", "WBN_GC_H_0.25": "1.9814", "WBN_LP_H_0.25": "1.1364", "WBN_EN_H_0.25": "1.2426", "WBN_GC_H_1.00": "3.8418", "WBN_GC_H_0.75": "3.0475", "WBN_LP_L_0.75": "-2.2671", "WBN_LP_L_1.00": "-3.0147", "WBN_EN_L_0.75": "-2.4012", "PSA": "120.94", "MW": "401.484", "WBN_LP_L_0.50": "-1.557", "NumRot": "7", "WBN_EN_L_0.50": "-1.5995", "WBN_EN_H_0.50": "1.9529", "XLogP": "3.912", "BBB": "0", "WBN_EN_H_0.75": "2.7843", "WBN_GC_H_0.50": "2.3951", "WBN_EN_L_0.25": "-0.7988", "NumHBD": "2", "WBN_GC_L_0.75": "-2.6219"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 39:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.7724'
+  Extent of the pertinent attribute(s): ["obj_11"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.4515", "WBN_LP_L_0.50": "-1.6905", "WBN_LP_H_1.00": "3.7783", "WBN_GC_H_0.25": "1.8818", "WBN_EN_L_0.75": "-2.5755", "WBN_EN_L_0.25": "-0.8382", "WBN_GC_H_1.00": "3.9377", "WBN_LP_H_0.75": "2.8738", "WBN_EN_H_0.50": "2.0021", "NumRot": "6", "WBN_GC_H_0.75": "3.0836", "BadGroup": "0", "WBN_EN_H_0.25": "1.2365", "WBN_EN_H_0.75": "2.8768", "PSA": "60.45", "WBN_LP_H_0.25": "1.0886", "WBN_GC_L_1.00": "-3.46", "WBN_GC_L_0.50": "-2.5266", "NumHBD": "1", "WBN_GC_H_0.50": "2.3508", "WBN_EN_H_1.00": "3.7724", "WBN_LP_L_1.00": "-3.4237", "NumHBA": "4", "WBN_LP_L_0.75": "-2.5517", "WBN_GC_L_0.75": "-2.7775", "WBN_EN_L_0.50": "-1.7029", "BBB": "1", "WBN_GC_L_0.25": "-2.3987", "WBN_LP_H_0.50": "1.9739", "XLogP": "4.302", "WBN_LP_L_0.25": "-0.8846", "MW": "328.412"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 40:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.7339'
+  Extent of the pertinent attribute(s): ["obj_8"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_1.00": "-3.1309", "WBN_LP_H_0.50": "2.0515", "PSA": "66.4", "BBB": "1", "WBN_EN_L_0.25": "-0.8001", "WBN_GC_L_0.25": "-1.3097", "WBN_LP_L_1.00": "-3.2289", "WBN_GC_H_1.00": "3.913", "MW": "370.792", "WBN_GC_L_0.75": "-2.336", "WBN_EN_L_1.00": "-3.2675", "WBN_EN_H_1.00": "3.7339", "WBN_LP_L_0.25": "-0.8413", "WBN_LP_L_0.75": "-2.4062", "WBN_GC_H_0.50": "2.5105", "WBN_LP_H_0.75": "2.865", "NumRot": "3", "NumHBA": "6", "WBN_GC_H_0.75": "3.1396", "WBN_EN_H_0.50": "2.19", "BadGroup": "1", "WBN_EN_H_0.75": "2.9274", "WBN_LP_H_0.25": "1.4337", "WBN_GC_L_0.50": "-1.6319", "NumHBD": "2", "WBN_EN_L_0.75": "-2.4406", "WBN_GC_H_0.25": "2.0952", "WBN_LP_L_0.50": "-1.5954", "WBN_LP_H_1.00": "3.7213", "XLogP": "5.264", "WBN_EN_H_0.25": "1.5206", "WBN_EN_L_0.50": "-1.617"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 41:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '4.1802'
+  Extent of the pertinent attribute(s): ["obj_5"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_0.75": "-2.7446", "NumHBD": "2", "WBN_EN_H_0.25": "2.4015", "WBN_LP_L_0.50": "-1.8608", "WBN_EN_L_0.25": "-0.7758", "WBN_EN_H_0.50": "2.6759", "WBN_LP_L_1.00": "-3.6403", "WBN_LP_H_0.25": "1.1101", "BBB": "0", "WBN_GC_H_0.75": "3.5045", "WBN_EN_L_0.75": "-2.4609", "WBN_GC_L_0.25": "-2.4154", "WBN_GC_L_0.50": "-2.5368", "BadGroup": "0", "WBN_GC_H_1.00": "4.379", "WBN_GC_L_0.75": "-2.7671", "NumRot": "7", "WBN_GC_H_0.25": "2.279", "WBN_GC_H_0.50": "2.7371", "WBN_EN_H_1.00": "4.1802", "WBN_LP_L_0.25": "-1.0489", "WBN_EN_L_1.00": "-3.35", "WBN_LP_H_1.00": "3.8828", "XLogP": "4.089", "NumHBA": "7", "WBN_GC_L_1.00": "-3.5578", "WBN_LP_H_0.50": "2.0074", "WBN_EN_H_0.75": "3.2619", "PSA": "122.29", "WBN_LP_H_0.75": "2.9397", "WBN_EN_L_0.50": "-1.5918", "MW": "488.422"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 42:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.7962'
+  Extent of the pertinent attribute(s): ["obj_0"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_0.25": "-0.885", "MW": "362.857", "WBN_GC_L_1.00": "-3.4568", "NumHBA": "4", "WBN_EN_H_0.75": "2.8944", "WBN_LP_H_0.25": "1.1079", "WBN_GC_H_0.50": "2.3536", "BBB": "1", "WBN_LP_L_1.00": "-3.4355", "WBN_LP_H_0.75": "2.8987", "WBN_EN_L_0.75": "-2.5874", "WBN_GC_L_0.50": "-2.5208", "WBN_GC_H_0.75": "3.1048", "BadGroup": "0", "WBN_GC_L_0.75": "-2.7698", "NumRot": "6", "WBN_EN_H_0.50": "2.0127", "XLogP": "4.924", "WBN_EN_L_1.00": "-3.4677", "WBN_LP_H_0.50": "1.9939", "WBN_GC_H_1.00": "3.9734", "WBN_LP_H_1.00": "3.8086", "WBN_GC_L_0.25": "-2.3941", "WBN_GC_H_0.25": "1.8819", "PSA": "60.45", "WBN_EN_H_1.00": "3.7962", "WBN_EN_H_0.25": "1.2385", "WBN_LP_L_0.50": "-1.694", "NumHBD": "1", "WBN_EN_L_0.50": "-1.7103", "WBN_EN_L_0.25": "-0.8412", "WBN_LP_L_0.75": "-2.5592"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 43:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.6865'
+  Extent of the pertinent attribute(s): ["obj_3"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.223", "PSA": "137.73", "WBN_GC_H_0.75": "2.9938", "WBN_EN_L_0.25": "-0.8036", "WBN_LP_L_0.75": "-2.2973", "WBN_GC_H_0.25": "1.9812", "XLogP": "4.721", "BBB": "0", "WBN_EN_H_0.25": "1.2421", "WBN_LP_L_0.25": "-0.9124", "WBN_EN_L_0.75": "-2.4159", "WBN_LP_L_1.00": "-3.0552", "NumRot": "7", "WBN_EN_L_0.50": "-1.6093", "WBN_EN_H_0.75": "2.8119", "WBN_LP_H_0.75": "2.8646", "WBN_LP_H_1.00": "3.7461", "NumHBD": "3", "NumHBA": "6", "WBN_GC_L_0.75": "-2.4193", "WBN_GC_L_0.50": "-1.7911", "BadGroup": "0", "MW": "442.581", "WBN_EN_H_1.00": "3.6865", "WBN_LP_H_0.50": "1.9904", "WBN_GC_L_1.00": "-3.2212", "WBN_LP_H_0.25": "1.1344", "WBN_GC_H_1.00": "3.8043", "WBN_GC_L_0.25": "-1.4722", "WBN_GC_H_0.50": "2.3885", "WBN_LP_L_0.50": "-1.5729", "WBN_EN_H_0.50": "1.9642"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 44:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '4.069'
+  Extent of the pertinent attribute(s): ["obj_7"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.50": "2.2771", "NumHBA": "4", "MW": "415.493", "WBN_LP_H_1.00": "3.8984", "WBN_GC_L_0.75": "-2.7657", "WBN_EN_L_0.75": "-2.4073", "WBN_GC_H_1.00": "4.081", "WBN_EN_H_1.00": "4.069", "WBN_LP_H_0.75": "2.9696", "WBN_GC_L_1.00": "-3.4197", "WBN_LP_L_0.75": "-2.4447", "WBN_GC_H_0.50": "2.3744", "WBN_LP_H_0.25": "1.1381", "NumRot": "3", "WBN_GC_H_0.25": "1.6878", "NumHBD": "1", "WBN_EN_L_1.00": "-3.2278", "WBN_LP_L_0.50": "-1.6394", "WBN_GC_H_0.75": "3.2023", "BadGroup": "1", "WBN_GC_L_0.50": "-2.5268", "WBN_EN_H_0.75": "3.1608", "WBN_LP_H_0.50": "2.0459", "WBN_GC_L_0.25": "-2.3987", "WBN_EN_L_0.25": "-0.7885", "XLogP": "4.922", "WBN_LP_L_1.00": "-3.2668", "WBN_EN_L_0.50": "-1.5931", "WBN_LP_L_0.25": "-0.8799", "PSA": "76.12", "BBB": "0", "WBN_EN_H_0.25": "1.4674"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 45:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '4.0094'
+  Extent of the pertinent attribute(s): ["obj_1"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"NumHBA": "2", "WBN_LP_L_0.50": "-1.7613", "WBN_EN_H_1.00": "4.0094", "WBN_LP_L_0.25": "-0.9068", "WBN_EN_H_0.50": "2.6741", "PSA": "50.44", "WBN_GC_H_0.50": "2.742", "WBN_GC_H_0.25": "2.3811", "WBN_EN_L_0.50": "-1.7694", "WBN_EN_L_0.25": "-0.8664", "WBN_EN_H_0.75": "3.1567", "WBN_LP_L_0.75": "-2.6669", "WBN_LP_L_1.00": "-3.5822", "WBN_GC_H_0.75": "3.4052", "WBN_GC_H_1.00": "4.2833", "WBN_EN_L_0.75": "-2.6826", "WBN_GC_L_1.00": "-3.736", "WBN_EN_H_0.25": "2.4012", "BBB": "1", "WBN_EN_L_1.00": "-3.6", "WBN_GC_L_0.75": "-3.0632", "WBN_LP_H_1.00": "3.9886", "WBN_GC_L_0.25": "-2.3342", "WBN_LP_H_0.50": "2.0906", "WBN_GC_L_0.50": "-2.6012", "XLogP": "4.954", "WBN_LP_H_0.75": "3.037", "NumHBD": "1", "BadGroup": "0", "WBN_LP_H_0.25": "1.1629", "NumRot": "2", "MW": "320.266"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 46:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.7018'
+  Extent of the pertinent attribute(s): ["obj_2"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.50": "2.01", "WBN_GC_L_0.25": "-1.4709", "WBN_EN_L_1.00": "-3.2077", "WBN_EN_H_1.00": "3.7018", "WBN_GC_H_1.00": "3.8454", "WBN_EN_H_0.25": "1.2701", "PSA": "103.22", "NumRot": "3", "WBN_GC_L_0.50": "-1.8538", "BBB": "0", "WBN_EN_L_0.75": "-2.4012", "NumHBA": "6", "WBN_EN_H_0.75": "2.843", "WBN_GC_L_0.75": "-2.4116", "NumHBD": "1", "WBN_LP_L_1.00": "-3.1842", "WBN_GC_H_0.50": "2.4877", "WBN_LP_L_0.50": "-1.6188", "WBN_GC_H_0.25": "2.0782", "WBN_EN_L_0.50": "-1.5962", "WBN_EN_L_0.25": "-0.794", "WBN_LP_H_0.25": "1.0694", "WBN_LP_L_0.75": "-2.395", "WBN_LP_H_0.75": "2.7538", "WBN_GC_H_0.75": "3.0664", "BadGroup": "1", "WBN_LP_H_1.00": "3.6222", "WBN_GC_L_1.00": "-3.1338", "WBN_LP_H_0.50": "1.8963", "XLogP": "1.399", "WBN_LP_L_0.25": "-0.878", "MW": "376.459"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 47:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.6162'
+  Extent of the pertinent attribute(s): ["obj_6"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.75": "-2.1779", "MW": "435.586", "WBN_EN_L_0.50": "-1.4406", "BadGroup": "0", "WBN_EN_H_1.00": "3.6162", "WBN_LP_H_1.00": "3.5526", "WBN_EN_H_0.50": "1.9496", "WBN_GC_H_0.25": "1.9814", "WBN_GC_L_1.00": "-3.0576", "WBN_GC_H_0.50": "2.3933", "WBN_GC_H_0.75": "3.0251", "NumHBA": "6", "NumHBD": "2", "WBN_LP_L_1.00": "-2.9879", "WBN_LP_H_0.25": "1.001", "WBN_LP_H_0.75": "2.6945", "NumRot": "8", "WBN_LP_L_0.50": "-1.557", "WBN_LP_H_0.50": "1.8405", "PSA": "120.94", "BBB": "0", "WBN_GC_L_0.50": "-2.3829", "WBN_GC_H_1.00": "3.8005", "WBN_EN_L_0.25": "-0.7119", "WBN_GC_L_0.25": "-2.2628", "WBN_LP_L_0.25": "-0.877", "WBN_EN_L_1.00": "-2.92", "WBN_EN_H_0.75": "2.7701", "WBN_EN_H_0.25": "1.2422", "XLogP": "5.652", "WBN_GC_L_0.75": "-2.629", "WBN_LP_L_0.75": "-2.2626"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 48:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.9423'
+  Extent of the pertinent attribute(s): ["obj_9"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_0.50": "-2.4932", "WBN_GC_H_0.25": "2.2433", "WBN_EN_H_0.50": "2.1273", "XLogP": "5.299", "NumHBA": "4", "WBN_EN_L_0.50": "-1.7353", "WBN_GC_H_0.50": "2.6606", "WBN_LP_H_1.00": "3.9434", "WBN_EN_H_1.00": "3.9423", "MW": "344.407", "WBN_LP_L_0.50": "-1.6981", "WBN_EN_H_0.75": "3.0224", "WBN_LP_L_0.25": "-0.8717", "NumHBD": "1", "WBN_GC_L_0.75": "-3.0328", "WBN_EN_L_0.75": "-2.6291", "WBN_EN_L_1.00": "-3.5282", "BBB": "0", "BadGroup": "0", "WBN_LP_H_0.50": "2.075", "WBN_GC_H_1.00": "4.1221", "WBN_GC_L_1.00": "-3.7603", "WBN_LP_L_0.75": "-2.5847", "PSA": "76.74", "WBN_GC_L_0.25": "-2.3568", "WBN_LP_H_0.25": "1.1528", "WBN_EN_H_0.25": "1.3219", "WBN_LP_H_0.75": "3.0075", "WBN_GC_H_0.75": "3.2686", "WBN_EN_L_0.25": "-0.8529", "WBN_LP_L_1.00": "-3.4836", "NumRot": "8"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 49:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.8963'
+  Extent of the pertinent attribute(s): ["obj_2"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.75": "2.7538", "WBN_GC_L_0.75": "-2.4116", "WBN_GC_L_0.50": "-1.8538", "WBN_GC_H_0.75": "3.0664", "WBN_EN_H_0.50": "2.01", "WBN_EN_H_1.00": "3.7018", "WBN_GC_L_1.00": "-3.1338", "WBN_LP_L_0.25": "-0.878", "WBN_LP_L_0.75": "-2.395", "MW": "376.459", "WBN_EN_H_0.75": "2.843", "WBN_GC_H_1.00": "3.8454", "WBN_LP_H_0.25": "1.0694", "BBB": "0", "WBN_GC_H_0.25": "2.0782", "WBN_LP_H_0.50": "1.8963", "WBN_EN_L_0.50": "-1.5962", "WBN_EN_L_0.75": "-2.4012", "WBN_LP_L_0.50": "-1.6188", "NumHBA": "6", "PSA": "103.22", "WBN_EN_L_1.00": "-3.2077", "XLogP": "1.399", "NumHBD": "1", "WBN_EN_L_0.25": "-0.794", "WBN_GC_L_0.25": "-1.4709", "NumRot": "3", "BadGroup": "1", "WBN_GC_H_0.50": "2.4877", "WBN_LP_H_1.00": "3.6222", "WBN_EN_H_0.25": "1.2701", "WBN_LP_L_1.00": "-3.1842"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 50:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0515'
+  Extent of the pertinent attribute(s): ["obj_8"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.25": "-0.8001", "NumRot": "3", "WBN_LP_H_0.25": "1.4337", "MW": "370.792", "WBN_EN_L_1.00": "-3.2675", "WBN_EN_L_0.75": "-2.4406", "WBN_EN_H_0.25": "1.5206", "WBN_GC_H_0.25": "2.0952", "WBN_GC_H_1.00": "3.913", "WBN_GC_L_0.25": "-1.3097", "WBN_GC_L_1.00": "-3.1309", "WBN_LP_L_0.75": "-2.4062", "WBN_GC_H_0.50": "2.5105", "NumHBD": "2", "WBN_LP_H_1.00": "3.7213", "NumHBA": "6", "BadGroup": "1", "WBN_LP_H_0.50": "2.0515", "BBB": "1", "WBN_LP_L_1.00": "-3.2289", "WBN_EN_H_0.75": "2.9274", "WBN_LP_L_0.50": "-1.5954", "WBN_EN_H_0.50": "2.19", "WBN_LP_H_0.75": "2.865", "XLogP": "5.264", "WBN_LP_L_0.25": "-0.8413", "WBN_GC_L_0.75": "-2.336", "WBN_EN_H_1.00": "3.7339", "PSA": "66.4", "WBN_GC_H_0.75": "3.1396", "WBN_EN_L_0.50": "-1.617", "WBN_GC_L_0.50": "-1.6319"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 51:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.075'
+  Extent of the pertinent attribute(s): ["obj_9"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.75": "3.0224", "NumRot": "8", "WBN_GC_L_0.25": "-2.3568", "WBN_LP_L_0.50": "-1.6981", "WBN_GC_H_0.50": "2.6606", "WBN_EN_L_0.50": "-1.7353", "WBN_EN_L_1.00": "-3.5282", "MW": "344.407", "WBN_LP_H_0.75": "3.0075", "PSA": "76.74", "WBN_EN_H_0.25": "1.3219", "WBN_LP_L_0.75": "-2.5847", "WBN_EN_L_0.25": "-0.8529", "WBN_GC_H_0.25": "2.2433", "WBN_GC_L_1.00": "-3.7603", "BadGroup": "0", "WBN_LP_H_0.50": "2.075", "WBN_LP_L_0.25": "-0.8717", "WBN_GC_H_1.00": "4.1221", "WBN_EN_L_0.75": "-2.6291", "WBN_LP_L_1.00": "-3.4836", "NumHBA": "4", "XLogP": "5.299", "WBN_LP_H_0.25": "1.1528", "WBN_LP_H_1.00": "3.9434", "NumHBD": "1", "WBN_EN_H_0.50": "2.1273", "WBN_GC_L_0.50": "-2.4932", "WBN_GC_H_0.75": "3.2686", "WBN_GC_L_0.75": "-3.0328", "BBB": "0", "WBN_EN_H_1.00": "3.9423"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 52:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9739'
+  Extent of the pertinent attribute(s): ["obj_11"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_1.00": "-3.4515", "WBN_LP_L_0.50": "-1.6905", "WBN_EN_L_0.25": "-0.8382", "WBN_EN_H_0.25": "1.2365", "WBN_EN_L_0.50": "-1.7029", "WBN_GC_L_1.00": "-3.46", "WBN_LP_H_1.00": "3.7783", "WBN_LP_H_0.50": "1.9739", "WBN_GC_H_0.75": "3.0836", "NumHBA": "4", "WBN_GC_H_0.50": "2.3508", "WBN_EN_H_0.50": "2.0021", "WBN_LP_H_0.25": "1.0886", "MW": "328.412", "WBN_GC_L_0.25": "-2.3987", "XLogP": "4.302", "PSA": "60.45", "WBN_LP_H_0.75": "2.8738", "BBB": "1", "WBN_GC_H_1.00": "3.9377", "BadGroup": "0", "WBN_EN_L_0.75": "-2.5755", "WBN_GC_H_0.25": "1.8818", "WBN_EN_H_1.00": "3.7724", "WBN_LP_L_0.25": "-0.8846", "NumRot": "6", "NumHBD": "1", "WBN_LP_L_1.00": "-3.4237", "WBN_EN_H_0.75": "2.8768", "WBN_GC_L_0.75": "-2.7775", "WBN_LP_L_0.75": "-2.5517", "WBN_GC_L_0.50": "-2.5266"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 53:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0906'
+  Extent of the pertinent attribute(s): ["obj_1"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_H_0.25": "2.3811", "WBN_GC_L_0.75": "-3.0632", "WBN_LP_L_0.50": "-1.7613", "WBN_EN_L_0.75": "-2.6826", "WBN_GC_H_0.50": "2.742", "WBN_EN_L_1.00": "-3.6", "XLogP": "4.954", "NumRot": "2", "MW": "320.266", "WBN_EN_H_0.25": "2.4012", "WBN_EN_H_0.75": "3.1567", "WBN_LP_L_0.75": "-2.6669", "WBN_LP_H_0.25": "1.1629", "WBN_GC_L_0.25": "-2.3342", "WBN_GC_L_0.50": "-2.6012", "WBN_LP_L_0.25": "-0.9068", "WBN_LP_H_0.50": "2.0906", "WBN_GC_L_1.00": "-3.736", "NumHBD": "1", "BBB": "1", "WBN_LP_H_1.00": "3.9886", "WBN_GC_H_0.75": "3.4052", "BadGroup": "0", "PSA": "50.44", "WBN_GC_H_1.00": "4.2833", "WBN_EN_H_0.50": "2.6741", "WBN_EN_L_0.25": "-0.8664", "WBN_LP_L_1.00": "-3.5822", "WBN_LP_H_0.75": "3.037", "NumHBA": "2", "WBN_EN_H_1.00": "4.0094", "WBN_EN_L_0.50": "-1.7694"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 54:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9939'
+  Extent of the pertinent attribute(s): ["obj_0"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.25": "1.2385", "WBN_LP_L_0.75": "-2.5592", "MW": "362.857", "WBN_LP_H_0.50": "1.9939", "NumRot": "6", "BBB": "1", "WBN_GC_H_1.00": "3.9734", "WBN_GC_L_0.50": "-2.5208", "WBN_LP_L_0.25": "-0.885", "WBN_LP_L_1.00": "-3.4355", "WBN_LP_H_1.00": "3.8086", "NumHBA": "4", "WBN_EN_H_1.00": "3.7962", "WBN_EN_H_0.75": "2.8944", "WBN_LP_H_0.25": "1.1079", "WBN_GC_H_0.50": "2.3536", "WBN_GC_H_0.75": "3.1048", "WBN_EN_H_0.50": "2.0127", "WBN_LP_L_0.50": "-1.694", "WBN_EN_L_0.50": "-1.7103", "WBN_EN_L_0.75": "-2.5874", "WBN_LP_H_0.75": "2.8987", "BadGroup": "0", "WBN_GC_L_0.25": "-2.3941", "WBN_GC_L_1.00": "-3.4568", "WBN_GC_L_0.75": "-2.7698", "PSA": "60.45", "NumHBD": "1", "WBN_EN_L_1.00": "-3.4677", "WBN_EN_L_0.25": "-0.8412", "XLogP": "4.924", "WBN_GC_H_0.25": "1.8819"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 55:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9837'
+  Extent of the pertinent attribute(s): ["obj_4"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"BBB": "0", "WBN_LP_L_0.75": "-2.2671", "WBN_LP_H_0.75": "2.846", "NumRot": "7", "WBN_GC_H_0.25": "1.9814", "WBN_GC_L_1.00": "-3.1991", "PSA": "120.94", "WBN_GC_L_0.50": "-2.3705", "WBN_EN_L_0.50": "-1.5995", "WBN_GC_H_1.00": "3.8418", "WBN_EN_H_0.25": "1.2426", "WBN_LP_H_0.25": "1.1364", "BadGroup": "0", "WBN_GC_L_0.25": "-2.2448", "WBN_GC_L_0.75": "-2.6219", "WBN_LP_H_0.50": "1.9837", "WBN_LP_L_1.00": "-3.0147", "MW": "401.484", "WBN_LP_L_0.50": "-1.557", "WBN_LP_H_1.00": "3.7151", "WBN_EN_H_1.00": "3.6445", "NumHBA": "6", "WBN_EN_L_0.75": "-2.4012", "WBN_EN_L_0.25": "-0.7988", "WBN_EN_H_0.50": "1.9529", "WBN_EN_L_1.00": "-3.2035", "WBN_EN_H_0.75": "2.7843", "WBN_LP_L_0.25": "-0.877", "WBN_GC_H_0.50": "2.3951", "XLogP": "3.912", "WBN_GC_H_0.75": "3.0475", "NumHBD": "2"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 56:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0074'
+  Extent of the pertinent attribute(s): ["obj_5"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.25": "-0.7758", "WBN_LP_H_0.75": "2.9397", "WBN_EN_H_1.00": "4.1802", "WBN_LP_L_0.75": "-2.7446", "WBN_GC_H_0.75": "3.5045", "WBN_GC_H_0.25": "2.279", "WBN_GC_L_1.00": "-3.5578", "WBN_EN_L_0.50": "-1.5918", "WBN_EN_H_0.75": "3.2619", "WBN_LP_H_0.50": "2.0074", "WBN_EN_H_0.50": "2.6759", "WBN_LP_H_1.00": "3.8828", "NumHBD": "2", "WBN_GC_H_0.50": "2.7371", "WBN_LP_H_0.25": "1.1101", "MW": "488.422", "WBN_EN_H_0.25": "2.4015", "WBN_LP_L_0.25": "-1.0489", "PSA": "122.29", "WBN_GC_L_0.50": "-2.5368", "WBN_EN_L_1.00": "-3.35", "WBN_GC_H_1.00": "4.379", "WBN_GC_L_0.25": "-2.4154", "NumHBA": "7", "WBN_GC_L_0.75": "-2.7671", "BadGroup": "0", "WBN_EN_L_0.75": "-2.4609", "WBN_LP_L_1.00": "-3.6403", "WBN_LP_L_0.50": "-1.8608", "XLogP": "4.089", "BBB": "0", "NumRot": "7"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 57:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9904'
+  Extent of the pertinent attribute(s): ["obj_3"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_0.50": "-1.7911", "WBN_LP_H_0.75": "2.8646", "WBN_LP_L_1.00": "-3.0552", "WBN_LP_H_0.50": "1.9904", "WBN_EN_H_0.50": "1.9642", "WBN_GC_L_0.25": "-1.4722", "WBN_LP_L_0.25": "-0.9124", "WBN_EN_L_0.50": "-1.6093", "WBN_EN_H_0.25": "1.2421", "MW": "442.581", "WBN_EN_L_0.75": "-2.4159", "XLogP": "4.721", "WBN_GC_H_1.00": "3.8043", "WBN_LP_H_0.25": "1.1344", "PSA": "137.73", "WBN_EN_H_0.75": "2.8119", "WBN_EN_H_1.00": "3.6865", "NumHBD": "3", "NumRot": "7", "WBN_LP_L_0.75": "-2.2973", "WBN_EN_L_0.25": "-0.8036", "WBN_LP_L_0.50": "-1.5729", "WBN_GC_H_0.50": "2.3885", "NumHBA": "6", "BBB": "0", "BadGroup": "0", "WBN_GC_H_0.75": "2.9938", "WBN_EN_L_1.00": "-3.223", "WBN_LP_H_1.00": "3.7461", "WBN_GC_H_0.25": "1.9812", "WBN_GC_L_0.75": "-2.4193", "WBN_GC_L_1.00": "-3.2212"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 58:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.8405'
+  Extent of the pertinent attribute(s): ["obj_6"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_H_0.75": "3.0251", "WBN_GC_L_0.25": "-2.2628", "BadGroup": "0", "WBN_EN_H_0.25": "1.2422", "WBN_EN_L_0.50": "-1.4406", "WBN_LP_L_0.50": "-1.557", "WBN_LP_L_0.75": "-2.2626", "WBN_EN_L_0.25": "-0.7119", "WBN_GC_H_0.50": "2.3933", "WBN_GC_L_0.50": "-2.3829", "PSA": "120.94", "MW": "435.586", "BBB": "0", "NumHBA": "6", "WBN_EN_H_0.50": "1.9496", "WBN_LP_H_1.00": "3.5526", "WBN_GC_H_0.25": "1.9814", "WBN_LP_L_0.25": "-0.877", "WBN_EN_H_1.00": "3.6162", "WBN_LP_L_1.00": "-2.9879", "WBN_LP_H_0.50": "1.8405", "NumHBD": "2", "WBN_EN_L_1.00": "-2.92", "NumRot": "8", "WBN_LP_H_0.25": "1.001", "XLogP": "5.652", "WBN_EN_L_0.75": "-2.1779", "WBN_LP_H_0.75": "2.6945", "WBN_EN_H_0.75": "2.7701", "WBN_GC_L_0.75": "-2.629", "WBN_GC_H_1.00": "3.8005", "WBN_GC_L_1.00": "-3.0576"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 59:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0459'
+  Extent of the pertinent attribute(s): ["obj_7"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"NumRot": "3", "WBN_GC_H_0.25": "1.6878", "WBN_GC_L_1.00": "-3.4197", "WBN_EN_L_0.50": "-1.5931", "XLogP": "4.922", "PSA": "76.12", "WBN_GC_H_0.75": "3.2023", "WBN_GC_L_0.75": "-2.7657", "WBN_EN_H_0.75": "3.1608", "WBN_LP_H_0.25": "1.1381", "BadGroup": "1", "WBN_EN_L_0.75": "-2.4073", "WBN_GC_L_0.50": "-2.5268", "WBN_EN_H_0.25": "1.4674", "WBN_GC_L_0.25": "-2.3987", "WBN_EN_H_0.50": "2.2771", "WBN_LP_H_0.50": "2.0459", "WBN_EN_L_0.25": "-0.7885", "BBB": "0", "WBN_GC_H_0.50": "2.3744", "WBN_LP_L_1.00": "-3.2668", "WBN_EN_L_1.00": "-3.2278", "NumHBD": "1", "WBN_LP_H_1.00": "3.8984", "WBN_LP_H_0.75": "2.9696", "WBN_LP_L_0.25": "-0.8799", "NumHBA": "4", "WBN_GC_H_1.00": "4.081", "WBN_LP_L_0.50": "-1.6394", "WBN_EN_H_1.00": "4.069", "MW": "415.493", "WBN_LP_L_0.75": "-2.4447"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 60:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9305'
+  Extent of the pertinent attribute(s): ["obj_10"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_0.25": "-1.5995", "WBN_GC_H_0.25": "1.2505", "WBN_LP_L_0.50": "-1.6595", "NumRot": "3", "WBN_EN_H_0.50": "1.8576", "NumHBA": "4", "WBN_GC_L_0.75": "-2.4446", "MW": "447.369", "WBN_EN_L_0.75": "-2.3429", "WBN_LP_L_0.75": "-2.3846", "PSA": "68.28", "WBN_GC_H_0.75": "2.7014", "WBN_LP_L_0.25": "-0.9607", "WBN_LP_L_1.00": "-3.1206", "WBN_EN_L_1.00": "-3.128", "WBN_GC_H_1.00": "3.4909", "WBN_GC_H_0.50": "1.9436", "WBN_EN_H_0.25": "1.1992", "WBN_EN_L_0.50": "-1.5587", "WBN_EN_L_0.25": "-0.7764", "WBN_GC_L_1.00": "-3.134", "WBN_EN_H_0.75": "2.6272", "WBN_EN_H_1.00": "3.4306", "WBN_LP_H_0.25": "1.1486", "WBN_LP_H_0.50": "1.9305", "WBN_LP_H_0.75": "2.7346", "WBN_LP_H_1.00": "3.5456", "BBB": "1", "WBN_GC_L_0.50": "-1.9376", "XLogP": "3.054", "BadGroup": "2", "NumHBD": "0"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 61:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '3.0075'
+  Extent of the pertinent attribute(s): ["obj_9"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.25": "1.3219", "WBN_LP_H_0.25": "1.1528", "WBN_EN_L_0.25": "-0.8529", "WBN_LP_L_1.00": "-3.4836", "NumHBA": "4", "WBN_GC_H_0.75": "3.2686", "WBN_GC_L_0.50": "-2.4932", "WBN_GC_L_1.00": "-3.7603", "WBN_LP_L_0.75": "-2.5847", "WBN_GC_H_0.25": "2.2433", "WBN_EN_L_0.75": "-2.6291", "WBN_EN_L_1.00": "-3.5282", "WBN_LP_L_0.25": "-0.8717", "WBN_EN_H_1.00": "3.9423", "WBN_LP_H_0.50": "2.075", "WBN_LP_L_0.50": "-1.6981", "PSA": "76.74", "WBN_GC_L_0.75": "-3.0328", "WBN_EN_H_0.75": "3.0224", "BadGroup": "0", "WBN_GC_L_0.25": "-2.3568", "NumHBD": "1", "WBN_GC_H_0.50": "2.6606", "MW": "344.407", "WBN_EN_L_0.50": "-1.7353", "NumRot": "8", "XLogP": "5.299", "BBB": "0", "WBN_EN_H_0.50": "2.1273", "WBN_LP_H_1.00": "3.9434", "WBN_LP_H_0.75": "3.0075", "WBN_GC_H_1.00": "4.1221"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 62:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.9696'
+  Extent of the pertinent attribute(s): ["obj_7"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"PSA": "76.12", "WBN_EN_H_0.25": "1.4674", "WBN_EN_L_0.75": "-2.4073", "WBN_GC_H_0.75": "3.2023", "WBN_LP_L_0.25": "-0.8799", "WBN_GC_L_1.00": "-3.4197", "WBN_EN_L_1.00": "-3.2278", "BBB": "0", "NumHBA": "4", "WBN_EN_H_0.75": "3.1608", "WBN_GC_H_1.00": "4.081", "WBN_EN_L_0.25": "-0.7885", "WBN_LP_L_0.50": "-1.6394", "WBN_LP_L_0.75": "-2.4447", "MW": "415.493", "WBN_LP_H_0.25": "1.1381", "WBN_LP_H_1.00": "3.8984", "WBN_GC_L_0.50": "-2.5268", "WBN_GC_H_0.25": "1.6878", "WBN_LP_H_0.75": "2.9696", "XLogP": "4.922", "WBN_EN_L_0.50": "-1.5931", "WBN_GC_H_0.50": "2.3744", "WBN_GC_L_0.25": "-2.3987", "WBN_EN_H_0.50": "2.2771", "NumHBD": "1", "BadGroup": "1", "WBN_GC_L_0.75": "-2.7657", "WBN_EN_H_1.00": "4.069", "WBN_LP_L_1.00": "-3.2668", "WBN_LP_H_0.50": "2.0459", "NumRot": "3"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 63:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.865'
+  Extent of the pertinent attribute(s): ["obj_8"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_1.00": "3.7339", "WBN_GC_H_0.25": "2.0952", "WBN_EN_H_0.25": "1.5206", "WBN_LP_H_0.25": "1.4337", "XLogP": "5.264", "NumHBA": "6", "WBN_GC_L_1.00": "-3.1309", "MW": "370.792", "BBB": "1", "WBN_LP_L_0.25": "-0.8413", "WBN_EN_L_0.50": "-1.617", "WBN_EN_L_0.25": "-0.8001", "WBN_LP_H_0.75": "2.865", "WBN_LP_H_1.00": "3.7213", "PSA": "66.4", "WBN_LP_L_1.00": "-3.2289", "WBN_EN_L_1.00": "-3.2675", "NumRot": "3", "WBN_GC_L_0.25": "-1.3097", "WBN_EN_H_0.75": "2.9274", "WBN_LP_L_0.75": "-2.4062", "WBN_GC_L_0.75": "-2.336", "WBN_EN_L_0.75": "-2.4406", "WBN_GC_H_0.50": "2.5105", "WBN_EN_H_0.50": "2.19", "WBN_GC_H_0.75": "3.1396", "BadGroup": "1", "WBN_GC_L_0.50": "-1.6319", "WBN_LP_L_0.50": "-1.5954", "NumHBD": "2", "WBN_LP_H_0.50": "2.0515", "WBN_GC_H_1.00": "3.913"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 64:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.7538'
+  Extent of the pertinent attribute(s): ["obj_2"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.75": "2.843", "WBN_GC_L_0.50": "-1.8538", "WBN_GC_L_0.25": "-1.4709", "XLogP": "1.399", "WBN_LP_L_1.00": "-3.1842", "WBN_LP_H_1.00": "3.6222", "BBB": "0", "WBN_LP_L_0.50": "-1.6188", "WBN_GC_H_1.00": "3.8454", "WBN_LP_H_0.50": "1.8963", "WBN_EN_L_0.50": "-1.5962", "WBN_EN_H_0.50": "2.01", "WBN_GC_H_0.50": "2.4877", "WBN_EN_L_0.75": "-2.4012", "WBN_LP_L_0.75": "-2.395", "PSA": "103.22", "BadGroup": "1", "WBN_EN_L_1.00": "-3.2077", "WBN_LP_L_0.25": "-0.878", "WBN_GC_H_0.25": "2.0782", "NumHBD": "1", "WBN_EN_H_1.00": "3.7018", "WBN_GC_H_0.75": "3.0664", "NumRot": "3", "WBN_GC_L_1.00": "-3.1338", "WBN_GC_L_0.75": "-2.4116", "MW": "376.459", "WBN_LP_H_0.75": "2.7538", "WBN_EN_L_0.25": "-0.794", "WBN_LP_H_0.25": "1.0694", "WBN_EN_H_0.25": "1.2701", "NumHBA": "6"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 65:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '3.037'
+  Extent of the pertinent attribute(s): ["obj_1"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_1.00": "-3.5822", "WBN_EN_L_0.75": "-2.6826", "WBN_GC_L_0.75": "-3.0632", "WBN_EN_H_0.50": "2.6741", "NumHBD": "1", "WBN_EN_H_1.00": "4.0094", "WBN_GC_H_1.00": "4.2833", "WBN_LP_H_0.75": "3.037", "WBN_LP_L_0.75": "-2.6669", "WBN_LP_L_0.25": "-0.9068", "WBN_LP_H_1.00": "3.9886", "NumRot": "2", "MW": "320.266", "WBN_GC_L_1.00": "-3.736", "WBN_EN_H_0.25": "2.4012", "WBN_EN_L_0.25": "-0.8664", "WBN_LP_H_0.25": "1.1629", "WBN_EN_H_0.75": "3.1567", "NumHBA": "2", "PSA": "50.44", "WBN_LP_H_0.50": "2.0906", "WBN_GC_L_0.25": "-2.3342", "WBN_GC_H_0.25": "2.3811", "WBN_GC_H_0.75": "3.4052", "XLogP": "4.954", "WBN_EN_L_1.00": "-3.6", "BBB": "1", "WBN_LP_L_0.50": "-1.7613", "BadGroup": "0", "WBN_GC_H_0.50": "2.742", "WBN_EN_L_0.50": "-1.7694", "WBN_GC_L_0.50": "-2.6012"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 66:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.8987'
+  Extent of the pertinent attribute(s): ["obj_0"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.25": "1.2385", "WBN_GC_H_0.50": "2.3536", "WBN_EN_H_0.50": "2.0127", "WBN_LP_H_0.75": "2.8987", "WBN_LP_L_0.25": "-0.885", "WBN_LP_H_1.00": "3.8086", "WBN_EN_L_0.75": "-2.5874", "WBN_EN_L_0.50": "-1.7103", "WBN_GC_L_1.00": "-3.4568", "WBN_LP_H_0.50": "1.9939", "WBN_GC_L_0.50": "-2.5208", "WBN_LP_H_0.25": "1.1079", "WBN_LP_L_0.50": "-1.694", "XLogP": "4.924", "PSA": "60.45", "BadGroup": "0", "WBN_GC_H_1.00": "3.9734", "NumRot": "6", "WBN_GC_L_0.75": "-2.7698", "WBN_GC_H_0.75": "3.1048", "WBN_GC_H_0.25": "1.8819", "NumHBD": "1", "MW": "362.857", "WBN_LP_L_1.00": "-3.4355", "BBB": "1", "NumHBA": "4", "WBN_EN_L_1.00": "-3.4677", "WBN_EN_H_0.75": "2.8944", "WBN_GC_L_0.25": "-2.3941", "WBN_EN_L_0.25": "-0.8412", "WBN_EN_H_1.00": "3.7962", "WBN_LP_L_0.75": "-2.5592"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 67:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.6945'
+  Extent of the pertinent attribute(s): ["obj_6"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_H_1.00": "3.8005", "WBN_EN_H_0.50": "1.9496", "WBN_GC_L_1.00": "-3.0576", "WBN_GC_L_0.75": "-2.629", "WBN_LP_H_0.25": "1.001", "PSA": "120.94", "NumHBA": "6", "NumHBD": "2", "WBN_LP_L_1.00": "-2.9879", "WBN_EN_H_0.75": "2.7701", "WBN_GC_H_0.25": "1.9814", "WBN_GC_H_0.50": "2.3933", "XLogP": "5.652", "WBN_EN_L_0.50": "-1.4406", "WBN_LP_H_1.00": "3.5526", "WBN_LP_L_0.50": "-1.557", "NumRot": "8", "WBN_LP_L_0.75": "-2.2626", "BBB": "0", "WBN_GC_L_0.50": "-2.3829", "WBN_EN_L_1.00": "-2.92", "WBN_LP_H_0.50": "1.8405", "BadGroup": "0", "WBN_EN_L_0.75": "-2.1779", "WBN_GC_L_0.25": "-2.2628", "WBN_LP_L_0.25": "-0.877", "WBN_EN_H_1.00": "3.6162", "WBN_LP_H_0.75": "2.6945", "WBN_GC_H_0.75": "3.0251", "WBN_EN_L_0.25": "-0.7119", "MW": "435.586", "WBN_EN_H_0.25": "1.2422"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 68:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.846'
+  Extent of the pertinent attribute(s): ["obj_4"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_0.50": "-1.557", "WBN_GC_H_0.50": "2.3951", "WBN_EN_L_0.50": "-1.5995", "WBN_LP_L_0.25": "-0.877", "WBN_EN_H_0.50": "1.9529", "WBN_GC_L_1.00": "-3.1991", "WBN_EN_L_0.25": "-0.7988", "WBN_LP_H_0.75": "2.846", "WBN_LP_L_1.00": "-3.0147", "WBN_GC_H_0.75": "3.0475", "XLogP": "3.912", "WBN_GC_L_0.50": "-2.3705", "WBN_GC_L_0.75": "-2.6219", "WBN_EN_L_0.75": "-2.4012", "WBN_LP_H_0.25": "1.1364", "WBN_LP_H_1.00": "3.7151", "WBN_EN_H_0.25": "1.2426", "WBN_LP_H_0.50": "1.9837", "WBN_GC_H_0.25": "1.9814", "WBN_LP_L_0.75": "-2.2671", "BBB": "0", "NumHBA": "6", "NumHBD": "2", "WBN_GC_L_0.25": "-2.2448", "WBN_EN_H_1.00": "3.6445", "WBN_EN_L_1.00": "-3.2035", "NumRot": "7", "WBN_GC_H_1.00": "3.8418", "WBN_EN_H_0.75": "2.7843", "PSA": "120.94", "MW": "401.484", "BadGroup": "0"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 69:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.7346'
+  Extent of the pertinent attribute(s): ["obj_10"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.75": "-2.3429", "WBN_EN_L_0.25": "-0.7764", "WBN_EN_H_0.75": "2.6272", "BadGroup": "2", "PSA": "68.28", "BBB": "1", "WBN_EN_L_1.00": "-3.128", "WBN_LP_L_0.25": "-0.9607", "NumRot": "3", "WBN_LP_H_0.75": "2.7346", "WBN_EN_H_0.25": "1.1992", "MW": "447.369", "WBN_LP_H_0.25": "1.1486", "XLogP": "3.054", "WBN_EN_H_1.00": "3.4306", "WBN_EN_H_0.50": "1.8576", "WBN_LP_L_0.50": "-1.6595", "WBN_LP_H_1.00": "3.5456", "WBN_GC_H_0.75": "2.7014", "WBN_GC_H_1.00": "3.4909", "WBN_LP_L_1.00": "-3.1206", "NumHBD": "0", "WBN_GC_H_0.25": "1.2505", "WBN_EN_L_0.50": "-1.5587", "NumHBA": "4", "WBN_LP_H_0.50": "1.9305", "WBN_GC_H_0.50": "1.9436", "WBN_GC_L_0.25": "-1.5995", "WBN_LP_L_0.75": "-2.3846", "WBN_GC_L_0.50": "-1.9376", "WBN_GC_L_1.00": "-3.134", "WBN_GC_L_0.75": "-2.4446"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 70:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.8738'
+  Extent of the pertinent attribute(s): ["obj_11"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.75": "2.8768", "NumHBA": "4", "WBN_GC_H_0.75": "3.0836", "WBN_LP_H_0.50": "1.9739", "WBN_LP_H_0.25": "1.0886", "WBN_GC_L_1.00": "-3.46", "WBN_EN_L_0.25": "-0.8382", "WBN_GC_L_0.50": "-2.5266", "WBN_GC_H_1.00": "3.9377", "WBN_EN_L_0.50": "-1.7029", "WBN_EN_H_1.00": "3.7724", "WBN_LP_L_1.00": "-3.4237", "WBN_GC_H_0.50": "2.3508", "WBN_LP_L_0.75": "-2.5517", "MW": "328.412", "BBB": "1", "BadGroup": "0", "WBN_LP_L_0.25": "-0.8846", "WBN_GC_H_0.25": "1.8818", "WBN_GC_L_0.75": "-2.7775", "WBN_EN_H_0.50": "2.0021", "WBN_LP_H_0.75": "2.8738", "WBN_GC_L_0.25": "-2.3987", "WBN_LP_H_1.00": "3.7783", "WBN_EN_L_0.75": "-2.5755", "NumRot": "6", "WBN_EN_H_0.25": "1.2365", "NumHBD": "1", "WBN_LP_L_0.50": "-1.6905", "PSA": "60.45", "WBN_EN_L_1.00": "-3.4515", "XLogP": "4.302"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 71:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.8646'
+  Extent of the pertinent attribute(s): ["obj_3"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_H_1.00": "3.8043", "BBB": "0", "WBN_EN_H_0.50": "1.9642", "WBN_LP_L_0.75": "-2.2973", "WBN_EN_L_0.25": "-0.8036", "WBN_LP_H_1.00": "3.7461", "WBN_EN_L_0.75": "-2.4159", "WBN_EN_L_1.00": "-3.223", "WBN_GC_L_0.25": "-1.4722", "WBN_EN_H_0.25": "1.2421", "WBN_LP_H_0.50": "1.9904", "WBN_GC_L_0.75": "-2.4193", "WBN_EN_L_0.50": "-1.6093", "WBN_GC_H_0.75": "2.9938", "WBN_GC_L_0.50": "-1.7911", "PSA": "137.73", "BadGroup": "0", "NumRot": "7", "WBN_LP_H_0.25": "1.1344", "WBN_GC_H_0.25": "1.9812", "WBN_LP_L_0.25": "-0.9124", "WBN_LP_L_1.00": "-3.0552", "NumHBA": "6", "WBN_GC_L_1.00": "-3.2212", "WBN_GC_H_0.50": "2.3885", "WBN_LP_L_0.50": "-1.5729", "NumHBD": "3", "WBN_EN_H_1.00": "3.6865", "WBN_EN_H_0.75": "2.8119", "WBN_LP_H_0.75": "2.8646", "MW": "442.581", "XLogP": "4.721"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 72:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.9397'
+  Extent of the pertinent attribute(s): ["obj_5"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.75": "3.2619", "BadGroup": "0", "WBN_EN_L_0.75": "-2.4609", "WBN_EN_L_0.25": "-0.7758", "WBN_LP_H_1.00": "3.8828", "WBN_LP_H_0.75": "2.9397", "BBB": "0", "WBN_GC_L_1.00": "-3.5578", "WBN_EN_L_1.00": "-3.35", "WBN_LP_L_0.50": "-1.8608", "NumHBD": "2", "WBN_EN_H_0.50": "2.6759", "WBN_LP_L_1.00": "-3.6403", "XLogP": "4.089", "PSA": "122.29", "WBN_LP_H_0.25": "1.1101", "WBN_GC_H_0.25": "2.279", "WBN_EN_H_0.25": "2.4015", "WBN_LP_H_0.50": "2.0074", "WBN_EN_L_0.50": "-1.5918", "WBN_GC_H_0.75": "3.5045", "WBN_GC_L_0.75": "-2.7671", "NumRot": "7", "WBN_EN_H_1.00": "4.1802", "WBN_GC_L_0.50": "-2.5368", "WBN_GC_L_0.25": "-2.4154", "NumHBA": "7", "WBN_LP_L_0.25": "-1.0489", "WBN_GC_H_1.00": "4.379", "MW": "488.422", "WBN_GC_H_0.50": "2.7371", "WBN_LP_L_0.75": "-2.7446"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 73:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.6222'
+  Extent of the pertinent attribute(s): ["obj_2"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.25": "1.0694", "WBN_LP_L_0.50": "-1.6188", "BadGroup": "1", "WBN_LP_H_0.75": "2.7538", "WBN_LP_L_1.00": "-3.1842", "WBN_LP_H_0.50": "1.8963", "WBN_GC_H_0.75": "3.0664", "WBN_GC_L_1.00": "-3.1338", "WBN_GC_H_1.00": "3.8454", "WBN_GC_H_0.50": "2.4877", "WBN_EN_L_0.75": "-2.4012", "WBN_LP_H_1.00": "3.6222", "WBN_GC_L_0.25": "-1.4709", "WBN_LP_L_0.75": "-2.395", "NumHBA": "6", "WBN_EN_L_1.00": "-3.2077", "MW": "376.459", "WBN_GC_L_0.50": "-1.8538", "WBN_LP_L_0.25": "-0.878", "WBN_EN_H_1.00": "3.7018", "WBN_EN_H_0.75": "2.843", "WBN_GC_L_0.75": "-2.4116", "WBN_EN_L_0.50": "-1.5962", "WBN_EN_H_0.50": "2.01", "WBN_GC_H_0.25": "2.0782", "NumRot": "3", "WBN_EN_H_0.25": "1.2701", "WBN_EN_L_0.25": "-0.794", "XLogP": "1.399", "NumHBD": "1", "BBB": "0", "PSA": "103.22"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 74:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.7151'
+  Extent of the pertinent attribute(s): ["obj_4"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_0.50": "-2.3705", "WBN_GC_H_1.00": "3.8418", "WBN_EN_L_0.50": "-1.5995", "MW": "401.484", "WBN_GC_H_0.50": "2.3951", "NumRot": "7", "WBN_LP_H_0.50": "1.9837", "WBN_LP_L_0.75": "-2.2671", "WBN_GC_L_0.75": "-2.6219", "WBN_LP_H_0.25": "1.1364", "WBN_LP_L_0.50": "-1.557", "XLogP": "3.912", "WBN_GC_H_0.75": "3.0475", "PSA": "120.94", "BBB": "0", "WBN_EN_L_0.75": "-2.4012", "WBN_LP_L_0.25": "-0.877", "WBN_EN_H_0.75": "2.7843", "WBN_GC_H_0.25": "1.9814", "WBN_GC_L_1.00": "-3.1991", "WBN_EN_H_1.00": "3.6445", "WBN_LP_H_0.75": "2.846", "NumHBA": "6", "NumHBD": "2", "WBN_EN_H_0.25": "1.2426", "BadGroup": "0", "WBN_LP_L_1.00": "-3.0147", "WBN_LP_H_1.00": "3.7151", "WBN_EN_L_0.25": "-0.7988", "WBN_EN_L_1.00": "-3.2035", "WBN_GC_L_0.25": "-2.2448", "WBN_EN_H_0.50": "1.9529"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 75:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.8828'
+  Extent of the pertinent attribute(s): ["obj_5"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_0.25": "-1.0489", "WBN_LP_H_0.75": "2.9397", "NumRot": "7", "WBN_EN_L_0.50": "-1.5918", "WBN_LP_L_0.75": "-2.7446", "WBN_LP_L_1.00": "-3.6403", "MW": "488.422", "WBN_GC_H_1.00": "4.379", "XLogP": "4.089", "WBN_EN_H_0.25": "2.4015", "WBN_EN_L_0.75": "-2.4609", "WBN_GC_L_0.25": "-2.4154", "WBN_GC_H_0.25": "2.279", "WBN_GC_L_1.00": "-3.5578", "WBN_LP_H_0.25": "1.1101", "WBN_LP_H_0.50": "2.0074", "WBN_LP_H_1.00": "3.8828", "WBN_EN_H_0.75": "3.2619", "WBN_EN_L_1.00": "-3.35", "WBN_GC_H_0.50": "2.7371", "WBN_GC_L_0.50": "-2.5368", "WBN_GC_L_0.75": "-2.7671", "BadGroup": "0", "WBN_LP_L_0.50": "-1.8608", "BBB": "0", "NumHBD": "2", "NumHBA": "7", "PSA": "122.29", "WBN_EN_L_0.25": "-0.7758", "WBN_EN_H_0.50": "2.6759", "WBN_GC_H_0.75": "3.5045", "WBN_EN_H_1.00": "4.1802"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 76:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.9886'
+  Extent of the pertinent attribute(s): ["obj_1"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_0.75": "-3.0632", "WBN_EN_L_0.50": "-1.7694", "WBN_EN_L_0.25": "-0.8664", "WBN_GC_H_1.00": "4.2833", "XLogP": "4.954", "PSA": "50.44", "MW": "320.266", "NumHBA": "2", "WBN_GC_H_0.25": "2.3811", "WBN_EN_H_0.25": "2.4012", "WBN_EN_H_0.50": "2.6741", "WBN_LP_H_0.50": "2.0906", "NumHBD": "1", "WBN_GC_L_1.00": "-3.736", "WBN_GC_L_0.25": "-2.3342", "NumRot": "2", "BBB": "1", "WBN_EN_L_1.00": "-3.6", "WBN_EN_L_0.75": "-2.6826", "WBN_LP_L_0.25": "-0.9068", "WBN_GC_H_0.50": "2.742", "WBN_LP_H_1.00": "3.9886", "WBN_EN_H_0.75": "3.1567", "BadGroup": "0", "WBN_EN_H_1.00": "4.0094", "WBN_LP_L_0.75": "-2.6669", "WBN_LP_H_0.75": "3.037", "WBN_LP_L_0.50": "-1.7613", "WBN_GC_L_0.50": "-2.6012", "WBN_LP_H_0.25": "1.1629", "WBN_GC_H_0.75": "3.4052", "WBN_LP_L_1.00": "-3.5822"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 77:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.8984'
+  Extent of the pertinent attribute(s): ["obj_7"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_H_1.00": "4.081", "NumHBA": "4", "WBN_LP_H_0.25": "1.1381", "WBN_GC_L_1.00": "-3.4197", "WBN_GC_L_0.75": "-2.7657", "WBN_LP_H_0.50": "2.0459", "WBN_LP_H_0.75": "2.9696", "WBN_EN_L_1.00": "-3.2278", "WBN_LP_L_0.25": "-0.8799", "WBN_EN_H_1.00": "4.069", "WBN_LP_L_1.00": "-3.2668", "MW": "415.493", "NumHBD": "1", "BBB": "0", "NumRot": "3", "WBN_GC_H_0.25": "1.6878", "WBN_EN_L_0.75": "-2.4073", "WBN_LP_L_0.50": "-1.6394", "WBN_GC_H_0.75": "3.2023", "WBN_GC_H_0.50": "2.3744", "PSA": "76.12", "WBN_GC_L_0.25": "-2.3987", "WBN_EN_H_0.75": "3.1608", "WBN_EN_H_0.25": "1.4674", "XLogP": "4.922", "WBN_EN_L_0.25": "-0.7885", "WBN_EN_H_0.50": "2.2771", "WBN_LP_L_0.75": "-2.4447", "WBN_GC_L_0.50": "-2.5268", "WBN_LP_H_1.00": "3.8984", "WBN_EN_L_0.50": "-1.5931", "BadGroup": "1"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 78:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.7783'
+  Extent of the pertinent attribute(s): ["obj_11"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"NumHBD": "1", "WBN_GC_L_0.75": "-2.7775", "BadGroup": "0", "WBN_EN_H_0.75": "2.8768", "WBN_LP_H_0.25": "1.0886", "WBN_LP_H_0.50": "1.9739", "NumRot": "6", "BBB": "1", "WBN_EN_H_1.00": "3.7724", "WBN_LP_H_1.00": "3.7783", "WBN_GC_L_1.00": "-3.46", "PSA": "60.45", "WBN_LP_H_0.75": "2.8738", "WBN_LP_L_0.25": "-0.8846", "WBN_EN_L_0.25": "-0.8382", "WBN_GC_H_0.50": "2.3508", "WBN_GC_H_0.25": "1.8818", "MW": "328.412", "WBN_EN_H_0.25": "1.2365", "WBN_LP_L_0.75": "-2.5517", "WBN_EN_H_0.50": "2.0021", "WBN_GC_L_0.50": "-2.5266", "WBN_EN_L_0.75": "-2.5755", "XLogP": "4.302", "WBN_LP_L_1.00": "-3.4237", "WBN_GC_H_0.75": "3.0836", "NumHBA": "4", "WBN_GC_L_0.25": "-2.3987", "WBN_GC_H_1.00": "3.9377", "WBN_EN_L_0.50": "-1.7029", "WBN_EN_L_1.00": "-3.4515", "WBN_LP_L_0.50": "-1.6905"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 79:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.8086'
+  Extent of the pertinent attribute(s): ["obj_0"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.75": "-2.5874", "MW": "362.857", "BBB": "1", "WBN_LP_L_0.25": "-0.885", "NumRot": "6", "WBN_GC_L_0.75": "-2.7698", "WBN_GC_H_0.25": "1.8819", "WBN_GC_L_1.00": "-3.4568", "WBN_GC_H_0.50": "2.3536", "WBN_EN_L_1.00": "-3.4677", "WBN_LP_L_0.75": "-2.5592", "WBN_EN_H_0.50": "2.0127", "WBN_LP_H_0.75": "2.8987", "WBN_EN_L_0.25": "-0.8412", "WBN_LP_H_0.25": "1.1079", "PSA": "60.45", "WBN_LP_L_1.00": "-3.4355", "NumHBA": "4", "WBN_EN_L_0.50": "-1.7103", "WBN_EN_H_0.75": "2.8944", "WBN_LP_H_1.00": "3.8086", "WBN_EN_H_1.00": "3.7962", "XLogP": "4.924", "WBN_EN_H_0.25": "1.2385", "WBN_LP_L_0.50": "-1.694", "WBN_GC_H_0.75": "3.1048", "WBN_GC_H_1.00": "3.9734", "WBN_LP_H_0.50": "1.9939", "WBN_GC_L_0.50": "-2.5208", "NumHBD": "1", "WBN_GC_L_0.25": "-2.3941", "BadGroup": "0"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 80:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.5456'
+  Extent of the pertinent attribute(s): ["obj_10"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_L_1.00": "-3.1206", "WBN_GC_H_0.75": "2.7014", "WBN_EN_L_0.25": "-0.7764", "WBN_LP_H_0.75": "2.7346", "XLogP": "3.054", "NumHBD": "0", "WBN_GC_L_0.50": "-1.9376", "NumHBA": "4", "WBN_EN_L_0.75": "-2.3429", "PSA": "68.28", "WBN_GC_L_0.75": "-2.4446", "WBN_GC_L_0.25": "-1.5995", "WBN_GC_H_0.25": "1.2505", "WBN_EN_L_1.00": "-3.128", "WBN_GC_L_1.00": "-3.134", "WBN_EN_H_0.75": "2.6272", "WBN_GC_H_0.50": "1.9436", "BadGroup": "2", "WBN_LP_H_0.25": "1.1486", "NumRot": "3", "MW": "447.369", "WBN_EN_H_0.25": "1.1992", "WBN_EN_H_1.00": "3.4306", "WBN_LP_L_0.25": "-0.9607", "WBN_LP_H_0.50": "1.9305", "WBN_LP_L_0.75": "-2.3846", "WBN_LP_H_1.00": "3.5456", "BBB": "1", "WBN_EN_L_0.50": "-1.5587", "WBN_EN_H_0.50": "1.8576", "WBN_GC_H_1.00": "3.4909", "WBN_LP_L_0.50": "-1.6595"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 81:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.7461'
+  Extent of the pertinent attribute(s): ["obj_3"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"BBB": "0", "WBN_GC_H_1.00": "3.8043", "WBN_EN_H_0.75": "2.8119", "MW": "442.581", "PSA": "137.73", "WBN_EN_H_0.25": "1.2421", "BadGroup": "0", "WBN_GC_L_0.75": "-2.4193", "WBN_EN_L_0.25": "-0.8036", "WBN_LP_L_0.25": "-0.9124", "WBN_GC_L_0.50": "-1.7911", "WBN_LP_L_0.75": "-2.2973", "WBN_EN_L_0.75": "-2.4159", "WBN_EN_L_1.00": "-3.223", "NumHBA": "6", "WBN_GC_H_0.25": "1.9812", "WBN_LP_H_0.75": "2.8646", "WBN_EN_L_0.50": "-1.6093", "WBN_LP_H_0.50": "1.9904", "WBN_LP_L_1.00": "-3.0552", "NumRot": "7", "NumHBD": "3", "WBN_LP_H_0.25": "1.1344", "XLogP": "4.721", "WBN_EN_H_1.00": "3.6865", "WBN_LP_H_1.00": "3.7461", "WBN_LP_L_0.50": "-1.5729", "WBN_GC_L_1.00": "-3.2212", "WBN_GC_L_0.25": "-1.4722", "WBN_EN_H_0.50": "1.9642", "WBN_GC_H_0.75": "2.9938", "WBN_GC_H_0.50": "2.3885"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 82:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.9434'
+  Extent of the pertinent attribute(s): ["obj_9"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.25": "1.1528", "WBN_GC_H_1.00": "4.1221", "WBN_EN_L_1.00": "-3.5282", "NumHBD": "1", "WBN_EN_H_0.50": "2.1273", "MW": "344.407", "WBN_GC_L_0.25": "-2.3568", "WBN_GC_L_0.50": "-2.4932", "WBN_EN_H_1.00": "3.9423", "WBN_EN_H_0.25": "1.3219", "NumHBA": "4", "WBN_EN_L_0.25": "-0.8529", "WBN_LP_L_0.25": "-0.8717", "WBN_GC_H_0.75": "3.2686", "WBN_GC_H_0.50": "2.6606", "BBB": "0", "WBN_LP_H_0.50": "2.075", "WBN_LP_L_1.00": "-3.4836", "WBN_LP_L_0.50": "-1.6981", "WBN_LP_L_0.75": "-2.5847", "WBN_GC_H_0.25": "2.2433", "NumRot": "8", "PSA": "76.74", "WBN_EN_H_0.75": "3.0224", "WBN_GC_L_1.00": "-3.7603", "WBN_LP_H_1.00": "3.9434", "WBN_GC_L_0.75": "-3.0328", "WBN_LP_H_0.75": "3.0075", "XLogP": "5.299", "BadGroup": "0", "WBN_EN_L_0.75": "-2.6291", "WBN_EN_L_0.50": "-1.7353"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 83:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.5526'
+  Extent of the pertinent attribute(s): ["obj_6"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_GC_L_1.00": "-3.0576", "WBN_LP_H_0.75": "2.6945", "XLogP": "5.652", "WBN_GC_L_0.25": "-2.2628", "NumRot": "8", "WBN_LP_H_1.00": "3.5526", "WBN_EN_L_0.75": "-2.1779", "WBN_EN_H_0.50": "1.9496", "WBN_EN_H_0.75": "2.7701", "WBN_EN_H_1.00": "3.6162", "WBN_GC_H_0.25": "1.9814", "WBN_LP_H_0.25": "1.001", "WBN_GC_H_1.00": "3.8005", "WBN_EN_L_0.25": "-0.7119", "WBN_LP_L_0.50": "-1.557", "WBN_EN_L_1.00": "-2.92", "WBN_EN_L_0.50": "-1.4406", "WBN_LP_L_0.25": "-0.877", "BadGroup": "0", "WBN_GC_L_0.50": "-2.3829", "PSA": "120.94", "WBN_EN_H_0.25": "1.2422", "WBN_GC_H_0.50": "2.3933", "NumHBD": "2", "BBB": "0", "NumHBA": "6", "WBN_LP_H_0.50": "1.8405", "WBN_LP_L_0.75": "-2.2626", "MW": "435.586", "WBN_LP_L_1.00": "-2.9879", "WBN_GC_L_0.75": "-2.629", "WBN_GC_H_0.75": "3.0251"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+Concept 84:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.7213'
+  Extent of the pertinent attribute(s): ["obj_8"]
+  Extent size: 1/856 objects (0.1%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.50": "-1.617", "WBN_GC_H_0.50": "2.5105", "WBN_EN_H_0.25": "1.5206", "WBN_GC_H_0.25": "2.0952", "WBN_LP_H_0.25": "1.4337", "NumHBD": "2", "MW": "370.792", "WBN_GC_L_0.25": "-1.3097", "WBN_GC_L_0.50": "-1.6319", "WBN_GC_L_0.75": "-2.336", "WBN_EN_L_1.00": "-3.2675", "WBN_GC_L_1.00": "-3.1309", "WBN_LP_L_0.75": "-2.4062", "NumRot": "3", "WBN_EN_L_0.75": "-2.4406", "WBN_EN_H_0.75": "2.9274", "WBN_LP_H_0.75": "2.865", "WBN_LP_L_0.50": "-1.5954", "XLogP": "5.264", "WBN_EN_H_1.00": "3.7339", "WBN_GC_H_0.75": "3.1396", "NumHBA": "6", "WBN_LP_L_0.25": "-0.8413", "WBN_LP_L_1.00": "-3.2289", "WBN_EN_H_0.50": "2.19", "WBN_LP_H_0.50": "2.0515", "BBB": "1", "WBN_GC_H_1.00": "3.913", "WBN_EN_L_0.25": "-0.8001", "WBN_LP_H_1.00": "3.7213", "PSA": "66.4", "BadGroup": "1"}
+  Intent size: 32/32 attributes (100.0%)
+  Class distribution in extent:
+    Active: 1 (100.0%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:      12 /    856 (  1.40%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         1.0000                          ║
+║  Recall:           1.0000  (macro-averaged)        ║
+║  F1-score:         1.0000  (macro-averaged)        ║
+║  MCC:              1.0000                          ║
+║  PRC Area:         0.9697                          ║
+║  ROC Area:         0.5000                          ║
+╚════════════════════════════════════════════════════╝
+
+---- tests::t11_cnc_bp_arff_unbalanced_2 stdout ----
+
+--- Running CNC-BP (n=2) ---
+Minority classes kept: {"Inactive", "Active"}
+Filtered: 856/856 objects (100.0%)
+
+20 concept(s) found:
+
+Concept 1:
+  Pertinent attribute: 'WBN_GC_H_1.00' with value '3.7818'
+  Extent of the pertinent attribute(s): ["obj_58", "obj_557", "obj_665"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"BBB": "0", "WBN_GC_H_1.00": "3.7818"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 2:
+  Pertinent attribute: 'WBN_EN_H_0.75' with value '3.2312'
+  Extent of the pertinent attribute(s): ["obj_94", "obj_108", "obj_525", "obj_799"]
+  Extent size: 4/856 objects (0.5%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_0.75": "3.2312", "BadGroup": "0"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 4 (100.0%) (majority class)
+
+Concept 3:
+  Pertinent attribute: 'WBN_EN_L_1.00' with value '-3.5048'
+  Extent of the pertinent attribute(s): ["obj_137", "obj_138", "obj_139", "obj_140", "obj_141", "obj_143", "obj_144", "obj_145", "obj_147", "obj_148", "obj_149", "obj_150", "obj_334", "obj_491", "obj_504", "obj_528"]
+  Extent size: 16/856 objects (1.9%)
+  Intent (common attributes) of the found extent : {"WBN_EN_L_0.25": "-0.8538", "WBN_GC_L_1.00": "-3.7163", "WBN_EN_L_0.75": "-2.612", "NumHBD": "1", "WBN_GC_L_0.75": "-2.93", "BadGroup": "0", "WBN_EN_L_1.00": "-3.5048"}
+  Intent size: 7/32 attributes (21.9%)
+  Class distribution in extent:
+    Inactive: 16 (100.0%) (majority class)
+
+Concept 4:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '4.0325'
+  Extent of the pertinent attribute(s): ["obj_229", "obj_244", "obj_350"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_1.00": "4.0325"}
+  Intent size: 1/32 attributes (3.1%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 5:
+  Pertinent attribute: 'WBN_EN_H_1.00' with value '3.6233'
+  Extent of the pertinent attribute(s): ["obj_186", "obj_392", "obj_658"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_EN_H_1.00": "3.6233"}
+  Intent size: 1/32 attributes (3.1%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 6:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0745'
+  Extent of the pertinent attribute(s): ["obj_89", "obj_403", "obj_719"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"BBB": "0", "WBN_LP_H_0.50": "2.0745", "BadGroup": "0"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 7:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9217'
+  Extent of the pertinent attribute(s): ["obj_284", "obj_407", "obj_533"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "1.9217", "BBB": "0", "NumHBA": "6"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 8:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0478'
+  Extent of the pertinent attribute(s): ["obj_256", "obj_434", "obj_676"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "2.0478"}
+  Intent size: 1/32 attributes (3.1%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 9:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.9632'
+  Extent of the pertinent attribute(s): ["obj_297", "obj_388", "obj_567"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "1.9632", "BBB": "0", "BadGroup": "1"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 10:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0507'
+  Extent of the pertinent attribute(s): ["obj_76", "obj_97", "obj_328"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "2.0507", "BadGroup": "0"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 11:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '1.8487'
+  Extent of the pertinent attribute(s): ["obj_290", "obj_583", "obj_690"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"NumHBA": "6", "WBN_EN_L_0.25": "-0.7765", "PSA": "76.66", "NumHBD": "2", "WBN_LP_H_0.50": "1.8487", "BBB": "0"}
+  Intent size: 6/32 attributes (18.8%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 12:
+  Pertinent attribute: 'WBN_LP_H_0.50' with value '2.0303'
+  Extent of the pertinent attribute(s): ["obj_118", "obj_326", "obj_614"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.50": "2.0303", "BBB": "0"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 13:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.7838'
+  Extent of the pertinent attribute(s): ["obj_43", "obj_391", "obj_615"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.75": "2.7838"}
+  Intent size: 1/32 attributes (3.1%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 14:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.8871'
+  Extent of the pertinent attribute(s): ["obj_12", "obj_451", "obj_796"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_0.75": "2.8871", "BadGroup": "0", "NumHBD": "0"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 15:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.7505'
+  Extent of the pertinent attribute(s): ["obj_193", "obj_407", "obj_595"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"NumRot": "6", "PSA": "81.7", "WBN_GC_H_0.25": "1.85", "WBN_LP_H_0.75": "2.7505", "NumHBD": "1", "BadGroup": "0", "NumHBA": "6", "BBB": "0"}
+  Intent size: 8/32 attributes (25.0%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 16:
+  Pertinent attribute: 'WBN_LP_H_0.75' with value '2.9919'
+  Extent of the pertinent attribute(s): ["obj_76", "obj_302", "obj_486"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"BadGroup": "0", "WBN_LP_H_0.75": "2.9919"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 17:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.5523'
+  Extent of the pertinent attribute(s): ["obj_345", "obj_408", "obj_633"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"WBN_LP_H_1.00": "3.5523", "BBB": "0"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 18:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.6551'
+  Extent of the pertinent attribute(s): ["obj_57", "obj_590", "obj_665"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"BBB": "0", "WBN_LP_H_1.00": "3.6551", "NumHBD": "1"}
+  Intent size: 3/32 attributes (9.4%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 19:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.5573'
+  Extent of the pertinent attribute(s): ["obj_28", "obj_197", "obj_364"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"NumHBD": "1", "WBN_LP_H_1.00": "3.5573"}
+  Intent size: 2/32 attributes (6.2%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+Concept 20:
+  Pertinent attribute: 'WBN_LP_H_1.00' with value '3.6794'
+  Extent of the pertinent attribute(s): ["obj_92", "obj_94", "obj_717"]
+  Extent size: 3/856 objects (0.4%)
+  Intent (common attributes) of the found extent : {"NumHBA": "8", "NumHBD": "2", "WBN_LP_H_1.00": "3.6794", "BBB": "0"}
+  Intent size: 4/32 attributes (12.5%)
+  Class distribution in extent:
+    Inactive: 3 (100.0%) (majority class)
+
+╔════════════════════════════════════════════════════╗
+║            Classification Metrics                  ║
+╠════════════════════════════════════════════════════╣
+║  Coverage:      70 /    856 (  8.18%)              ║
+╠════════════════════════════════════════════════════╣
+║  Accuracy:         0.9860                          ║
+║  Recall:           0.5000  (macro-averaged)        ║
+║  F1-score:         0.4965  (macro-averaged)        ║
+║  MCC:              0.0000                          ║
+║  PRC Area:         0.9833                          ║
+║  ROC Area:         0.5415                          ║
+╚════════════════════════════════════════════════════╝
+
+
+successes:
+    tests::t01_cnc_arff_weather
+    tests::t02_cnc_bp_arff_weather
+    tests::t03_cnc_arff_contact_lenses
+    tests::t04_cnc_bp_arff_contact_lenses_1
+    tests::t05_cnc_bp_arff_contact_lenses_2
+    tests::t06_cnc_arff_breast_cancer
+    tests::t07_cnc_bp_arff_breast_cancer_1
+    tests::t08_cnc_bp_arff_breast_cancer_2
+    tests::t09_cnc_arff_unbalanced
+    tests::t10_cnc_bp_arff_unbalanced_1
+    tests::t11_cnc_bp_arff_unbalanced_2
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.33s
+
+
+running 0 tests
+
+successes:
+
+successes:
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
