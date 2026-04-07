@@ -398,4 +398,44 @@ mod tests {
                  bp_result.filtered_size, bp_result.original_size);
         display_cnc_results(&dataset, &bp_result.cnc_result.concepts);
     }
+
+    #[test]
+    #[ignore] // Ignore par défaut car nécessite un fichier .arff
+    fn test_cnc_arff_weather() {
+        // Test CNC (sans BP) sur weather.nominal.arff
+        let dataset = from_arff_auto("data-examples/weather.nominal.arff")
+            .expect("Failed to load ARFF file");
+
+        println!("\n=== CNC on Weather Dataset (from ARFF) ===");
+        dataset.display_summary();
+
+        println!("\n--- Running CNC ---");
+        let result = cnc(&dataset);
+        display_cnc_chosen_attribute(&dataset, &result);
+        display_cnc_results(&dataset, &result.concepts);
+
+        // Vérifications
+        assert!(!result.concepts.is_empty(), "CNC should find at least one concept");
+        assert!(!result.pertinent_attrs.is_empty(), "Should have pertinent attributes");
+    }
+
+    #[test]
+    #[ignore] // Ignore par défaut car nécessite un fichier .arff
+    fn test_cnc_arff_breast_cancer() {
+        // Test CNC sur breast-cancer.arff avec attribut de classe explicite
+        let dataset = from_arff("data-examples/breast-cancer.arff", "Class")
+            .expect("Failed to load ARFF file");
+
+        println!("\n=== CNC on Breast Cancer Dataset (from ARFF) ===");
+        dataset.display_summary();
+
+        println!("\n--- Running CNC ---");
+        let result = cnc(&dataset);
+        display_cnc_chosen_attribute(&dataset, &result);
+        display_cnc_results(&dataset, &result.concepts);
+
+        // Vérifications
+        assert!(!result.concepts.is_empty(), "CNC should find at least one concept");
+        println!("\n[Summary] Found {} concept(s)", result.concepts.len());
+    }
 }

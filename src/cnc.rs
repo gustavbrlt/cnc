@@ -544,7 +544,9 @@ pub fn from_arff(
                 // We just need the name
                 let parts: Vec<&str> = line.split_whitespace().collect();
                 if parts.len() >= 2 {
-                    let attr_name = parts[1].trim();
+                    let attr_name = parts[1].trim()
+                        .trim_matches('\'')  // Remove single quotes
+                        .trim_matches('"');  // Remove double quotes
                     attributes.push(attr_name.to_string());
                 }
             }
@@ -622,7 +624,10 @@ pub fn from_arff_auto(
         if line.to_lowercase().starts_with("@attribute") {
             let parts: Vec<&str> = line.split_whitespace().collect();
             if parts.len() >= 2 {
-                attributes.push(parts[1].trim().to_string());
+                let attr_name = parts[1].trim()
+                    .trim_matches('\'')  // Remove single quotes
+                    .trim_matches('"');  // Remove double quotes
+                attributes.push(attr_name.to_string());
             }
         }
     }
