@@ -19,7 +19,7 @@ pub mod metrics;
 mod tests {
     use cnc::*;
     use super::*;
-    use super::metrics::{evaluate_cnc, display_metrics_table};
+    use super::metrics::{evaluate_cnc, display_metrics_table, display_comparison_table, ComparisonResult};
     use bitvec::prelude::*;
     use std::collections::HashMap;
 
@@ -422,5 +422,54 @@ mod tests {
     #[ignore] // Nécessite fichier .arff
     fn t11_cnc_bp_arff_unbalanced_2() {
         run_arff_cnc_bp_test("data-examples/unbalanced.arff", None, 2);
+    }
+
+    // Comparison summary test - runs last (z prefix for ordering)
+    #[test]
+    #[ignore] // Nécessite fichiers .arff
+    fn z_comparison_summary() {
+        println!("\n\n{}", "=".repeat(80));
+        println!("                    COMPARISON SUMMARY: CNC vs CNC-BP");
+        println!("{}\n", "=".repeat(80));
+
+        let datasets: Vec<(&str, Option<&str>, usize)> = vec![
+            ("data-examples/weather.nominal.arff", None, 1),
+            ("data-examples/contact-lenses.arff", Some("contact-lenses"), 1),
+            ("data-examples/breast-cancer.arff", Some("Class"), 1),
+            ("data-examples/unbalanced.arff", None, 1),
+        ];
+
+        let mut comparisons = Vec::new();
+
+        for (path, class_attr, n) in datasets {
+            let dataset = match class_attr {
+                Some(attr) => from_arff(path, attr),
+                None => from_arff_auto(path),
+            };
+
+            if let Ok(dataset) = dataset {
+                // Extract dataset name from path
+                let name = path.split('/').last().unwrap_or(path)
+                    .replace(".arff", "")
+                    .replace(".nominal", "");
+
+                // Run CNC
+                let cnc_result = cnc(&dataset);
+                let cnc_metrics = evaluate_cnc(&dataset, &cnc_result);
+
+                // Run CNC-BP
+                let cnc_bp_result = cnc_bp(&dataset, n);
+                let cnc_bp_metrics = evaluate_cnc(&dataset, &cnc_bp_result.cnc_result);
+
+                comparisons.push(ComparisonResult {
+                    dataset_name: name,
+                    cnc_metrics,
+                    cnc_bp_metrics,
+                    cnc_bp_n: n,
+                });
+            }
+        }
+
+        display_comparison_table(&comparisons);
     }
 }

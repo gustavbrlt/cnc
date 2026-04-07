@@ -556,6 +556,92 @@ pub fn display_metrics_table(metrics: &ClassificationMetrics) {
     println!("╚════════════════════════════════════════════════════╝");
 }
 
+/// Comparison result between two methods
+#[derive(Debug, Clone)]
+pub struct ComparisonResult {
+    pub dataset_name: String,
+    pub cnc_metrics: ClassificationMetrics,
+    pub cnc_bp_metrics: ClassificationMetrics,
+    pub cnc_bp_n: usize,
+}
+
+impl ComparisonResult {
+    /// Returns which method is better based on F1-score (primary) and MCC (secondary)
+    pub fn winner(&self) -> &'static str {
+        let cnc_score = self.cnc_metrics.macro_f1 + self.cnc_metrics.mcc * 0.5;
+        let bp_score = self.cnc_bp_metrics.macro_f1 + self.cnc_bp_metrics.mcc * 0.5;
+
+        if (cnc_score - bp_score).abs() < 0.001 {
+            "Tie"
+        } else if cnc_score > bp_score {
+            "CNC"
+        } else {
+            "CNC-BP"
+        }
+    }
+}
+
+/// Display a comparison table between CNC and CNC-BP results
+pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
+    println!("\n");
+    println!("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+    println!("║                              CNC vs CNC-BP Comparison Summary                                        ║");
+    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════╣");
+    println!("║                        │           CNC            │         CNC-BP           │                       ║");
+    println!("║ Dataset                │  Acc    F1    MCC   Cov% │  Acc    F1    MCC   Cov% │ Winner                ║");
+    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════╣");
+
+    for comp in comparisons {
+        let cnc = &comp.cnc_metrics;
+        let bp = &comp.cnc_bp_metrics;
+        let cnc_cov = (cnc.coverage as f64 / cnc.total as f64) * 100.0;
+        let bp_cov = (bp.coverage as f64 / bp.total as f64) * 100.0;
+
+        println!("║ {:22} │ {:5.2} {:5.2} {:5.2} {:5.1}% │ {:5.2} {:5.2} {:5.2} {:5.1}% │ {:21} ║",
+            comp.dataset_name,
+            cnc.accuracy, cnc.macro_f1, cnc.mcc, cnc_cov,
+            bp.accuracy, bp.macro_f1, bp.mcc, bp_cov,
+            format!("{} (n={})", comp.winner(), comp.cnc_bp_n)
+        );
+    }
+
+    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════╣");
+
+    // Summary statistics
+    let cnc_wins = comparisons.iter().filter(|c| c.winner() == "CNC").count();
+    let bp_wins = comparisons.iter().filter(|c| c.winner() == "CNC-BP").count();
+    let ties = comparisons.iter().filter(|c| c.winner() == "Tie").count();
+
+    // Average metrics
+    let avg_cnc_f1: f64 = comparisons.iter().map(|c| c.cnc_metrics.macro_f1).sum::<f64>() / comparisons.len() as f64;
+    let avg_bp_f1: f64 = comparisons.iter().map(|c| c.cnc_bp_metrics.macro_f1).sum::<f64>() / comparisons.len() as f64;
+    let avg_cnc_mcc: f64 = comparisons.iter().map(|c| c.cnc_metrics.mcc).sum::<f64>() / comparisons.len() as f64;
+    let avg_bp_mcc: f64 = comparisons.iter().map(|c| c.cnc_bp_metrics.mcc).sum::<f64>() / comparisons.len() as f64;
+
+    println!("║ AVERAGE                │      {:6.2} {:5.2}        │      {:6.2} {:5.2}        │  CNC:{} BP:{} Tie:{}     ║",
+        avg_cnc_f1, avg_cnc_mcc,
+        avg_bp_f1, avg_bp_mcc,
+        cnc_wins, bp_wins, ties
+    );
+    println!("╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝");
+
+    // Conclusion
+    println!("\nConclusion:");
+    if bp_wins > cnc_wins {
+        println!("  CNC-BP performs better overall ({} wins vs {} for CNC)", bp_wins, cnc_wins);
+        println!("  Average F1: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_f1, avg_bp_f1, avg_bp_f1 - avg_cnc_f1);
+        println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_mcc, avg_bp_mcc, avg_bp_mcc - avg_cnc_mcc);
+    } else if cnc_wins > bp_wins {
+        println!("  CNC performs better overall ({} wins vs {} for CNC-BP)", cnc_wins, bp_wins);
+        println!("  Average F1: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_f1, avg_bp_f1, avg_cnc_f1 - avg_bp_f1);
+        println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_mcc, avg_bp_mcc, avg_cnc_mcc - avg_bp_mcc);
+    } else {
+        println!("  Both methods perform similarly ({} wins each)", cnc_wins);
+        println!("  Average F1: CNC={:.4} vs CNC-BP={:.4}", avg_cnc_f1, avg_bp_f1);
+        println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4}", avg_cnc_mcc, avg_bp_mcc);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
