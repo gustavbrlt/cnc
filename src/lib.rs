@@ -366,7 +366,7 @@ mod tests {
     #[test]
     #[ignore] // Nécessite fichier .arff
     fn cnc_bp_arff_contact_lenses() {
-        run_arff_cnc_bp_test("data-examples/contact-lenses.arff", Some("contact-lenses"), 1);
+        run_arff_cnc_bp_test("data-examples/contact-lenses.arff", Some("contact-lenses"), 2);
     }
 
     #[test]
