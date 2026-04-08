@@ -609,47 +609,47 @@ pub fn display_metrics_table(metrics: &ClassificationMetrics) {
 pub struct ComparisonResult {
     pub dataset_name: String,
     pub cnc_metrics: ClassificationMetrics,
-    pub cnc_bp_metrics: ClassificationMetrics,
-    pub cnc_bp_n: usize,
+    pub cnc_bpc_metrics: ClassificationMetrics,
+    pub cnc_bpc_n: usize,
 }
 
 impl ComparisonResult {
     /// Returns which method is better based on F1-score (primary) and MCC (secondary)
     pub fn winner(&self) -> &'static str {
         let cnc_score = self.cnc_metrics.macro_f1 + self.cnc_metrics.mcc * 0.5;
-        let bp_score = self.cnc_bp_metrics.macro_f1 + self.cnc_bp_metrics.mcc * 0.5;
+        let bpc_score = self.cnc_bpc_metrics.macro_f1 + self.cnc_bpc_metrics.mcc * 0.5;
 
-        if (cnc_score - bp_score).abs() < 0.001 {
+        if (cnc_score - bpc_score).abs() < 0.001 {
             "Tie"
-        } else if cnc_score > bp_score {
+        } else if cnc_score > bpc_score {
             "CNC"
         } else {
-            "CNC-BP"
+            "CNC-BPC"
         }
     }
 }
 
-/// Display a comparison table between CNC and CNC-BP results
+/// Display a comparison table between CNC and CNC-BPC results
 pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
     println!("\n");
     println!("╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-    println!("║                                    CNC vs CNC-BP Comparison Summary                                                  ║");
+    println!("║                                            CNC vs CNC-BPC Comparison Summary                                         ║");
     println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣");
-    println!("║                        │              CNC                 │            CNC-BP                │                       ║");
+    println!("║                        │              CNC                 │            CNC-BPC               │                       ║");
     println!("║ Dataset                │  Acc    F1    MCC   Kappa   Cov% │  Acc    F1    MCC   Kappa   Cov% │ Winner                ║");
     println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣");
 
     for comp in comparisons {
         let cnc = &comp.cnc_metrics;
-        let bp = &comp.cnc_bp_metrics;
+        let bpc = &comp.cnc_bpc_metrics;
         let cnc_cov = (cnc.coverage as f64 / cnc.total as f64) * 100.0;
-        let bp_cov = (bp.coverage as f64 / bp.total as f64) * 100.0;
+        let bpc_cov = (bpc.coverage as f64 / bpc.total as f64) * 100.0;
 
         println!("║ {:22} │ {:5.2} {:5.2} {:5.2} {:6.2} {:6.1}% │ {:5.2} {:5.2} {:5.2} {:6.2} {:6.1}% │ {:21} ║",
             comp.dataset_name,
             cnc.accuracy, cnc.macro_f1, cnc.mcc, cnc.kappa, cnc_cov,
-            bp.accuracy, bp.macro_f1, bp.mcc, bp.kappa, bp_cov,
-            format!("{} (n={})", comp.winner(), comp.cnc_bp_n)
+            bpc.accuracy, bpc.macro_f1, bpc.mcc, bpc.kappa, bpc_cov,
+            format!("{} (n={})", comp.winner(), comp.cnc_bpc_n)
         );
     }
 
@@ -657,41 +657,41 @@ pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
 
     // Summary statistics
     let cnc_wins = comparisons.iter().filter(|c| c.winner() == "CNC").count();
-    let bp_wins = comparisons.iter().filter(|c| c.winner() == "CNC-BP").count();
+    let bpc_wins = comparisons.iter().filter(|c| c.winner() == "CNC-BPC").count();
     let ties = comparisons.iter().filter(|c| c.winner() == "Tie").count();
 
     // Average metrics
     let avg_cnc_f1: f64 = comparisons.iter().map(|c| c.cnc_metrics.macro_f1).sum::<f64>() / comparisons.len() as f64;
-    let avg_bp_f1: f64 = comparisons.iter().map(|c| c.cnc_bp_metrics.macro_f1).sum::<f64>() / comparisons.len() as f64;
+    let avg_bpc_f1: f64 = comparisons.iter().map(|c| c.cnc_bpc_metrics.macro_f1).sum::<f64>() / comparisons.len() as f64;
     let avg_cnc_mcc: f64 = comparisons.iter().map(|c| c.cnc_metrics.mcc).sum::<f64>() / comparisons.len() as f64;
-    let avg_bp_mcc: f64 = comparisons.iter().map(|c| c.cnc_bp_metrics.mcc).sum::<f64>() / comparisons.len() as f64;
+    let avg_bpc_mcc: f64 = comparisons.iter().map(|c| c.cnc_bpc_metrics.mcc).sum::<f64>() / comparisons.len() as f64;
     let avg_cnc_kappa: f64 = comparisons.iter().map(|c| c.cnc_metrics.kappa).sum::<f64>() / comparisons.len() as f64;
-    let avg_bp_kappa: f64 = comparisons.iter().map(|c| c.cnc_bp_metrics.kappa).sum::<f64>() / comparisons.len() as f64;
+    let avg_bpc_kappa: f64 = comparisons.iter().map(|c| c.cnc_bpc_metrics.kappa).sum::<f64>() / comparisons.len() as f64;
 
-    println!("║ AVERAGE                │      {:6.2} {:5.2} {:6.2}         │      {:6.2} {:5.2} {:6.2}         │  CNC:{} BP:{} Tie:{}     ║",
+    println!("║ AVERAGE                │      {:6.2} {:5.2} {:6.2}         │      {:6.2} {:5.2} {:6.2}         │  CNC:{} BPC:{} Tie:{}    ║",
         avg_cnc_f1, avg_cnc_mcc, avg_cnc_kappa,
-        avg_bp_f1, avg_bp_mcc, avg_bp_kappa,
-        cnc_wins, bp_wins, ties
+        avg_bpc_f1, avg_bpc_mcc, avg_bpc_kappa,
+        cnc_wins, bpc_wins, ties
     );
     println!("╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
 
     // Conclusion
     println!("\nConclusion:");
-    if bp_wins > cnc_wins {
-        println!("  CNC-BP performs better overall ({} wins vs {} for CNC)", bp_wins, cnc_wins);
-        println!("  Average F1: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_f1, avg_bp_f1, avg_bp_f1 - avg_cnc_f1);
-        println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_mcc, avg_bp_mcc, avg_bp_mcc - avg_cnc_mcc);
-        println!("  Average Kappa: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_kappa, avg_bp_kappa, avg_bp_kappa - avg_cnc_kappa);
-    } else if cnc_wins > bp_wins {
-        println!("  CNC performs better overall ({} wins vs {} for CNC-BP)", cnc_wins, bp_wins);
-        println!("  Average F1: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_f1, avg_bp_f1, avg_cnc_f1 - avg_bp_f1);
-        println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_mcc, avg_bp_mcc, avg_cnc_mcc - avg_bp_mcc);
-        println!("  Average Kappa: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_kappa, avg_bp_kappa, avg_cnc_kappa - avg_bp_kappa);
+    if bpc_wins > cnc_wins {
+        println!("  CNC-BPC performs better overall ({} wins vs {} for CNC)", bpc_wins, cnc_wins);
+        println!("  Average F1: CNC={:.4} vs CNC-BPC={:.4} (diff: {:+.4})", avg_cnc_f1, avg_bpc_f1, avg_bpc_f1 - avg_cnc_f1);
+        println!("  Average MCC: CNC={:.4} vs CNC-BPC={:.4} (diff: {:+.4})", avg_cnc_mcc, avg_bpc_mcc, avg_bpc_mcc - avg_cnc_mcc);
+        println!("  Average Kappa: CNC={:.4} vs CNC-BPC={:.4} (diff: {:+.4})", avg_cnc_kappa, avg_bpc_kappa, avg_bpc_kappa - avg_cnc_kappa);
+    } else if cnc_wins > bpc_wins {
+        println!("  CNC performs better overall ({} wins vs {} for CNC-BPC)", cnc_wins, bpc_wins);
+        println!("  Average F1: CNC={:.4} vs CNC-BPC={:.4} (diff: {:+.4})", avg_cnc_f1, avg_bpc_f1, avg_cnc_f1 - avg_bpc_f1);
+        println!("  Average MCC: CNC={:.4} vs CNC-BPC={:.4} (diff: {:+.4})", avg_cnc_mcc, avg_bpc_mcc, avg_cnc_mcc - avg_bpc_mcc);
+        println!("  Average Kappa: CNC={:.4} vs CNC-BPC={:.4} (diff: {:+.4})", avg_cnc_kappa, avg_bpc_kappa, avg_cnc_kappa - avg_bpc_kappa);
     } else {
         println!("  Both methods perform similarly ({} wins each)", cnc_wins);
-        println!("  Average F1: CNC={:.4} vs CNC-BP={:.4}", avg_cnc_f1, avg_bp_f1);
-        println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4}", avg_cnc_mcc, avg_bp_mcc);
-        println!("  Average Kappa: CNC={:.4} vs CNC-BP={:.4}", avg_cnc_kappa, avg_bp_kappa);
+        println!("  Average F1: CNC={:.4} vs CNC-BPC={:.4}", avg_cnc_f1, avg_bpc_f1);
+        println!("  Average MCC: CNC={:.4} vs CNC-BPC={:.4}", avg_cnc_mcc, avg_bpc_mcc);
+        println!("  Average Kappa: CNC={:.4} vs CNC-BPC={:.4}", avg_cnc_kappa, avg_bpc_kappa);
     }
 }
 

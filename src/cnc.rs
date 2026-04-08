@@ -8,10 +8,10 @@ pub struct CncResult {
     pub pertinent_attrs: Vec<String>,
 }
 
-/// Result structure for CNC-BP containing both the concepts and debug information
+/// Result structure for CNC-BPC containing both the concepts and debug information
 /// Uses CncResult to avoid duplication and maintain consistency
 #[derive(Debug)]
-pub struct CncBpResult {
+pub struct CncBpcResult {
     pub cnc_result: CncResult,
     pub minority_classes: HashSet<String>,
     pub original_size: usize,
@@ -356,7 +356,7 @@ fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> CncResult
     }
 }
 
-/// CNC-BP : CNC Bottom-Pertinent Classes. Keeps only the n most minority classes.
+/// CNC-BPC : CNC Bottom-Pertinent Classes. Keeps only the n most minority classes.
 ///
 /// n: number of minority classes to keep.
 ///
@@ -368,7 +368,7 @@ fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> CncResult
 /// - Keeps D (most minority with 1 object)
 /// - Keeps both B and C (both have 2 objects, tie at second most minority)
 /// - Total: 3 classes kept (D, B, C)
-pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> CncBpResult {
+pub fn cnc_bpc(dataset: &NominalDataset, n: usize) -> CncBpcResult {
 
     // We first get the G.I to not interfere on CNC.
     let pertinent_attrs = find_most_pertinent_attributes(&dataset);
@@ -435,7 +435,7 @@ pub fn cnc_bp(dataset: &NominalDataset, n: usize) -> CncBpResult {
             .collect();
     }
 
-    CncBpResult {
+    CncBpcResult {
         cnc_result,
         minority_classes,
         original_size: dataset.objects.len(),
@@ -516,7 +516,7 @@ pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String,
 /// * `class_attr_name` - Name of the class attribute in the ARFF file
 ///
 /// # Returns
-/// A NominalDataset that can be used with CNC/CNC-BP algorithms
+/// A NominalDataset that can be used with CNC/CNC-BPC algorithms
 ///
 /// # Notes
 /// - This is a simple parser for ARFF files (both nominal and numeric attributes)
@@ -614,7 +614,7 @@ pub fn from_arff(
 /// * `file_path` - Path to the .arff file
 ///
 /// # Returns
-/// A NominalDataset that can be used with CNC/CNC-BP algorithms
+/// A NominalDataset that can be used with CNC/CNC-BPC algorithms
 ///
 /// # Example
 /// ```no_run

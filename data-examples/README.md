@@ -1,6 +1,6 @@
-# Utilisation de CNC-BP avec des fichiers ARFF
+# Utilisation de CNC-BPC avec des fichiers ARFF
 
-Ce dossier contient des exemples de fichiers ARFF pour tester l'algorithme CNC-BP.
+Ce dossier contient des exemples de fichiers ARFF pour tester l'algorithme CNC-BPC.
 
 ## Fichiers ARFF disponibles
 
@@ -10,7 +10,7 @@ Des fichiers ARFF nominaux (entièrement catégoriels):
 - `vote.arff` - Votes du congrès américain
 - Et plusieurs autres...
 
-## Exécuter CNC-BP sur des fichiers ARFF
+## Exécuter CNC-BPC sur des fichiers ARFF
 
 ### Option 1: Via les tests unitaires
 
@@ -32,7 +32,7 @@ La fonction `load_arff_as_nominal` dans `src/lib.rs` (module tests) peut être u
 
 ```rust
 use arff::{ArffReader, Value};
-use fcars::cnc::{NominalDataset, cnc_bp};
+use fcars::cnc::{NominalDataset, cnc_bpc};
 use std::fs::File;
 use std::io::BufReader;
 use std::collections::HashMap;
@@ -77,15 +77,15 @@ let dataset = NominalDataset::new(
     data,
 );
 
-// Exécuter CNC-BP
-let result = cnc_bp(&dataset, 1); // n=1 (garder la classe la plus minoritaire)
+// Exécuter CNC-BPC
+let result = cnc_bpc(&dataset, 1); // n=1 (garder la classe la plus minoritaire)
 ```
 
 ## Notes importantes
 
 ### Attributs numériques vs nominaux
 
-CNC-BP fonctionne sur des données **nominales** (catégorielles). Si votre fichier ARFF contient des attributs numériques:
+CNC-BPC fonctionne sur des données **nominales** (catégorielles). Si votre fichier ARFF contient des attributs numériques:
 
 1. **Option recommandée**: Discrétisez-les d'abord (convertissez-les en catégories)
 2. **Option rapide**: La fonction les convertit en strings, mais les résultats peuvent être moins pertinents
@@ -103,9 +103,9 @@ Fichiers avec **attributs numériques** (nécessitent discrétisation):
 - `diabetes.arff` - attributs numériques
 - `cpu.arff` - attributs numériques
 
-## Paramètre n de CNC-BP
+## Paramètre n de CNC-BPC
 
-Le paramètre `n` de `cnc_bp(&dataset, n)` indique combien de classes minoritaires conserver:
+Le paramètre `n` de `cnc_bpc(&dataset, n)` indique combien de classes minoritaires conserver:
 
 - `n=1`: Garde seulement la classe la plus minoritaire
 - `n=2`: Garde les 2 classes les plus minoritaires

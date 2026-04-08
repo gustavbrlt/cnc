@@ -101,12 +101,12 @@ mod tests {
         result
     }
 
-    // Helper function to run CNC-BP and display results with metrics
-    fn run_cnc_bp_test(dataset: &NominalDataset, n: usize) -> CncBpResult {
+    // Helper function to run CNC-BPC and display results with metrics
+    fn run_cnc_bpc_test(dataset: &NominalDataset, n: usize) -> CncBpcResult {
         // dataset.display_summary();
 
-        println!("\n--- Running CNC-BP (n={}) ---", n);
-        let result = cnc_bp(dataset, n);
+        println!("\n--- Running CNC-BPC (n={}) ---", n);
+        let result = cnc_bpc(dataset, n);
         println!("Minority classes kept: {:?}", result.minority_classes);
         println!("Filtered: {}/{} objects ({:.1}%)",
                  result.filtered_size, result.original_size,
@@ -129,12 +129,12 @@ mod tests {
         run_cnc_test(&dataset)
     }
 
-    fn run_arff_cnc_bp_test(path: &str, class_attr: Option<&str>, n: usize) -> CncBpResult {
+    fn run_arff_cnc_bpc_test(path: &str, class_attr: Option<&str>, n: usize) -> CncBpcResult {
         let dataset = match class_attr {
             Some(attr) => from_arff(path, attr).expect("Failed to load ARFF file"),
             None => from_arff_auto(path).expect("Failed to load ARFF file"),
         };
-        run_cnc_bp_test(&dataset, n)
+        run_cnc_bpc_test(&dataset, n)
     }
     
     fn create_foo_dataset() -> NominalDataset {
@@ -315,9 +315,9 @@ mod tests {
     }
 
     #[test]
-    fn cnc_bp_weather() {
+    fn cnc_bpc_weather() {
         let dataset = create_weather_dataset();
-        run_cnc_bp_test(&dataset, 1);
+        run_cnc_bpc_test(&dataset, 1);
     }
 
     /*
@@ -369,8 +369,8 @@ mod tests {
     }
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn t02_cnc_bp_arff_weather() {
-        run_arff_cnc_bp_test("data-examples/weather.nominal.arff", None, 1);
+    fn t02_cnc_bpc_arff_weather() {
+        run_arff_cnc_bpc_test("data-examples/weather.nominal.arff", None, 1);
     }
 
     // Contact Lenses
@@ -381,13 +381,13 @@ mod tests {
     }
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn t04_cnc_bp_arff_contact_lenses_1() {
-        run_arff_cnc_bp_test("data-examples/contact-lenses.arff", Some("contact-lenses"), 1);
+    fn t04_cnc_bpc_arff_contact_lenses_1() {
+        run_arff_cnc_bpc_test("data-examples/contact-lenses.arff", Some("contact-lenses"), 1);
     }
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn t05_cnc_bp_arff_contact_lenses_2() {
-        run_arff_cnc_bp_test("data-examples/contact-lenses.arff", Some("contact-lenses"), 2);
+    fn t05_cnc_bpc_arff_contact_lenses_2() {
+        run_arff_cnc_bpc_test("data-examples/contact-lenses.arff", Some("contact-lenses"), 2);
     }
 
     // Breast Cancer
@@ -398,13 +398,13 @@ mod tests {
     }
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn t07_cnc_bp_arff_breast_cancer_1() {
-        run_arff_cnc_bp_test("data-examples/breast-cancer.arff", Some("Class"), 1);
+    fn t07_cnc_bpc_arff_breast_cancer_1() {
+        run_arff_cnc_bpc_test("data-examples/breast-cancer.arff", Some("Class"), 1);
     }
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn t08_cnc_bp_arff_breast_cancer_2() {
-        run_arff_cnc_bp_test("data-examples/breast-cancer.arff", Some("Class"), 2);
+    fn t08_cnc_bpc_arff_breast_cancer_2() {
+        run_arff_cnc_bpc_test("data-examples/breast-cancer.arff", Some("Class"), 2);
     }
 
     // Unbalanced.
@@ -415,13 +415,13 @@ mod tests {
     }
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn t10_cnc_bp_arff_unbalanced_1() {
-        run_arff_cnc_bp_test("data-examples/unbalanced.arff", None, 1);
+    fn t10_cnc_bpc_arff_unbalanced_1() {
+        run_arff_cnc_bpc_test("data-examples/unbalanced.arff", None, 1);
     }
     #[test]
     #[ignore] // Nécessite fichier .arff
-    fn t11_cnc_bp_arff_unbalanced_2() {
-        run_arff_cnc_bp_test("data-examples/unbalanced.arff", None, 2);
+    fn t11_cnc_bpc_arff_unbalanced_2() {
+        run_arff_cnc_bpc_test("data-examples/unbalanced.arff", None, 2);
     }
 
     // Comparison summary test - runs last (z prefix for ordering)
@@ -429,7 +429,7 @@ mod tests {
     #[ignore] // Nécessite fichiers .arff
     fn z_comparison_summary() {
         println!("\n\n{}", "=".repeat(80));
-        println!("                    COMPARISON SUMMARY: CNC vs CNC-BP");
+        println!("                    COMPARISON SUMMARY: CNC vs CNC-BPC");
         println!("{}\n", "=".repeat(80));
 
         let datasets: Vec<(&str, Option<&str>, usize)> = vec![
@@ -457,15 +457,15 @@ mod tests {
                 let cnc_result = cnc(&dataset);
                 let cnc_metrics = evaluate_cnc(&dataset, &cnc_result);
 
-                // Run CNC-BP
-                let cnc_bp_result = cnc_bp(&dataset, n);
-                let cnc_bp_metrics = evaluate_cnc(&dataset, &cnc_bp_result.cnc_result);
+                // Run CNC-BPC
+                let cnc_bpc_result = cnc_bpc(&dataset, n);
+                let cnc_bpc_metrics = evaluate_cnc(&dataset, &cnc_bpc_result.cnc_result);
 
                 comparisons.push(ComparisonResult {
                     dataset_name: name,
                     cnc_metrics,
-                    cnc_bp_metrics,
-                    cnc_bp_n: n,
+                    cnc_bpc_metrics,
+                    cnc_bpc_n: n,
                 });
             }
         }

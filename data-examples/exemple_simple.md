@@ -1,10 +1,10 @@
-# Exemple simple : Lancer CNC-BP sur un fichier .arff
+# Exemple simple : Lancer CNC-BPC sur un fichier .arff
 
 ## Résumé
 
 J'ai ajouté dans `src/lib.rs` (module tests) :
 1. Une fonction `load_arff_as_nominal()` qui parse les fichiers .arff
-2. Deux tests d'exemple qui montrent comment utiliser CNC-BP avec des fichiers .arff
+2. Deux tests d'exemple qui montrent comment utiliser CNC-BPC avec des fichiers .arff
 
 ## Exécuter les exemples
 
@@ -17,12 +17,12 @@ cargo test test_arff_weather_nominal -- --ignored --nocapture
 cargo test test_arff_contact_lenses -- --ignored --nocapture
 ```
 
-## Code minimal pour utiliser CNC-BP avec un fichier .arff
+## Code minimal pour utiliser CNC-BPC avec un fichier .arff
 
 Voici le code essentiel (voir `src/lib.rs` lignes 356-428 pour la version complète) :
 
 ```rust
-use fcars::cnc::{NominalDataset, cnc_bp, display_cnc_results};
+use fcars::cnc::{NominalDataset, cnc_bpc, display_cnc_results};
 use std::collections::HashMap;
 use std::fs;
 
@@ -70,7 +70,7 @@ fn load_arff(file_path: &str, class_attr: &str) -> Result<NominalDataset, Box<dy
     Ok(NominalDataset::new(objects, attributes, class_attr.to_string(), data))
 }
 
-// 2. Utiliser CNC-BP
+// 2. Utiliser CNC-BPC
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Charger le fichier
     let dataset = load_arff("data-examples/weather.nominal.arff", "play")?;
@@ -78,10 +78,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Afficher le résumé
     dataset.display_summary();
 
-    // Exécuter CNC-BP avec n=1 (garder seulement la classe la plus minoritaire)
-    let result = cnc_bp(&dataset, 1);
+    // Exécuter CNC-BPC avec n=1 (garder seulement la classe la plus minoritaire)
+    let result = cnc_bpc(&dataset, 1);
 
-    println!("\nCNC-BP Results:");
+    println!("\nCNC-BPC Results:");
     println!("- Minority classes: {:?}", result.minority_classes);
     println!("- Filtered: {}/{} objects", result.filtered_size, result.original_size);
 
@@ -103,12 +103,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Paramètres importants
 
-### Paramètre `n` de `cnc_bp()`
+### Paramètre `n` de `cnc_bpc()`
 
 ```rust
-cnc_bp(&dataset, 1)  // Garde la classe la plus minoritaire
-cnc_bp(&dataset, 2)  // Garde les 2 classes les plus minoritaires
-cnc_bp(&dataset, 3)  // Garde les 3 classes les plus minoritaires
+cnc_bpc(&dataset, 1)  // Garde la classe la plus minoritaire
+cnc_bpc(&dataset, 2)  // Garde les 2 classes les plus minoritaires
+cnc_bpc(&dataset, 3)  // Garde les 3 classes les plus minoritaires
 ```
 
 Si des classes ont la même fréquence, toutes sont gardées (gestion des égalités).

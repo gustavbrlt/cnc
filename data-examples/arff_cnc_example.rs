@@ -1,5 +1,5 @@
 use arff::{ArffReader, Attribute, Value};
-use fcars::cnc::{NominalDataset, cnc_bp, display_cnc_results, CncBpResult};
+use fcars::cnc::{NominalDataset, cnc_bpc, display_cnc_results, CncBpcResult};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
@@ -82,10 +82,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     dataset.display_summary();
 
-    // Run CNC-BP with n=1 (keep only the most minority class)
-    println!("\n--- Running CNC-BP (n=1) ---");
-    let cnc_bp_result = cnc_bp(&dataset, 1);
-    display_cnc_bp_results(&dataset, &cnc_bp_result);
+    // Run CNC-BPC with n=1 (keep only the most minority class)
+    println!("\n--- Running CNC-BPC (n=1) ---");
+    let cnc_bpc_result = cnc_bpc(&dataset, 1);
+    display_cnc_bpc_results(&dataset, &cnc_bpc_result);
 
     println!("\n");
 
@@ -100,16 +100,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     dataset2.display_summary();
 
-    println!("\n--- Running CNC-BP (n=2) ---");
-    let cnc_bp_result2 = cnc_bp(&dataset2, 2);
-    display_cnc_bp_results(&dataset2, &cnc_bp_result2);
+    println!("\n--- Running CNC-BPC (n=2) ---");
+    let cnc_bpc_result2 = cnc_bpc(&dataset2, 2);
+    display_cnc_bpc_results(&dataset2, &cnc_bpc_result2);
 
     Ok(())
 }
 
-/// Display CNC-BP results including filtering information
-fn display_cnc_bp_results(dataset: &NominalDataset, result: &CncBpResult) {
-    println!("\nCNC-BP Results:");
+/// Display CNC-BPC results including filtering information
+fn display_cnc_bpc_results(dataset: &NominalDataset, result: &CncBpcResult) {
+    println!("\nCNC-BPC Results:");
     println!("- Original dataset size: {} objects", result.original_size);
     println!("- Filtered dataset size: {} objects ({:.1}%)",
              result.filtered_size,
