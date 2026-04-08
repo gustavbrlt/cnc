@@ -233,6 +233,8 @@ pub struct ClassificationRule {
     pub total_objects: usize,
     /// Object indices covered by this rule
     pub covered_objects: Vec<usize>,
+    /// Name of the class attribute
+    pub class_attribute_name: String,
 }
 
 impl ClassificationRule {
@@ -331,7 +333,7 @@ impl std::fmt::Display for ClassificationRule {
             }
         }
 
-        write!(f, " THEN class={} ", self.predicted_class)?;
+        write!(f, " THEN {}={} ", self.class_attribute_name, self.predicted_class)?;
         write!(f, "(confidence={:.1}%, support={}/{}, coverage={:.1}%)",
                self.confidence, self.support, self.total_objects, self.coverage())
     }
@@ -940,6 +942,7 @@ pub fn extract_rules(dataset: &NominalDataset, result: &CncResult) -> Vec<Classi
                 support: extent.len(),
                 total_objects,
                 covered_objects: extent.clone(),
+                class_attribute_name: dataset.class_attribute.clone(),
             });
         }
     }
@@ -951,7 +954,7 @@ pub fn extract_rules(dataset: &NominalDataset, result: &CncResult) -> Vec<Classi
 ///
 /// Each rule is displayed on one line with the format:
 /// ```text
-/// Rule N: IF condition1 AND condition2 ... THEN class=X (confidence=Y%, support=N/M, coverage=Z%)
+/// Rule N: IF condition1 AND condition2 ... THEN <class_attribute>=X (confidence=Y%, support=N/M, coverage=Z%)
 /// ```
 ///
 /// # Arguments
@@ -981,10 +984,10 @@ pub fn extract_rules(dataset: &NominalDataset, result: &CncResult) -> Vec<Classi
 /// ================================================================================
 ///
 /// Rule 1:
-///   IF outlook=sunny THEN class=no (confidence=100.0%, support=3/14, coverage=21.4%)
+///   IF outlook=sunny THEN play=no (confidence=100.0%, support=3/14, coverage=21.4%)
 ///
 /// Rule 2:
-///   IF outlook=overcast THEN class=yes (confidence=100.0%, support=4/14, coverage=28.6%)
+///   IF outlook=overcast THEN play=yes (confidence=100.0%, support=4/14, coverage=28.6%)
 /// ```
 pub fn display_rules(rules: &[ClassificationRule]) {
     if rules.is_empty() {

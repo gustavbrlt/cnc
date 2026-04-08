@@ -87,7 +87,7 @@ mod tests {
 
     // Helper function to run CNC and display results with metrics
     fn run_cnc_test(dataset: &NominalDataset) -> CncResult {
-        dataset.display_summary();
+        // dataset.display_summary();
 
         println!("\n--- Running CNC ---");
         let result = cnc(dataset);
