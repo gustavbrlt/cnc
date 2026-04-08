@@ -26,7 +26,7 @@
 //! # Quick Start
 //!
 //! ```
-//! use fcars::cnc::{from_arff_auto, cnc, extract_rules, display_rules};
+//! use cnc::{from_arff_auto, cnc, extract_rules, display_rules};
 //!
 //! # fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! // 1. Load dataset
@@ -49,8 +49,8 @@
 //! ## Filtering Rules
 //!
 //! ```
-//! use fcars::cnc::{extract_rules, filter_rules_by_confidence, filter_rules_by_support};
-//! # use fcars::cnc::{from_arff_auto, cnc};
+//! use cnc::{extract_rules, filter_rules_by_confidence, filter_rules_by_support};
+//! # use cnc::{from_arff_auto, cnc};
 //! # fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
 //! # let result = cnc(&dataset);
@@ -68,8 +68,8 @@
 //! ## Sorting Rules
 //!
 //! ```
-//! use fcars::cnc::{extract_rules, sort_rules_by_confidence, sort_rules_by_support};
-//! # use fcars::cnc::{from_arff_auto, cnc};
+//! use cnc::{extract_rules, sort_rules_by_confidence, sort_rules_by_support};
+//! # use cnc::{from_arff_auto, cnc};
 //! # fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
 //! # let result = cnc(&dataset);
@@ -87,9 +87,9 @@
 //! ## Classifying New Objects
 //!
 //! ```
-//! use fcars::cnc::extract_rules;
+//! use cnc::extract_rules;
 //! use std::collections::HashMap;
-//! # use fcars::cnc::{from_arff_auto, cnc};
+//! # use cnc::{from_arff_auto, cnc};
 //! # fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
 //! # let result = cnc(&dataset);
@@ -114,8 +114,8 @@
 //! ## Analyzing Rule Sets
 //!
 //! ```
-//! use fcars::cnc::{extract_rules, get_rules_statistics};
-//! # use fcars::cnc::{from_arff_auto, cnc};
+//! use cnc::{extract_rules, get_rules_statistics};
+//! # use cnc::{from_arff_auto, cnc};
 //! # fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
 //! # let result = cnc(&dataset);
@@ -133,7 +133,7 @@
 //! CNC-BPC focuses on minority classes, useful for imbalanced datasets:
 //!
 //! ```
-//! use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules};
+//! use cnc::{from_arff_auto, cnc_bpc, extract_rules};
 //!
 //! # fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -184,7 +184,7 @@ use std::fs;
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{NominalDataset, cnc, extract_rules};
+/// use cnc::{NominalDataset, cnc, extract_rules};
 /// use std::collections::HashMap;
 ///
 /// // Create a simple dataset
@@ -246,7 +246,7 @@ impl ClassificationRule {
     /// # Example
     ///
     /// ```
-    /// # use fcars::cnc::{NominalDataset, cnc, extract_rules};
+    /// # use cnc::{NominalDataset, cnc, extract_rules};
     /// # use std::collections::HashMap;
     /// # let objects = vec!["obj1".to_string()];
     /// # let attributes = vec!["attr".to_string(), "class".to_string()];
@@ -284,7 +284,7 @@ impl ClassificationRule {
     /// # Example
     ///
     /// ```
-    /// # use fcars::cnc::{NominalDataset, cnc, extract_rules};
+    /// # use cnc::{NominalDataset, cnc, extract_rules};
     /// # use std::collections::HashMap;
     /// # let objects = vec!["obj1".to_string()];
     /// # let attributes = vec!["color".to_string(), "class".to_string()];
@@ -737,7 +737,7 @@ fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> CncResult
 /// # Example: Binary Classification
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules, display_rules};
+/// use cnc::{from_arff_auto, cnc_bpc, extract_rules, display_rules};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -761,7 +761,7 @@ fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> CncResult
 /// # Example: Multi-class with Multiple Minorities
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules, get_rules_statistics};
+/// use cnc::{from_arff_auto, cnc_bpc, extract_rules, get_rules_statistics};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/contact-lenses.arff")?;
@@ -888,7 +888,7 @@ pub fn cnc_bpc(dataset: &NominalDataset, n: usize) -> CncBpcResult {
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules};
+/// use cnc::{from_arff_auto, cnc, extract_rules};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// // Load dataset and run CNC
@@ -909,7 +909,7 @@ pub fn cnc_bpc(dataset: &NominalDataset, n: usize) -> CncBpcResult {
 /// # Usage with CNC-BPC
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules};
+/// use cnc::{from_arff_auto, cnc_bpc, extract_rules};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -964,7 +964,7 @@ pub fn extract_rules(dataset: &NominalDataset, result: &CncResult) -> Vec<Classi
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, display_rules};
+/// use cnc::{from_arff_auto, cnc, extract_rules, display_rules};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1023,7 +1023,7 @@ pub fn display_rules(rules: &[ClassificationRule]) {
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, display_rules_detailed};
+/// use cnc::{from_arff_auto, cnc, extract_rules, display_rules_detailed};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1131,7 +1131,7 @@ pub fn display_cnc_chosen_attribute(dataset : &NominalDataset, results : &CncRes
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, filter_rules_by_confidence};
+/// use cnc::{from_arff_auto, cnc, extract_rules, filter_rules_by_confidence};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1169,7 +1169,7 @@ pub fn filter_rules_by_confidence(rules: &[ClassificationRule], min_confidence: 
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, filter_rules_by_support};
+/// use cnc::{from_arff_auto, cnc, extract_rules, filter_rules_by_support};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1201,7 +1201,7 @@ pub fn filter_rules_by_support(rules: &[ClassificationRule], min_support: usize)
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, sort_rules_by_confidence};
+/// use cnc::{from_arff_auto, cnc, extract_rules, sort_rules_by_confidence};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1234,7 +1234,7 @@ pub fn sort_rules_by_confidence(rules: &mut [ClassificationRule]) {
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, sort_rules_by_support};
+/// use cnc::{from_arff_auto, cnc, extract_rules, sort_rules_by_support};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1275,7 +1275,7 @@ pub fn sort_rules_by_support(rules: &mut [ClassificationRule]) {
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, get_rules_statistics};
+/// use cnc::{from_arff_auto, cnc, extract_rules, get_rules_statistics};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1346,7 +1346,7 @@ pub fn get_rules_statistics(rules: &[ClassificationRule]) -> RulesStatistics {
 /// # Example
 ///
 /// ```
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, get_rules_statistics};
+/// use cnc::{from_arff_auto, cnc, extract_rules, get_rules_statistics};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1494,7 +1494,7 @@ pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String,
 /// # Example
 ///
 /// ```no_run
-/// use fcars::cnc::{from_arff, cnc, extract_rules, display_rules};
+/// use cnc::{from_arff, cnc, extract_rules, display_rules};
 ///
 /// // Load the dataset
 /// let dataset = from_arff("data-examples/weather.nominal.arff", "play")?;
@@ -1514,7 +1514,7 @@ pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String,
 /// # Example with CNC-BPC
 ///
 /// ```no_run
-/// use fcars::cnc::{from_arff, cnc_bpc};
+/// use cnc::{from_arff, cnc_bpc};
 ///
 /// let dataset = from_arff("data-examples/contact-lenses.arff", "contact-lenses")?;
 ///
@@ -1632,7 +1632,7 @@ pub fn from_arff(
 /// # Example: Quick Start
 ///
 /// ```no_run
-/// use fcars::cnc::{from_arff_auto, cnc, extract_rules};
+/// use cnc::{from_arff_auto, cnc, extract_rules};
 ///
 /// // Automatically uses last attribute as class
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1647,7 +1647,7 @@ pub fn from_arff(
 /// # Example: Complete Workflow
 ///
 /// ```no_run
-/// use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules, display_rules, get_rules_statistics};
+/// use cnc::{from_arff_auto, cnc_bpc, extract_rules, display_rules, get_rules_statistics};
 ///
 /// // Load dataset (uses last attribute as class)
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
