@@ -87,12 +87,20 @@ mod tests {
 
     // Helper function to run CNC and display results with metrics
     fn run_cnc_test(dataset: &NominalDataset) -> CncResult {
-        // dataset.display_summary();
+        dataset.display_summary();
 
         println!("\n--- Running CNC ---");
         let result = cnc(dataset);
         display_cnc_chosen_attribute(dataset, &result);
         display_cnc_results(dataset, &result.concepts);
+
+        // Extract and display classification rules
+        let rules = cnc::extract_rules(dataset, &result);
+        cnc::display_rules(&rules);
+
+        // Display rule statistics
+        let stats = cnc::get_rules_statistics(&rules);
+        println!("\n{}", stats);
 
         // Calculate and display classification metrics
         let metrics = evaluate_cnc(dataset, &result);
@@ -312,6 +320,73 @@ mod tests {
         let dataset = create_weather_dataset();
         let result = run_cnc_test(&dataset);
         assert_eq!(1, result.concepts.len());
+    }
+
+    #[test]
+    fn test_classification_rules_extraction() {
+        println!("\n=== Test: Classification Rules Extraction ===\n");
+
+        let dataset = create_foo_dataset();
+        dataset.display_summary();
+
+        // Run CNC
+        let result = cnc(&dataset);
+
+        // Extract rules
+        let rules = cnc::extract_rules(&dataset, &result);
+        println!("\n--- Classification Rules (compact) ---");
+        cnc::display_rules(&rules);
+
+        // Detailed rules display
+        println!("\n--- Classification Rules (detailed) ---");
+        cnc::display_rules_detailed(&dataset, &rules);
+
+        // Filter rules by confidence
+        println!("\n--- Filtering Rules ---");
+        let high_conf_rules = cnc::filter_rules_by_confidence(&rules, 100.0);
+        println!("Rules with 100% confidence: {}", high_conf_rules.len());
+
+        let medium_conf_rules = cnc::filter_rules_by_confidence(&rules, 50.0);
+        println!("Rules with ≥50% confidence: {}", medium_conf_rules.len());
+
+        // Sort by confidence
+        let mut sorted_rules = rules.clone();
+        cnc::sort_rules_by_confidence(&mut sorted_rules);
+        println!("\n--- Top 3 rules by confidence ---");
+        for (i, rule) in sorted_rules.iter().take(3).enumerate() {
+            println!("{}. {}", i + 1, rule);
+        }
+
+        // Statistics
+        let stats = cnc::get_rules_statistics(&rules);
+        println!("\n{}", stats);
+
+        assert_eq!(8, rules.len());
+    }
+
+    #[test]
+    fn test_rule_matching() {
+        println!("\n=== Test: Rule Matching ===\n");
+
+        let dataset = create_animal_dataset();
+        let result = cnc(&dataset);
+        let rules = cnc::extract_rules(&dataset, &result);
+
+        println!("Testing rule matching on dataset objects:");
+
+        for (obj_idx, obj_name) in dataset.objects.iter().enumerate() {
+            let obj_data = &dataset.data[obj_idx];
+            let actual_class = obj_data.get(&dataset.class_attribute).unwrap();
+
+            println!("\nObject '{}' (actual class: {})", obj_name, actual_class);
+
+            for (rule_idx, rule) in rules.iter().enumerate() {
+                if rule.matches(obj_data) {
+                    println!("  ✓ Matched by Rule {}: predicts '{}'",
+                             rule_idx + 1, rule.predicted_class);
+                }
+            }
+        }
     }
 
     #[test]

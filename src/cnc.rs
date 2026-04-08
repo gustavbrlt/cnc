@@ -1,5 +1,341 @@
+//! CNC (Classifier Nominal Concept) algorithm and classification rule extraction.
+//!
+//! This module implements the CNC and CNC-BPC algorithms for classification of nominal
+//! (categorical) data using Formal Concept Analysis. It also provides comprehensive
+//! tools for extracting, filtering, sorting, and analyzing classification rules.
+//!
+//! # Overview
+//!
+//! The CNC algorithm finds the most pertinent attribute in a dataset and computes
+//! concepts (extent/intent pairs) that can be used for classification. CNC-BPC is
+//! a variant that focuses on minority classes for imbalanced datasets.
+//!
+//! # Classification Rules
+//!
+//! Rules extracted from CNC concepts have the form:
+//! ```text
+//! IF condition1 AND condition2 ... THEN class = X (confidence Y%, support N)
+//! ```
+//!
+//! Each rule contains:
+//! - **Conditions**: Attribute-value pairs (the concept's intent)
+//! - **Predicted class**: Majority class in the concept's extent
+//! - **Confidence**: Percentage of the majority class (quality indicator)
+//! - **Support**: Number of objects covered (generality indicator)
+//!
+//! # Quick Start
+//!
+//! ```
+//! use fcars::cnc::{from_arff_auto, cnc, extract_rules, display_rules};
+//!
+//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! // 1. Load dataset
+//! let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+//!
+//! // 2. Run CNC algorithm
+//! let result = cnc(&dataset);
+//!
+//! // 3. Extract classification rules
+//! let rules = extract_rules(&dataset, &result);
+//!
+//! // 4. Display rules
+//! display_rules(&rules);
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! # Working with Rules
+//!
+//! ## Filtering Rules
+//!
+//! ```
+//! use fcars::cnc::{extract_rules, filter_rules_by_confidence, filter_rules_by_support};
+//! # use fcars::cnc::{from_arff_auto, cnc};
+//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+//! # let result = cnc(&dataset);
+//! # let rules = extract_rules(&dataset, &result);
+//!
+//! // Keep only high-confidence rules
+//! let reliable_rules = filter_rules_by_confidence(&rules, 80.0);
+//!
+//! // Keep only general rules (covering many objects)
+//! let general_rules = filter_rules_by_support(&rules, 5);
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! ## Sorting Rules
+//!
+//! ```
+//! use fcars::cnc::{extract_rules, sort_rules_by_confidence, sort_rules_by_support};
+//! # use fcars::cnc::{from_arff_auto, cnc};
+//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+//! # let result = cnc(&dataset);
+//! # let mut rules = extract_rules(&dataset, &result);
+//!
+//! // Sort by confidence (best rules first)
+//! sort_rules_by_confidence(&mut rules);
+//!
+//! // Or sort by support (most general rules first)
+//! sort_rules_by_support(&mut rules);
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! ## Classifying New Objects
+//!
+//! ```
+//! use fcars::cnc::extract_rules;
+//! use std::collections::HashMap;
+//! # use fcars::cnc::{from_arff_auto, cnc};
+//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+//! # let result = cnc(&dataset);
+//! # let rules = extract_rules(&dataset, &result);
+//!
+//! // Create a new object to classify
+//! let mut new_object = HashMap::new();
+//! new_object.insert("outlook".to_string(), "sunny".to_string());
+//! new_object.insert("humidity".to_string(), "high".to_string());
+//!
+//! // Find matching rules
+//! for rule in &rules {
+//!     if rule.matches(&new_object) {
+//!         println!("Predicted class: {}", rule.predicted_class);
+//!         println!("Confidence: {:.1}%", rule.confidence);
+//!     }
+//! }
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! ## Analyzing Rule Sets
+//!
+//! ```
+//! use fcars::cnc::{extract_rules, get_rules_statistics};
+//! # use fcars::cnc::{from_arff_auto, cnc};
+//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+//! # let result = cnc(&dataset);
+//! # let rules = extract_rules(&dataset, &result);
+//!
+//! let stats = get_rules_statistics(&rules);
+//! println!("{}", stats);
+//! // Displays aggregate metrics: avg confidence, support, etc.
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! # CNC-BPC for Imbalanced Data
+//!
+//! CNC-BPC focuses on minority classes, useful for imbalanced datasets:
+//!
+//! ```
+//! use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules};
+//!
+//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+//!
+//! // Run CNC-BPC keeping 1 minority class
+//! let result = cnc_bpc(&dataset, 1);
+//!
+//! println!("Minority classes: {:?}", result.minority_classes);
+//!
+//! // Extract rules focused on minority class
+//! let rules = extract_rules(&dataset, &result.cnc_result);
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! # Rule Quality Metrics
+//!
+//! - **Confidence**: Higher is better (indicates rule reliability)
+//! - **Support**: Higher = more general, lower = more specific
+//! - **Coverage**: Percentage of dataset covered by the rule
+//! - **Number of conditions**: Fewer = simpler/general, more = complex/specific
+//!
+//! # See Also
+//!
+//! - [`ClassificationRule`] - The rule structure
+//! - [`extract_rules`] - Extract rules from concepts
+//! - [`display_rules`] - Display rules (compact format)
+//! - [`display_rules_detailed`] - Display rules (detailed format)
+//! - [`get_rules_statistics`] - Compute aggregate statistics
+
 use std::collections::{HashMap, HashSet};
 use std::fs;
+
+/// Classification rule extracted from a CNC/CNC-BPC concept.
+///
+/// A classification rule represents an if-then pattern for classification:
+/// **IF** conditions **THEN** class = X (with confidence Y%)
+///
+/// # Structure
+///
+/// Each rule contains:
+/// - **Conditions**: Attribute-value pairs from the concept's intent
+/// - **Predicted class**: The majority class in the concept's extent
+/// - **Confidence**: Percentage of the majority class (0-100%)
+/// - **Support**: Number of objects covered by this rule
+/// - **Coverage**: Percentage of objects covered in the dataset
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{NominalDataset, cnc, extract_rules};
+/// use std::collections::HashMap;
+///
+/// // Create a simple dataset
+/// let objects = vec!["obj1".to_string(), "obj2".to_string(), "obj3".to_string()];
+/// let attributes = vec!["color".to_string(), "size".to_string(), "class".to_string()];
+///
+/// let mut data = vec![];
+/// for _ in 0..3 {
+///     let mut obj = HashMap::new();
+///     obj.insert("color".to_string(), "red".to_string());
+///     obj.insert("size".to_string(), "small".to_string());
+///     obj.insert("class".to_string(), "A".to_string());
+///     data.push(obj);
+/// }
+///
+/// let dataset = NominalDataset::new(objects, attributes, "class".to_string(), data);
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// // Use the rules
+/// for rule in &rules {
+///     println!("Rule: {}", rule);
+///     println!("  Confidence: {:.1}%", rule.confidence);
+///     println!("  Support: {}", rule.support);
+///     println!("  Coverage: {:.1}%", rule.coverage());
+/// }
+/// ```
+///
+/// # Quality Metrics
+///
+/// - **Confidence**: Proportion of the predicted class among covered objects (higher is better)
+/// - **Support**: Number of objects covered (low support may indicate noise)
+/// - **Coverage**: Percentage of dataset covered (general vs specific rules)
+/// - **Number of conditions**: Rule complexity (fewer = more general, more = more specific)
+#[derive(Debug, Clone)]
+pub struct ClassificationRule {
+    /// Conditions (attribute-value pairs from the intent)
+    pub conditions: HashMap<String, String>,
+    /// Predicted class (majority class in the extent)
+    pub predicted_class: String,
+    /// Confidence: percentage of the majority class in the extent
+    pub confidence: f64,
+    /// Support: number of objects covered by this rule
+    pub support: usize,
+    /// Total objects in dataset
+    pub total_objects: usize,
+    /// Object indices covered by this rule
+    pub covered_objects: Vec<usize>,
+}
+
+impl ClassificationRule {
+    /// Returns the coverage percentage of this rule in the dataset.
+    ///
+    /// Coverage represents the proportion of objects in the dataset that are
+    /// covered by this rule.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use fcars::cnc::{NominalDataset, cnc, extract_rules};
+    /// # use std::collections::HashMap;
+    /// # let objects = vec!["obj1".to_string()];
+    /// # let attributes = vec!["attr".to_string(), "class".to_string()];
+    /// # let mut data = vec![];
+    /// # let mut obj = HashMap::new();
+    /// # obj.insert("attr".to_string(), "val".to_string());
+    /// # obj.insert("class".to_string(), "A".to_string());
+    /// # data.push(obj);
+    /// # let dataset = NominalDataset::new(objects, attributes, "class".to_string(), data);
+    /// # let result = cnc(&dataset);
+    /// # let rules = extract_rules(&dataset, &result);
+    /// for rule in &rules {
+    ///     if rule.coverage() > 50.0 {
+    ///         println!("High coverage rule: {:.1}%", rule.coverage());
+    ///     }
+    /// }
+    /// ```
+    pub fn coverage(&self) -> f64 {
+        (self.support as f64 / self.total_objects as f64) * 100.0
+    }
+
+    /// Checks if this rule matches a given object.
+    ///
+    /// A rule matches an object if all conditions (attribute-value pairs) of the rule
+    /// are satisfied by the object's attributes.
+    ///
+    /// # Arguments
+    ///
+    /// * `object_data` - HashMap containing the object's attribute values
+    ///
+    /// # Returns
+    ///
+    /// `true` if all rule conditions match the object, `false` otherwise
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use fcars::cnc::{NominalDataset, cnc, extract_rules};
+    /// # use std::collections::HashMap;
+    /// # let objects = vec!["obj1".to_string()];
+    /// # let attributes = vec!["color".to_string(), "class".to_string()];
+    /// # let mut data = vec![];
+    /// # let mut obj_data = HashMap::new();
+    /// # obj_data.insert("color".to_string(), "red".to_string());
+    /// # obj_data.insert("class".to_string(), "A".to_string());
+    /// # data.push(obj_data.clone());
+    /// # let dataset = NominalDataset::new(objects, attributes, "class".to_string(), data);
+    /// # let result = cnc(&dataset);
+    /// # let rules = extract_rules(&dataset, &result);
+    /// // Create a new object to classify
+    /// let mut new_object = HashMap::new();
+    /// new_object.insert("color".to_string(), "red".to_string());
+    /// new_object.insert("size".to_string(), "small".to_string());
+    ///
+    /// // Find matching rules
+    /// for rule in &rules {
+    ///     if rule.matches(&new_object) {
+    ///         println!("Match! Predicted class: {}", rule.predicted_class);
+    ///     }
+    /// }
+    /// ```
+    pub fn matches(&self, object_data: &HashMap<String, String>) -> bool {
+        self.conditions.iter().all(|(attr, value)| {
+            object_data.get(attr).map(|v| v == value).unwrap_or(false)
+        })
+    }
+}
+
+impl std::fmt::Display for ClassificationRule {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Format conditions
+        if self.conditions.is_empty() {
+            write!(f, "IF <no conditions>")?;
+        } else {
+            write!(f, "IF ")?;
+            let mut conds: Vec<_> = self.conditions.iter().collect();
+            conds.sort_by_key(|(k, _)| *k);
+
+            for (i, (attr, value)) in conds.iter().enumerate() {
+                if i > 0 {
+                    write!(f, " AND ")?;
+                }
+                write!(f, "{}={}", attr, value)?;
+            }
+        }
+
+        write!(f, " THEN class={} ", self.predicted_class)?;
+        write!(f, "(confidence={:.1}%, support={}/{}, coverage={:.1}%)",
+               self.confidence, self.support, self.total_objects, self.coverage())
+    }
+}
 
 /// Result structure for CNC containing both the concepts and debug information
 #[derive(Debug)]
@@ -356,18 +692,105 @@ fn cnc_core(pertinent_attrs: Vec<String>, dataset: &NominalDataset) -> CncResult
     }
 }
 
-/// CNC-BPC : CNC Bottom-Pertinent Classes. Keeps only the n most minority classes.
+/// CNC-BPC: CNC Bottom-Pertinent Classes - focuses on minority classes for imbalanced datasets.
 ///
-/// n: number of minority classes to keep.
+/// This variant of CNC filters the dataset to keep only the `n` most minority (least frequent) classes
+/// before applying the CNC algorithm. This is particularly useful for imbalanced classification problems
+/// where minority classes are of primary interest.
 ///
-/// When classes have identical frequencies, all classes at the same frequency level are included.
-/// The function selects complete frequency tiers until reaching or exceeding the requested n classes.
-/// In case all classes share the same frequency (complete tie), all classes are retained regardless of n.
+/// # Arguments
 ///
-/// Example: If we have classes A(3), B(2), C(2), D(1) and n=2:
-/// - Keeps D (most minority with 1 object)
-/// - Keeps both B and C (both have 2 objects, tie at second most minority)
-/// - Total: 3 classes kept (D, B, C)
+/// * `dataset` - The nominal dataset to analyze
+/// * `n` - Number of minority classes to keep
+///
+/// # Returns
+///
+/// A `CncBpcResult` containing:
+/// - The CNC result (concepts and rules)
+/// - The set of minority classes that were kept
+/// - Original and filtered dataset sizes
+///
+/// # Behavior with Ties
+///
+/// When classes have identical frequencies, **all classes at the same frequency level are included**.
+/// The function selects complete frequency tiers until reaching or exceeding the requested `n` classes.
+///
+/// ## Example with Ties
+///
+/// Given classes A(3 objects), B(2), C(2), D(1) and `n=2`:
+/// - Keeps D (most minority: 1 object)
+/// - Keeps both B and C (tied at second most minority: 2 objects each)
+/// - **Total: 3 classes kept** (D, B, C)
+///
+/// If all classes have the same frequency (complete tie), all are retained regardless of `n`.
+///
+/// # Parameter `n` Guide
+///
+/// ```text
+/// cnc_bpc(&dataset, 1)  // Keep only the most minority class
+/// cnc_bpc(&dataset, 2)  // Keep the 2 most minority classes (+ ties)
+/// cnc_bpc(&dataset, k)  // Keep the k most minority classes (+ ties)
+/// ```
+///
+/// # Example: Binary Classification
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules, display_rules};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+///
+/// // Focus on the minority class
+/// let result = cnc_bpc(&dataset, 1);
+///
+/// println!("Minority classes: {:?}", result.minority_classes);
+/// println!("Kept {}/{} objects ({:.1}%)",
+///          result.filtered_size,
+///          result.original_size,
+///          (result.filtered_size as f64 / result.original_size as f64) * 100.0);
+///
+/// // Extract rules focused on minority class
+/// let rules = extract_rules(&dataset, &result.cnc_result);
+/// display_rules(&rules);
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Example: Multi-class with Multiple Minorities
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules, get_rules_statistics};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/contact-lenses.arff")?;
+///
+/// // Keep 2 most minority classes
+/// let result = cnc_bpc(&dataset, 2);
+///
+/// println!("Original dataset: {} objects", result.original_size);
+/// println!("Filtered dataset: {} objects", result.filtered_size);
+/// println!("Minority classes: {:?}", result.minority_classes);
+///
+/// // Analyze the extracted rules
+/// let rules = extract_rules(&dataset, &result.cnc_result);
+/// let stats = get_rules_statistics(&rules);
+/// println!("{}", stats);
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Use Cases
+///
+/// - **Fraud detection**: Focus on rare fraudulent cases
+/// - **Medical diagnosis**: Identify rare diseases
+/// - **Quality control**: Detect uncommon defects
+/// - **Anomaly detection**: Find unusual patterns
+/// - **Multi-class imbalance**: When some classes are underrepresented
+///
+/// # See Also
+///
+/// - [`cnc`] - Standard CNC algorithm (uses all classes)
+/// - [`extract_rules`] - Extract classification rules from concepts
 pub fn cnc_bpc(dataset: &NominalDataset, n: usize) -> CncBpcResult {
 
     // We first get the G.I to not interfere on CNC.
@@ -443,16 +866,527 @@ pub fn cnc_bpc(dataset: &NominalDataset, n: usize) -> CncBpcResult {
     }
 }
 
+/// Extracts classification rules from CNC/CNC-BPC concepts.
+///
+/// This function transforms formal concepts (extent/intent pairs) into explicit
+/// classification rules. Each concept generates one rule where:
+/// - The **conditions** are the intent (common attributes)
+/// - The **predicted class** is the majority class in the extent
+/// - The **confidence** is the proportion of the majority class
+///
+/// # Arguments
+///
+/// * `dataset` - The nominal dataset used for CNC
+/// * `result` - The CNC result containing concepts
+///
+/// # Returns
+///
+/// A vector of `ClassificationRule` objects, one per concept
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// // Load dataset and run CNC
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+///
+/// // Extract rules
+/// let rules = extract_rules(&dataset, &result);
+///
+/// println!("Extracted {} rules", rules.len());
+/// for rule in &rules {
+///     println!("{}", rule);
+/// }
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Usage with CNC-BPC
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc_bpc(&dataset, 1);  // Focus on minority class
+///
+/// // Extract rules from CNC-BPC
+/// let rules = extract_rules(&dataset, &result.cnc_result);
+/// # Ok(())
+/// # }
+/// ```
+pub fn extract_rules(dataset: &NominalDataset, result: &CncResult) -> Vec<ClassificationRule> {
+    let mut rules = Vec::new();
+    let total_objects = dataset.objects.len();
+
+    for (_pertinent_attr, _attr_value, extent, intent) in &result.concepts {
+        if extent.is_empty() {
+            continue;
+        }
+
+        // Get class distribution in extent
+        let class_values = dataset.get_class_values(extent);
+
+        if let Some((majority_class, count, _)) = NominalDataset::get_majority_class(&class_values) {
+            let confidence = (count as f64 / extent.len() as f64) * 100.0;
+
+            rules.push(ClassificationRule {
+                conditions: intent.clone(),
+                predicted_class: majority_class,
+                confidence,
+                support: extent.len(),
+                total_objects,
+                covered_objects: extent.clone(),
+            });
+        }
+    }
+
+    rules
+}
+
+/// Displays classification rules in a compact, readable format.
+///
+/// Each rule is displayed on one line with the format:
+/// ```text
+/// Rule N: IF condition1 AND condition2 ... THEN class=X (confidence=Y%, support=N/M, coverage=Z%)
+/// ```
+///
+/// # Arguments
+///
+/// * `rules` - Slice of classification rules to display
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, display_rules};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// // Display all rules in compact format
+/// display_rules(&rules);
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Output Example
+///
+/// ```text
+/// 3 classification rule(s) extracted:
+/// ================================================================================
+///
+/// Rule 1:
+///   IF outlook=sunny THEN class=no (confidence=100.0%, support=3/14, coverage=21.4%)
+///
+/// Rule 2:
+///   IF outlook=overcast THEN class=yes (confidence=100.0%, support=4/14, coverage=28.6%)
+/// ```
+pub fn display_rules(rules: &[ClassificationRule]) {
+    if rules.is_empty() {
+        println!("No classification rules extracted");
+        return;
+    }
+
+    println!("\n{} classification rule(s) extracted:", rules.len());
+    println!("{}", "=".repeat(80));
+
+    for (i, rule) in rules.iter().enumerate() {
+        println!("\nRule {}:", i + 1);
+        println!("  {}", rule);
+    }
+
+    println!("\n{}", "=".repeat(80));
+}
+
+/// Displays classification rules with detailed statistics and breakdowns.
+///
+/// This function provides a comprehensive view of each rule including:
+/// - Individual conditions listed separately
+/// - Prediction with confidence
+/// - Coverage statistics (support, percentage)
+/// - Names of covered objects
+/// - Complete class distribution in covered objects
+///
+/// # Arguments
+///
+/// * `dataset` - The dataset (needed to display object names)
+/// * `rules` - Slice of classification rules to display
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, display_rules_detailed};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// // Display detailed information for each rule
+/// display_rules_detailed(&dataset, &rules);
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Output Example
+///
+/// ```text
+/// Rule 1:
+///   Conditions (2 attribute(s)):
+///     - outlook = sunny
+///     - humidity = high
+///   Prediction:
+///     → class = no (confidence: 100.0%)
+///   Coverage:
+///     - Support: 3/14 objects (21.4%)
+///     - Covered objects: ["obj1", "obj2", "obj8"]
+///   Class distribution in covered objects:
+///     - no: 3 (100.0%) ← predicted
+/// ```
+pub fn display_rules_detailed(dataset: &NominalDataset, rules: &[ClassificationRule]) {
+    if rules.is_empty() {
+        println!("No classification rules extracted");
+        return;
+    }
+
+    println!("\n{} classification rule(s) extracted:", rules.len());
+    println!("{}", "=".repeat(100));
+
+    for (i, rule) in rules.iter().enumerate() {
+        println!("\nRule {}:", i + 1);
+        println!("  Conditions ({} attribute(s)):", rule.conditions.len());
+
+        let mut conds: Vec<_> = rule.conditions.iter().collect();
+        conds.sort_by_key(|(k, _)| *k);
+        for (attr, value) in conds {
+            println!("    - {} = {}", attr, value);
+        }
+
+        println!("  Prediction:");
+        println!("    → class = {} (confidence: {:.1}%)", rule.predicted_class, rule.confidence);
+
+        println!("  Coverage:");
+        println!("    - Support: {}/{} objects ({:.1}%)",
+                 rule.support, rule.total_objects, rule.coverage());
+
+        // Show covered objects
+        let covered_names: Vec<String> = rule.covered_objects.iter()
+            .map(|&idx| dataset.objects[idx].clone())
+            .collect();
+        println!("    - Covered objects: {:?}", covered_names);
+
+        // Show class distribution in covered objects
+        let class_values = dataset.get_class_values(&rule.covered_objects);
+        let mut class_counts: HashMap<String, usize> = HashMap::new();
+        for class_val in &class_values {
+            *class_counts.entry(class_val.clone()).or_insert(0) += 1;
+        }
+
+        println!("  Class distribution in covered objects:");
+        for (class, count) in &class_counts {
+            let percentage = (*count as f64 / rule.support as f64) * 100.0;
+            let marker = if class == &rule.predicted_class { " ← predicted" } else { "" };
+            println!("    - {}: {} ({:.1}%){}", class, count, percentage, marker);
+        }
+    }
+
+    println!("\n{}", "=".repeat(100));
+}
+
 pub fn display_cnc_chosen_attribute(dataset : &NominalDataset, results : &CncResult) {
 
-    println!("Most pertinent attribute(s): {:?}", 
+    println!("Most pertinent attribute(s): {:?}",
         results.pertinent_attrs);
 
     for pertinent_attr in &results.pertinent_attrs {
 
         let most_frequent_values = find_most_frequent_values(dataset, pertinent_attr);
-        println!("  Most frequent value(s) for '{}': {:?}", 
+        println!("  Most frequent value(s) for '{}': {:?}",
             pertinent_attr, most_frequent_values);
+    }
+}
+
+/// Filters rules by minimum confidence threshold.
+///
+/// Returns only rules with confidence greater than or equal to the specified threshold.
+/// This is useful to keep only high-quality, reliable rules.
+///
+/// # Arguments
+///
+/// * `rules` - Slice of classification rules to filter
+/// * `min_confidence` - Minimum confidence threshold (0.0 to 100.0)
+///
+/// # Returns
+///
+/// A new vector containing only rules meeting the confidence threshold
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, filter_rules_by_confidence};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// // Keep only rules with 80% or higher confidence
+/// let high_quality_rules = filter_rules_by_confidence(&rules, 80.0);
+///
+/// println!("High quality rules: {}/{}", high_quality_rules.len(), rules.len());
+/// # Ok(())
+/// # }
+/// ```
+pub fn filter_rules_by_confidence(rules: &[ClassificationRule], min_confidence: f64) -> Vec<ClassificationRule> {
+    rules.iter()
+        .filter(|rule| rule.confidence >= min_confidence)
+        .cloned()
+        .collect()
+}
+
+/// Filters rules by minimum support threshold.
+///
+/// Returns only rules covering at least the specified number of objects.
+/// This helps eliminate rules based on very few examples (potential noise or overfitting).
+///
+/// # Arguments
+///
+/// * `rules` - Slice of classification rules to filter
+/// * `min_support` - Minimum number of objects that must be covered
+///
+/// # Returns
+///
+/// A new vector containing only rules meeting the support threshold
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, filter_rules_by_support};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// // Keep only rules covering at least 3 objects
+/// let general_rules = filter_rules_by_support(&rules, 3);
+///
+/// println!("General rules: {}/{}", general_rules.len(), rules.len());
+/// # Ok(())
+/// # }
+/// ```
+pub fn filter_rules_by_support(rules: &[ClassificationRule], min_support: usize) -> Vec<ClassificationRule> {
+    rules.iter()
+        .filter(|rule| rule.support >= min_support)
+        .cloned()
+        .collect()
+}
+
+/// Sorts rules by confidence in descending order (highest confidence first).
+///
+/// Modifies the input slice in-place to order rules from most confident to least confident.
+///
+/// # Arguments
+///
+/// * `rules` - Mutable slice of classification rules to sort
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, sort_rules_by_confidence};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let mut rules = extract_rules(&dataset, &result);
+///
+/// // Sort by confidence
+/// sort_rules_by_confidence(&mut rules);
+///
+/// // Display top 3 rules
+/// for (i, rule) in rules.iter().take(3).enumerate() {
+///     println!("{}. {} (conf: {:.1}%)", i+1, rule.predicted_class, rule.confidence);
+/// }
+/// # Ok(())
+/// # }
+/// ```
+pub fn sort_rules_by_confidence(rules: &mut [ClassificationRule]) {
+    rules.sort_by(|a, b| b.confidence.partial_cmp(&a.confidence).unwrap());
+}
+
+/// Sorts rules by support in descending order (highest support first).
+///
+/// Modifies the input slice in-place to order rules from most general (covering more objects)
+/// to most specific (covering fewer objects).
+///
+/// # Arguments
+///
+/// * `rules` - Mutable slice of classification rules to sort
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, sort_rules_by_support};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let mut rules = extract_rules(&dataset, &result);
+///
+/// // Sort by support to find most general rules
+/// sort_rules_by_support(&mut rules);
+///
+/// // Display top 3 most general rules
+/// for (i, rule) in rules.iter().take(3).enumerate() {
+///     println!("{}. Support: {}, Coverage: {:.1}%", i+1, rule.support, rule.coverage());
+/// }
+/// # Ok(())
+/// # }
+/// ```
+pub fn sort_rules_by_support(rules: &mut [ClassificationRule]) {
+    rules.sort_by(|a, b| b.support.cmp(&a.support));
+}
+
+/// Computes summary statistics for a set of classification rules.
+///
+/// Returns a `RulesStatistics` object containing aggregate metrics across all rules:
+/// - Total number of rules
+/// - Average, minimum, and maximum confidence
+/// - Average, minimum, and maximum support
+/// - Average number of conditions per rule
+/// - Number of unique predicted classes
+///
+/// # Arguments
+///
+/// * `rules` - Slice of classification rules to analyze
+///
+/// # Returns
+///
+/// A `RulesStatistics` object with computed metrics
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, get_rules_statistics};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// let stats = get_rules_statistics(&rules);
+/// println!("{}", stats);
+/// // Displays:
+/// // Rules Statistics:
+/// //   Total rules: 8
+/// //   Confidence: avg=95.5%, min=80.0%, max=100.0%
+/// //   Support: avg=2.5, min=1, max=5
+/// //   ...
+/// # Ok(())
+/// # }
+/// ```
+pub fn get_rules_statistics(rules: &[ClassificationRule]) -> RulesStatistics {
+    if rules.is_empty() {
+        return RulesStatistics::default();
+    }
+
+    let avg_confidence = rules.iter().map(|r| r.confidence).sum::<f64>() / rules.len() as f64;
+    let avg_support = rules.iter().map(|r| r.support).sum::<usize>() as f64 / rules.len() as f64;
+    let avg_conditions = rules.iter().map(|r| r.conditions.len()).sum::<usize>() as f64 / rules.len() as f64;
+
+    let max_confidence = rules.iter().map(|r| r.confidence).fold(0.0, f64::max);
+    let min_confidence = rules.iter().map(|r| r.confidence).fold(100.0, f64::min);
+
+    let max_support = rules.iter().map(|r| r.support).max().unwrap_or(0);
+    let min_support = rules.iter().map(|r| r.support).min().unwrap_or(0);
+
+    // Count unique predicted classes
+    let unique_classes: HashSet<String> = rules.iter()
+        .map(|r| r.predicted_class.clone())
+        .collect();
+
+    RulesStatistics {
+        total_rules: rules.len(),
+        avg_confidence,
+        min_confidence,
+        max_confidence,
+        avg_support,
+        min_support,
+        max_support,
+        avg_conditions,
+        unique_predicted_classes: unique_classes.len(),
+    }
+}
+
+/// Summary statistics computed over a set of classification rules.
+///
+/// This structure aggregates metrics across multiple rules to provide
+/// an overview of the rule set quality and characteristics.
+///
+/// # Fields
+///
+/// - `total_rules`: Total number of rules
+/// - `avg_confidence`: Average confidence across all rules
+/// - `min_confidence`: Minimum confidence value
+/// - `max_confidence`: Maximum confidence value
+/// - `avg_support`: Average number of objects covered per rule
+/// - `min_support`: Minimum support value
+/// - `max_support`: Maximum support value
+/// - `avg_conditions`: Average number of conditions (attributes) per rule
+/// - `unique_predicted_classes`: Number of distinct classes predicted by the rules
+///
+/// # Example
+///
+/// ```
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules, get_rules_statistics};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// let stats = get_rules_statistics(&rules);
+///
+/// // Access individual statistics
+/// if stats.avg_confidence > 90.0 {
+///     println!("High quality rule set!");
+/// }
+///
+/// if stats.unique_predicted_classes == 2 {
+///     println!("Binary classification problem");
+/// }
+/// # Ok(())
+/// # }
+/// ```
+#[derive(Debug, Clone, Default)]
+pub struct RulesStatistics {
+    pub total_rules: usize,
+    pub avg_confidence: f64,
+    pub min_confidence: f64,
+    pub max_confidence: f64,
+    pub avg_support: f64,
+    pub min_support: usize,
+    pub max_support: usize,
+    pub avg_conditions: f64,
+    pub unique_predicted_classes: usize,
+}
+
+impl std::fmt::Display for RulesStatistics {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Rules Statistics:")?;
+        writeln!(f, "  Total rules: {}", self.total_rules)?;
+        writeln!(f, "  Confidence: avg={:.1}%, min={:.1}%, max={:.1}%",
+                 self.avg_confidence, self.min_confidence, self.max_confidence)?;
+        writeln!(f, "  Support: avg={:.1}, min={}, max={}",
+                 self.avg_support, self.min_support, self.max_support)?;
+        writeln!(f, "  Avg conditions per rule: {:.1}", self.avg_conditions)?;
+        writeln!(f, "  Unique predicted classes: {}", self.unique_predicted_classes)?;
+        Ok(())
     }
 }
 
@@ -509,26 +1443,90 @@ pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String,
     }
 }
 
-/// Load an ARFF file and convert it to NominalDataset
+/// Loads an ARFF file and converts it to a NominalDataset for CNC/CNC-BPC.
+///
+/// This function parses ARFF (Attribute-Relation File Format) files and creates
+/// a `NominalDataset` suitable for use with CNC and CNC-BPC algorithms.
 ///
 /// # Arguments
+///
 /// * `file_path` - Path to the .arff file
-/// * `class_attr_name` - Name of the class attribute in the ARFF file
+/// * `class_attr_name` - Name of the class attribute (must match exactly the attribute name in the ARFF file)
 ///
 /// # Returns
-/// A NominalDataset that can be used with CNC/CNC-BPC algorithms
 ///
-/// # Notes
-/// - This is a simple parser for ARFF files (both nominal and numeric attributes)
-/// - Numeric attributes will be treated as strings (consider discretizing them first for better results)
-/// - Missing values ("?") are kept as-is
+/// A `Result` containing the `NominalDataset` or an error
+///
+/// # Important Notes
+///
+/// ## Nominal vs Numeric Attributes
+///
+/// CNC and CNC-BPC work on **nominal (categorical)** data. If your ARFF file contains numeric attributes:
+///
+/// 1. **Recommended**: Discretize them first (convert to categories) for better results
+/// 2. **Quick option**: The parser converts them to strings, but results may be less meaningful
+///
+/// ## Finding the Class Attribute Name
+///
+/// The class attribute name must match exactly. Common patterns:
+/// - `weather.nominal.arff` → `"play"`
+/// - `contact-lenses.arff` → `"contact-lenses"`
+/// - `iris.arff` → `"class"`
+///
+/// Find it by looking at the last `@attribute` line in the ARFF file.
+///
+/// ## Recommended Datasets
+///
+/// **Nominal datasets** (ready to use):
+/// - `weather.nominal.arff` - 14 objects, 5 attributes, 2 classes
+/// - `contact-lenses.arff` - 24 objects, 5 attributes, 3 classes
+/// - `vote.arff` - Congressional voting records
+/// - `labor.arff` - Labor negotiations
+///
+/// **Numeric datasets** (require discretization for best results):
+/// - `iris.arff` - 4 numeric attributes
+/// - `diabetes.arff` - Numeric health data
+/// - `cpu.arff` - Computer performance
 ///
 /// # Example
-/// ```no_run
-/// use fcars::cnc::from_arff;
 ///
-/// let dataset = from_arff("data/weather.arff", "play").unwrap();
+/// ```no_run
+/// use fcars::cnc::{from_arff, cnc, extract_rules, display_rules};
+///
+/// // Load the dataset
+/// let dataset = from_arff("data-examples/weather.nominal.arff", "play")?;
+///
+/// // Display summary
+/// dataset.display_summary();
+///
+/// // Run CNC
+/// let result = cnc(&dataset);
+///
+/// // Extract and display rules
+/// let rules = extract_rules(&dataset, &result);
+/// display_rules(&rules);
+/// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
+///
+/// # Example with CNC-BPC
+///
+/// ```no_run
+/// use fcars::cnc::{from_arff, cnc_bpc};
+///
+/// let dataset = from_arff("data-examples/contact-lenses.arff", "contact-lenses")?;
+///
+/// // Focus on minority classes
+/// let result = cnc_bpc(&dataset, 1);
+/// println!("Minority classes kept: {:?}", result.minority_classes);
+/// # Ok::<(), Box<dyn std::error::Error>>(())
+/// ```
+///
+/// # Errors
+///
+/// Returns an error if:
+/// - File cannot be read
+/// - File is not valid ARFF format
+/// - Class attribute name not found in the file
 pub fn from_arff(
     file_path: &str,
     class_attr_name: &str,
@@ -605,24 +1603,71 @@ pub fn from_arff(
     ))
 }
 
-/// Load an ARFF file using the last attribute as class (ARFF convention)
+/// Loads an ARFF file using the last attribute as class (ARFF convention).
 ///
-/// This is a convenience function that calls `from_arff` with the last attribute
-/// as the class attribute, following the common ARFF convention.
+/// This is a convenience function that automatically uses the last attribute
+/// in the ARFF file as the class attribute, following the standard ARFF convention
+/// where the target variable is typically the last column.
 ///
 /// # Arguments
+///
 /// * `file_path` - Path to the .arff file
 ///
 /// # Returns
-/// A NominalDataset that can be used with CNC/CNC-BPC algorithms
 ///
-/// # Example
+/// A `Result` containing the `NominalDataset` or an error
+///
+/// # When to Use
+///
+/// Use this function when:
+/// - Your ARFF file follows the standard convention (class is last attribute)
+/// - You want quick loading without specifying the class attribute name
+/// - You're working with standard benchmark datasets
+///
+/// If the class attribute is **not** the last one, use [`from_arff`] instead and specify the class name explicitly.
+///
+/// # Example: Quick Start
+///
 /// ```no_run
-/// use fcars::cnc::from_arff_auto;
+/// use fcars::cnc::{from_arff_auto, cnc, extract_rules};
 ///
-/// // Uses the last attribute as class
-/// let dataset = from_arff_auto("data/weather.arff").unwrap();
+/// // Automatically uses last attribute as class
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+///
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// println!("Found {} rules", rules.len());
+/// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
+///
+/// # Example: Complete Workflow
+///
+/// ```no_run
+/// use fcars::cnc::{from_arff_auto, cnc_bpc, extract_rules, display_rules, get_rules_statistics};
+///
+/// // Load dataset (uses last attribute as class)
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+///
+/// // Run CNC-BPC with minority class focus
+/// let result = cnc_bpc(&dataset, 1);
+/// println!("Filtered to {} objects (from {})",
+///          result.filtered_size, result.original_size);
+///
+/// // Extract and analyze rules
+/// let rules = extract_rules(&dataset, &result.cnc_result);
+/// display_rules(&rules);
+///
+/// let stats = get_rules_statistics(&rules);
+/// println!("\n{}", stats);
+/// # Ok::<(), Box<dyn std::error::Error>>(())
+/// ```
+///
+/// # See Also
+///
+/// - [`from_arff`] - Load ARFF with explicit class attribute name
+/// - [`cnc`] - Run the CNC algorithm
+/// - [`cnc_bpc`] - Run CNC-BPC for imbalanced data
 pub fn from_arff_auto(
     file_path: &str,
 ) -> Result<NominalDataset, Box<dyn std::error::Error>> {
