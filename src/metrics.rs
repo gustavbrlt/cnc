@@ -91,6 +91,7 @@ pub struct ClassificationMetrics {
     pub macro_recall: f64,
     pub macro_f1: f64,
     pub mcc: f64,
+    pub kappa: f64,
     pub roc_auc: f64,
     pub prc_auc: f64,
     /// Per-class metrics
@@ -121,6 +122,7 @@ impl std::fmt::Display for ClassificationMetrics {
         writeln!(f, "  Precision: {:.4} (macro)", self.macro_precision)?;
         writeln!(f, "  F1-score:  {:.4} (macro)", self.macro_f1)?;
         writeln!(f, "  MCC:       {:.4}", self.mcc)?;
+        writeln!(f, "  Kappa:     {:.4}", self.kappa)?;
         writeln!(f, "  ROC AUC:   {:.4}", self.roc_auc)?;
         writeln!(f, "  PRC AUC:   {:.4}", self.prc_auc)?;
 
@@ -226,6 +228,7 @@ pub fn evaluate_cnc(dataset: &NominalDataset, result: &CncResult) -> Classificat
     let accuracy = calculate_accuracy(&cm);
     let (macro_precision, macro_recall, macro_f1, per_class) = calculate_macro_metrics(&cm, &actual);
     let mcc = calculate_mcc(&cm);
+    let kappa = calculate_kappa(&cm);
     let roc_auc = calculate_roc_auc(&actual, &predicted, &confidences, &cm.classes);
     let prc_auc = calculate_prc_auc(&actual, &predicted, &confidences, &cm.classes);
 
@@ -235,6 +238,7 @@ pub fn evaluate_cnc(dataset: &NominalDataset, result: &CncResult) -> Classificat
         macro_recall,
         macro_f1,
         mcc,
+        kappa,
         roc_auc,
         prc_auc,
         per_class,
@@ -370,6 +374,49 @@ fn calculate_mcc(cm: &ConfusionMatrix) -> f64 {
     }
 
     numerator / (denom_left * denom_right).sqrt()
+}
+
+/// Calculate Cohen's Kappa coefficient
+/// Kappa measures the agreement between predicted and actual classifications,
+/// accounting for agreement occurring by chance.
+/// κ = (p_o - p_e) / (1 - p_e)
+/// where p_o is observed agreement (accuracy) and p_e is expected agreement by chance
+fn calculate_kappa(cm: &ConfusionMatrix) -> f64 {
+    if cm.total == 0 {
+        return 0.0;
+    }
+
+    let n = cm.total as f64;
+
+    // p_o = observed agreement (same as accuracy)
+    let correct: usize = cm.classes.iter()
+        .map(|c| cm.true_positives(c))
+        .sum();
+    let p_o = correct as f64 / n;
+
+    // p_e = expected agreement by chance
+    // p_e = Σ_k (n_k_actual * n_k_predicted) / n^2
+    let mut p_e = 0.0;
+    for class in &cm.classes {
+        // Count actual occurrences of this class
+        let n_actual: usize = cm.classes.iter()
+            .map(|pred| cm.get(class, pred))
+            .sum();
+
+        // Count predicted occurrences of this class
+        let n_predicted: usize = cm.classes.iter()
+            .map(|actual| cm.get(actual, class))
+            .sum();
+
+        p_e += (n_actual as f64 * n_predicted as f64) / (n * n);
+    }
+
+    // Avoid division by zero
+    if (1.0 - p_e).abs() < 1e-10 {
+        return 0.0;
+    }
+
+    (p_o - p_e) / (1.0 - p_e)
 }
 
 /// Calculate ROC AUC (macro-averaged for multi-class)
@@ -551,6 +598,7 @@ pub fn display_metrics_table(metrics: &ClassificationMetrics) {
     println!("║  Recall:      {:>11.4}  (macro-averaged)        ║", metrics.macro_recall);
     println!("║  F1-score:    {:>11.4}  (macro-averaged)        ║", metrics.macro_f1);
     println!("║  MCC:         {:>11.4}                          ║", metrics.mcc);
+    println!("║  Kappa:       {:>11.4}                          ║", metrics.kappa);
     println!("║  PRC Area:    {:>11.4}                          ║", metrics.prc_auc);
     println!("║  ROC Area:    {:>11.4}                          ║", metrics.roc_auc);
     println!("╚════════════════════════════════════════════════════╝");
@@ -584,12 +632,12 @@ impl ComparisonResult {
 /// Display a comparison table between CNC and CNC-BP results
 pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
     println!("\n");
-    println!("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-    println!("║                              CNC vs CNC-BP Comparison Summary                                        ║");
-    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════╣");
-    println!("║                        │           CNC            │         CNC-BP           │                       ║");
-    println!("║ Dataset                │  Acc    F1    MCC   Cov% │  Acc    F1    MCC   Cov% │ Winner                ║");
-    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════╣");
+    println!("╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+    println!("║                                    CNC vs CNC-BP Comparison Summary                                                  ║");
+    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣");
+    println!("║                        │              CNC                 │            CNC-BP                │                       ║");
+    println!("║ Dataset                │  Acc    F1    MCC   Kappa   Cov% │  Acc    F1    MCC   Kappa   Cov% │ Winner                ║");
+    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣");
 
     for comp in comparisons {
         let cnc = &comp.cnc_metrics;
@@ -597,15 +645,15 @@ pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
         let cnc_cov = (cnc.coverage as f64 / cnc.total as f64) * 100.0;
         let bp_cov = (bp.coverage as f64 / bp.total as f64) * 100.0;
 
-        println!("║ {:22} │ {:5.2} {:5.2} {:5.2} {:5.1}% │ {:5.2} {:5.2} {:5.2} {:5.1}% │ {:21} ║",
+        println!("║ {:22} │ {:5.2} {:5.2} {:5.2} {:6.2} {:6.1}% │ {:5.2} {:5.2} {:5.2} {:6.2} {:6.1}% │ {:21} ║",
             comp.dataset_name,
-            cnc.accuracy, cnc.macro_f1, cnc.mcc, cnc_cov,
-            bp.accuracy, bp.macro_f1, bp.mcc, bp_cov,
+            cnc.accuracy, cnc.macro_f1, cnc.mcc, cnc.kappa, cnc_cov,
+            bp.accuracy, bp.macro_f1, bp.mcc, bp.kappa, bp_cov,
             format!("{} (n={})", comp.winner(), comp.cnc_bp_n)
         );
     }
 
-    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════╣");
+    println!("╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣");
 
     // Summary statistics
     let cnc_wins = comparisons.iter().filter(|c| c.winner() == "CNC").count();
@@ -617,13 +665,15 @@ pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
     let avg_bp_f1: f64 = comparisons.iter().map(|c| c.cnc_bp_metrics.macro_f1).sum::<f64>() / comparisons.len() as f64;
     let avg_cnc_mcc: f64 = comparisons.iter().map(|c| c.cnc_metrics.mcc).sum::<f64>() / comparisons.len() as f64;
     let avg_bp_mcc: f64 = comparisons.iter().map(|c| c.cnc_bp_metrics.mcc).sum::<f64>() / comparisons.len() as f64;
+    let avg_cnc_kappa: f64 = comparisons.iter().map(|c| c.cnc_metrics.kappa).sum::<f64>() / comparisons.len() as f64;
+    let avg_bp_kappa: f64 = comparisons.iter().map(|c| c.cnc_bp_metrics.kappa).sum::<f64>() / comparisons.len() as f64;
 
-    println!("║ AVERAGE                │      {:6.2} {:5.2}        │      {:6.2} {:5.2}        │  CNC:{} BP:{} Tie:{}     ║",
-        avg_cnc_f1, avg_cnc_mcc,
-        avg_bp_f1, avg_bp_mcc,
+    println!("║ AVERAGE                │      {:6.2} {:5.2} {:6.2}         │      {:6.2} {:5.2} {:6.2}         │  CNC:{} BP:{} Tie:{}     ║",
+        avg_cnc_f1, avg_cnc_mcc, avg_cnc_kappa,
+        avg_bp_f1, avg_bp_mcc, avg_bp_kappa,
         cnc_wins, bp_wins, ties
     );
-    println!("╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝");
+    println!("╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
 
     // Conclusion
     println!("\nConclusion:");
@@ -631,14 +681,17 @@ pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
         println!("  CNC-BP performs better overall ({} wins vs {} for CNC)", bp_wins, cnc_wins);
         println!("  Average F1: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_f1, avg_bp_f1, avg_bp_f1 - avg_cnc_f1);
         println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_mcc, avg_bp_mcc, avg_bp_mcc - avg_cnc_mcc);
+        println!("  Average Kappa: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_kappa, avg_bp_kappa, avg_bp_kappa - avg_cnc_kappa);
     } else if cnc_wins > bp_wins {
         println!("  CNC performs better overall ({} wins vs {} for CNC-BP)", cnc_wins, bp_wins);
         println!("  Average F1: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_f1, avg_bp_f1, avg_cnc_f1 - avg_bp_f1);
         println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_mcc, avg_bp_mcc, avg_cnc_mcc - avg_bp_mcc);
+        println!("  Average Kappa: CNC={:.4} vs CNC-BP={:.4} (diff: {:+.4})", avg_cnc_kappa, avg_bp_kappa, avg_cnc_kappa - avg_bp_kappa);
     } else {
         println!("  Both methods perform similarly ({} wins each)", cnc_wins);
         println!("  Average F1: CNC={:.4} vs CNC-BP={:.4}", avg_cnc_f1, avg_bp_f1);
         println!("  Average MCC: CNC={:.4} vs CNC-BP={:.4}", avg_cnc_mcc, avg_bp_mcc);
+        println!("  Average Kappa: CNC={:.4} vs CNC-BP={:.4}", avg_cnc_kappa, avg_bp_kappa);
     }
 }
 
@@ -691,5 +744,42 @@ mod tests {
         let mcc = calculate_mcc(&cm);
 
         assert!((mcc - (-1.0)).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_kappa_perfect() {
+        // Perfect agreement
+        let actual = vec!["A".to_string(), "A".to_string(), "B".to_string(), "B".to_string()];
+        let predicted = actual.clone();
+
+        let cm = ConfusionMatrix::new(&actual, &predicted);
+        let kappa = calculate_kappa(&cm);
+
+        assert!((kappa - 1.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_kappa_no_agreement() {
+        // Completely wrong predictions
+        let actual = vec!["A".to_string(), "A".to_string(), "B".to_string(), "B".to_string()];
+        let predicted = vec!["B".to_string(), "B".to_string(), "A".to_string(), "A".to_string()];
+
+        let cm = ConfusionMatrix::new(&actual, &predicted);
+        let kappa = calculate_kappa(&cm);
+
+        assert!((kappa - (-1.0)).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_kappa_partial_agreement() {
+        // Partial agreement
+        let actual = vec!["A".to_string(), "A".to_string(), "B".to_string(), "B".to_string()];
+        let predicted = vec!["A".to_string(), "B".to_string(), "A".to_string(), "B".to_string()];
+
+        let cm = ConfusionMatrix::new(&actual, &predicted);
+        let kappa = calculate_kappa(&cm);
+
+        // With 50% accuracy and balanced classes, kappa should be 0
+        assert!(kappa.abs() < 0.001);
     }
 }
