@@ -314,8 +314,30 @@ pub struct Prediction {
 /// for (class, m) in &metrics.per_class {
 ///     println!("{}: P={:.3}, R={:.3}, F1={:.3}", class, m.precision, m.recall, m.f1);
 /// }
+///
+/// // Or use the Display trait for a formatted output
+/// println!("{}", metrics);
 /// # Ok(())
 /// # }
+/// ```
+///
+/// # Output Example
+///
+/// ```text
+/// Classification Metrics:
+///   Coverage: 9/14 (64.3%)
+///   Accuracy:  0.7143
+///   Recall:    0.6667 (macro)
+///   Precision: 0.6190 (macro)
+///   F1-score:  0.6452 (macro)
+///   MCC:       0.4082
+///   Kappa:     0.3878
+///   ROC AUC:   0.7500
+///   PRC AUC:   0.6667
+///
+///   Per-class metrics:
+///     No: P=0.600 R=0.600 F1=0.600 (support=5)
+///     Yes: P=0.667 R=0.667 F1=0.667 (support=9)
 /// ```
 pub fn evaluate_cnc(dataset: &NominalDataset, result: &CncResult) -> ClassificationMetrics {
     let n_objects = dataset.objects.len();
@@ -770,6 +792,24 @@ fn calculate_binary_prc_auc(actual: &[bool], scores: &[f64]) -> f64 {
 /// # Ok(())
 /// # }
 /// ```
+///
+/// # Output Example
+///
+/// ```text
+/// ╔════════════════════════════════════════════════════╗
+/// ║            Classification Metrics                  ║
+/// ╠════════════════════════════════════════════════════╣
+/// ║  Coverage:       9 /     14 ( 64.29%)              ║
+/// ╠════════════════════════════════════════════════════╣
+/// ║  Accuracy:          0.7143                         ║
+/// ║  Recall:            0.6667  (macro-averaged)       ║
+/// ║  F1-score:          0.6452  (macro-averaged)       ║
+/// ║  MCC:               0.4082                         ║
+/// ║  Kappa:             0.3878                         ║
+/// ║  PRC Area:          0.6667                         ║
+/// ║  ROC Area:          0.7500                         ║
+/// ╚════════════════════════════════════════════════════╝
+/// ```
 pub fn display_metrics_table(metrics: &ClassificationMetrics) {
     println!("\n╔════════════════════════════════════════════════════╗");
     println!("║            Classification Metrics                  ║");
@@ -828,6 +868,7 @@ impl ComparisonResult {
     /// };
     ///
     /// println!("Winner: {}", comparison.winner());
+    /// // Output: "Winner: CNC-BPC"
     /// # Ok(())
     /// # }
     /// ```
@@ -876,6 +917,30 @@ impl ComparisonResult {
 /// display_comparison_table(&comparisons);
 /// # Ok(())
 /// # }
+/// ```
+///
+/// # Output Example
+///
+/// ```text
+/// ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+/// ║                                            CNC vs CNC-BPC Comparison Summary                                         ║
+/// ╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+/// ║                        │              CNC                 │            CNC-BPC               │                       ║
+/// ║ Dataset                │  Acc    F1    MCC   Kappa   Cov% │  Acc    F1    MCC   Kappa   Cov% │ Winner                ║
+/// ╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+/// ║ weather                │  0.71  0.65  0.41   0.39   64.3% │  0.79  0.74  0.58   0.56   71.4% │ CNC-BPC (n=1)         ║
+/// ║ contact-lenses         │  0.83  0.65  0.70   0.75   83.3% │  0.88  0.72  0.78   0.82   87.5% │ CNC-BPC (n=1)         ║
+/// ║ breast-cancer          │  0.72  0.62  0.32   0.29   68.5% │  0.75  0.66  0.38   0.35   72.0% │ CNC-BPC (n=1)         ║
+/// ║ unbalanced             │  0.65  0.45  0.28   0.25   55.0% │  0.70  0.52  0.35   0.32   62.5% │ CNC-BPC (n=1)         ║
+/// ╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+/// ║ AVERAGE                │        0.59  0.43   0.42         │        0.66  0.52   0.49         │  CNC:0 BPC:4 Tie:0    ║
+/// ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+///
+/// Conclusion:
+///   CNC-BPC performs better overall (4 wins vs 0 for CNC)
+///   Average F1: CNC=0.5900 vs CNC-BPC=0.6600 (diff: +0.0700)
+///   Average MCC: CNC=0.4300 vs CNC-BPC=0.5200 (diff: +0.0900)
+///   Average Kappa: CNC=0.4200 vs CNC-BPC=0.4900 (diff: +0.0700)
 /// ```
 pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
     println!("\n");
