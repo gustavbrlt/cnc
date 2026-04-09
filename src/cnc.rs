@@ -1,168 +1,7 @@
-//! CNC (Classifier Nominal Concept) algorithm and classification rule extraction.
+//! CNC (Classifier Nominal Concept) algorithm implementation.
 //!
-//! This module implements the CNC and CNC-BPC algorithms for classification of nominal
-//! (categorical) data using Formal Concept Analysis. It also provides comprehensive
-//! tools for extracting, filtering, sorting, and analyzing classification rules.
-//!
-//! # Overview
-//!
-//! The CNC algorithm finds the most pertinent attribute in a dataset and computes
-//! concepts (extent/intent pairs) that can be used for classification. CNC-BPC is
-//! a variant that focuses on minority classes for imbalanced datasets.
-//!
-//! # Classification Rules
-//!
-//! Rules extracted from CNC concepts have the form:
-//! ```text
-//! IF condition1 AND condition2 ... THEN class = X (confidence Y%, support N)
-//! ```
-//!
-//! Each rule contains:
-//! - **Conditions**: Attribute-value pairs (the concept's intent)
-//! - **Predicted class**: Majority class in the concept's extent
-//! - **Confidence**: Percentage of the majority class (quality indicator)
-//! - **Support**: Number of objects covered (generality indicator)
-//!
-//! # Quick Start
-//!
-//! ```
-//! use cnc::{from_arff_auto, cnc, extract_rules, display_rules};
-//!
-//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
-//! // 1. Load dataset
-//! let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-//!
-//! // 2. Run CNC algorithm
-//! let result = cnc(&dataset);
-//!
-//! // 3. Extract classification rules
-//! let rules = extract_rules(&dataset, &result);
-//!
-//! // 4. Display rules
-//! display_rules(&rules);
-//! # Ok(())
-//! # }
-//! ```
-//!
-//! # Working with Rules
-//!
-//! ## Filtering Rules
-//!
-//! ```
-//! use cnc::{extract_rules, filter_rules_by_confidence, filter_rules_by_support};
-//! # use cnc::{from_arff_auto, cnc};
-//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
-//! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-//! # let result = cnc(&dataset);
-//! # let rules = extract_rules(&dataset, &result);
-//!
-//! // Keep only high-confidence rules
-//! let reliable_rules = filter_rules_by_confidence(&rules, 80.0);
-//!
-//! // Keep only general rules (covering many objects)
-//! let general_rules = filter_rules_by_support(&rules, 5);
-//! # Ok(())
-//! # }
-//! ```
-//!
-//! ## Sorting Rules
-//!
-//! ```
-//! use cnc::{extract_rules, sort_rules_by_confidence, sort_rules_by_support};
-//! # use cnc::{from_arff_auto, cnc};
-//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
-//! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-//! # let result = cnc(&dataset);
-//! # let mut rules = extract_rules(&dataset, &result);
-//!
-//! // Sort by confidence (best rules first)
-//! sort_rules_by_confidence(&mut rules);
-//!
-//! // Or sort by support (most general rules first)
-//! sort_rules_by_support(&mut rules);
-//! # Ok(())
-//! # }
-//! ```
-//!
-//! ## Classifying New Objects
-//!
-//! ```
-//! use cnc::extract_rules;
-//! use std::collections::HashMap;
-//! # use cnc::{from_arff_auto, cnc};
-//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
-//! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-//! # let result = cnc(&dataset);
-//! # let rules = extract_rules(&dataset, &result);
-//!
-//! // Create a new object to classify
-//! let mut new_object = HashMap::new();
-//! new_object.insert("outlook".to_string(), "sunny".to_string());
-//! new_object.insert("humidity".to_string(), "high".to_string());
-//!
-//! // Find matching rules
-//! for rule in &rules {
-//!     if rule.matches(&new_object) {
-//!         println!("Predicted class: {}", rule.predicted_class);
-//!         println!("Confidence: {:.1}%", rule.confidence);
-//!     }
-//! }
-//! # Ok(())
-//! # }
-//! ```
-//!
-//! ## Analyzing Rule Sets
-//!
-//! ```
-//! use cnc::{extract_rules, get_rules_statistics};
-//! # use cnc::{from_arff_auto, cnc};
-//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
-//! # let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-//! # let result = cnc(&dataset);
-//! # let rules = extract_rules(&dataset, &result);
-//!
-//! let stats = get_rules_statistics(&rules);
-//! println!("{}", stats);
-//! // Displays aggregate metrics: avg confidence, support, etc.
-//! # Ok(())
-//! # }
-//! ```
-//!
-//! # CNC-BPC for Imbalanced Data
-//!
-//! CNC-BPC focuses on minority classes, useful for imbalanced datasets:
-//!
-//! ```
-//! use cnc::{from_arff_auto, cnc_bpc, extract_rules};
-//!
-//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
-//! let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-//!
-//! // Run CNC-BPC keeping 1 minority class
-//! let result = cnc_bpc(&dataset, 1);
-//!
-//! println!("Minority classes: {:?}", result.minority_classes);
-//!
-//! // Extract rules focused on minority class
-//! let rules = extract_rules(&dataset, &result.cnc_result);
-//! # Ok(())
-//! # }
-//! ```
-//!
-//! # Rule Quality Metrics
-//!
-//! - **Confidence**: Higher is better (indicates rule reliability)
-//! - **Support**: Higher = more general, lower = more specific
-//! - **Coverage**: Percentage of dataset covered by the rule
-//! - **Number of conditions**: Fewer = simpler/general, more = complex/specific
-//!
-//! # See Also
-//!
-//! - [`ClassificationRule`] - The rule structure
-//! - [`extract_rules`] - Extract rules from concepts
-//! - [`display_rules`] - Display rules (compact format)
-//! - [`display_rules_detailed`] - Display rules (detailed format)
-//! - [`get_rules_statistics`] - Compute aggregate statistics
+//! This module provides the CNC and CNC-BPC algorithms for classification of nominal
+//! (categorical) data using Formal Concept Analysis.
 
 use std::collections::{HashMap, HashSet};
 use std::fs;
@@ -342,7 +181,13 @@ impl std::fmt::Display for ClassificationRule {
 /// Result structure for CNC containing both the concepts and debug information
 #[derive(Debug)]
 pub struct CncResult {
+    /// List of concepts: (attribute_name, attribute_value, extent, intent)
+    /// - attribute_name: The pertinent attribute
+    /// - attribute_value: The most frequent value
+    /// - extent: Indices of objects in the concept
+    /// - intent: Common attribute-value pairs across all objects
     pub concepts: Vec<(String, String, Vec<usize>, HashMap<String, String>)>,
+    /// List of pertinent attributes used in the analysis
     pub pertinent_attrs: Vec<String>,
 }
 
@@ -350,9 +195,13 @@ pub struct CncResult {
 /// Uses CncResult to avoid duplication and maintain consistency
 #[derive(Debug)]
 pub struct CncBpcResult {
+    /// The CNC result computed on the filtered dataset
     pub cnc_result: CncResult,
+    /// Set of minority classes that were kept in the filtered dataset
     pub minority_classes: HashSet<String>,
+    /// Number of objects in the original dataset
     pub original_size: usize,
+    /// Number of objects in the filtered dataset
     pub filtered_size: usize,
 }
 
@@ -363,10 +212,14 @@ pub struct CncBpcResult {
 /// Nominal dataset structure for CNC
 #[derive(Debug, Clone)]
 pub struct NominalDataset {
+    /// Names/identifiers of objects in the dataset
     pub objects: Vec<String>,
+    /// Names of all attributes (including class attribute)
     pub attributes: Vec<String>,
+    /// Name of the class attribute (target variable for classification)
     pub class_attribute: String,
-    pub data: Vec<HashMap<String, String>>, // Each object's attribute values
+    /// Attribute values for each object (one HashMap per object)
+    pub data: Vec<HashMap<String, String>>,
 }
 
 impl std::fmt::Display for NominalDataset {
@@ -430,7 +283,7 @@ impl NominalDataset {
         }
     }
     
-    /// Get all unique values for an attribute
+    /// Get all unique values for an attribute (sorted alphabetically)
     pub fn get_attribute_values(&self, attr_name: &str) -> Vec<String> {
         let mut values = HashSet::new();
         for obj_data in &self.data {
@@ -444,6 +297,8 @@ impl NominalDataset {
     }
     
     /// Group objects by attribute value
+    ///
+    /// Returns a HashMap mapping attribute values to vectors of object indices.
     pub fn group_by_attribute_value(&self, attr_name: &str) -> HashMap<String, Vec<usize>> {
         let mut groups = HashMap::new();
         for (obj_idx, obj_data) in self.data.iter().enumerate() {
@@ -454,7 +309,7 @@ impl NominalDataset {
         groups
     }
     
-    /// Get class values for a group of objects
+    /// Get class values for a group of objects by their indices
     pub fn get_class_values(&self, object_indices: &[usize]) -> Vec<String> {
         object_indices.iter()
             .filter_map(|&obj_idx| self.data[obj_idx].get(&self.class_attribute).cloned())
@@ -462,7 +317,21 @@ impl NominalDataset {
     }
     
     /// Get the majority class from a class distribution
+    ///
     /// Returns (majority_class, count, percentage)
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::NominalDataset;
+    ///
+    /// let classes = vec!["A".to_string(), "A".to_string(), "B".to_string()];
+    /// let (majority, count, pct) = NominalDataset::get_majority_class(&classes).unwrap();
+    ///
+    /// assert_eq!(majority, "A");
+    /// assert_eq!(count, 2);
+    /// assert_eq!(pct, 66.66666666666666);
+    /// ```
     pub fn get_majority_class(class_values: &[String]) -> Option<(String, usize, f64)> {
         if class_values.is_empty() {
             return None;
@@ -485,6 +354,8 @@ impl NominalDataset {
     }
     
     /// Display summary statistics about the dataset
+    ///
+    /// Prints the dataset context, number of objects, attributes, and class distribution.
     pub fn display_summary(&self) {
 
         println!("Context:\n{}", &self);
@@ -616,6 +487,64 @@ fn find_most_frequent_values(dataset: &NominalDataset, attr_name: &str) -> Vec<S
 }
 
 /// Compute closure for nominal data (group objects by attribute value and find common attributes)
+///
+/// This function computes the formal concept closure for a given attribute-value pair.
+/// It returns the extent (object indices) and intent (common attribute-value pairs).
+///
+/// # Arguments
+///
+/// * `dataset` - The nominal dataset
+/// * `attr_name` - The attribute name to use as starting point
+/// * `attr_value` - The attribute value to match
+///
+/// # Returns
+///
+/// A tuple of (extent, intent):
+/// - `extent`: Vector of object indices that have the specified attribute-value
+/// - `intent`: HashMap of attribute-value pairs common to all objects in the extent
+///
+/// # Example
+///
+/// ```
+/// use cnc::{NominalDataset, compute_nominal_closure};
+/// use std::collections::HashMap;
+///
+/// let dataset = NominalDataset::new(
+///     vec!["obj1".into(), "obj2".into(), "obj3".into()],
+///     vec!["color".into(), "size".into(), "class".into()],
+///     "class".into(),
+///     vec![
+///         {
+///             let mut m = HashMap::new();
+///             m.insert("color".into(), "red".into());
+///             m.insert("size".into(), "big".into());
+///             m.insert("class".into(), "A".into());
+///             m
+///         },
+///         {
+///             let mut m = HashMap::new();
+///             m.insert("color".into(), "red".into());
+///             m.insert("size".into(), "big".into());
+///             m.insert("class".into(), "A".into());
+///             m
+///         },
+///         {
+///             let mut m = HashMap::new();
+///             m.insert("color".into(), "blue".into());
+///             m.insert("size".into(), "small".into());
+///             m.insert("class".into(), "B".into());
+///             m
+///         },
+///     ],
+/// );
+///
+/// // Find all objects with color=red and their common attributes
+/// let (extent, intent) = compute_nominal_closure(&dataset, "color", "red");
+///
+/// assert_eq!(extent, vec![0, 1]); // obj1 and obj2
+/// assert_eq!(intent.get("color"), Some(&"red".to_string()));
+/// assert_eq!(intent.get("size"), Some(&"big".to_string()));
+/// ```
 pub fn compute_nominal_closure(dataset: &NominalDataset, attr_name: &str, attr_value: &str) -> (Vec<usize>, HashMap<String, String>) {
     // Step 1: Find all objects with this attribute value (extent)
     let extent: Vec<usize> = dataset.data.iter()
@@ -1101,6 +1030,7 @@ pub fn display_rules_detailed(dataset: &NominalDataset, rules: &[ClassificationR
     println!("\n{}", "=".repeat(100));
 }
 
+/// Display the chosen pertinent attribute(s) and their most frequent values from CNC results
 pub fn display_cnc_chosen_attribute(dataset : &NominalDataset, results : &CncResult) {
 
     println!("Most pertinent attribute(s): {:?}",
@@ -1368,14 +1298,23 @@ pub fn get_rules_statistics(rules: &[ClassificationRule]) -> RulesStatistics {
 /// ```
 #[derive(Debug, Clone, Default)]
 pub struct RulesStatistics {
+    /// Total number of rules
     pub total_rules: usize,
+    /// Average confidence across all rules (percentage)
     pub avg_confidence: f64,
+    /// Minimum confidence value (percentage)
     pub min_confidence: f64,
+    /// Maximum confidence value (percentage)
     pub max_confidence: f64,
+    /// Average support (number of objects covered)
     pub avg_support: f64,
+    /// Minimum support value
     pub min_support: usize,
+    /// Maximum support value
     pub max_support: usize,
+    /// Average number of conditions per rule
     pub avg_conditions: f64,
+    /// Number of unique classes predicted by the rules
     pub unique_predicted_classes: usize,
 }
 
@@ -1394,6 +1333,8 @@ impl std::fmt::Display for RulesStatistics {
 }
 
 /// Display CNC results in a standardized format
+///
+/// Shows detailed information about each concept including extent, intent, and class distribution.
 pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String, Vec<usize>, HashMap<String, String>)]) {
     if results.is_empty() {
         println!("No concepts found");

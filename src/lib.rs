@@ -1,3 +1,34 @@
+//! # CNC - Classifier Nominal Concept
+//!
+//! A Rust implementation of the CNC (Classifier Nominal Concept) and CNC-BPC algorithms
+//! for classification of nominal (categorical) data using Formal Concept Analysis.
+//!
+//! ## Features
+//!
+//! - **CNC Algorithm**: Finds the most pertinent attribute and computes concepts for classification
+//! - **CNC-BPC**: Variant focused on minority classes for imbalanced datasets
+//! - **Classification Rules**: Extract, filter, sort, and analyze human-readable rules
+//! - **ARFF Support**: Load datasets from ARFF (Attribute-Relation File Format) files
+//! - **Metrics**: Comprehensive classification metrics (accuracy, precision, recall, F1, MCC, Kappa, etc.)
+//!
+//! ## Quick Start
+//!
+//! ```
+//! use cnc::{from_arff_auto, cnc, extract_rules, display_rules};
+//!
+//! # fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! // Load dataset from ARFF file
+//! let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+//!
+//! // Run CNC algorithm
+//! let result = cnc(&dataset);
+//!
+//! // Extract and display classification rules
+//! let rules = extract_rules(&dataset, &result);
+//! display_rules(&rules);
+//! # Ok(())
+//! # }
+//! ```
 
 pub mod cnc;
 pub mod metrics;

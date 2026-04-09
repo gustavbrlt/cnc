@@ -86,13 +86,21 @@ impl ConfusionMatrix {
 /// Classification metrics results
 #[derive(Debug, Clone)]
 pub struct ClassificationMetrics {
+    /// Overall classification accuracy (0.0 to 1.0)
     pub accuracy: f64,
+    /// Macro-averaged precision across all classes (0.0 to 1.0)
     pub macro_precision: f64,
+    /// Macro-averaged recall across all classes (0.0 to 1.0)
     pub macro_recall: f64,
+    /// Macro-averaged F1-score across all classes (0.0 to 1.0)
     pub macro_f1: f64,
+    /// Matthews Correlation Coefficient (-1.0 to 1.0)
     pub mcc: f64,
+    /// Cohen's Kappa statistic (-1.0 to 1.0)
     pub kappa: f64,
+    /// Area Under the ROC Curve (0.0 to 1.0)
     pub roc_auc: f64,
+    /// Area Under the Precision-Recall Curve (0.0 to 1.0)
     pub prc_auc: f64,
     /// Per-class metrics
     pub per_class: HashMap<String, PerClassMetrics>,
@@ -105,10 +113,14 @@ pub struct ClassificationMetrics {
 /// Per-class metrics
 #[derive(Debug, Clone)]
 pub struct PerClassMetrics {
+    /// Precision for this class (0.0 to 1.0)
     pub precision: f64,
+    /// Recall for this class (0.0 to 1.0)
     pub recall: f64,
+    /// F1-score for this class (0.0 to 1.0)
     pub f1: f64,
-    pub support: usize, // Number of actual instances of this class
+    /// Number of actual instances of this class in the dataset
+    pub support: usize,
 }
 
 impl std::fmt::Display for ClassificationMetrics {
@@ -141,9 +153,12 @@ impl std::fmt::Display for ClassificationMetrics {
 /// Prediction with confidence score for ROC/PRC calculations
 #[derive(Debug, Clone)]
 pub struct Prediction {
+    /// Index of the object being predicted
     pub object_idx: usize,
+    /// Predicted class label
     pub predicted_class: String,
-    pub confidence: f64, // Confidence score (0-1)
+    /// Confidence score for the prediction (0.0 to 1.0)
+    pub confidence: f64,
 }
 
 /// Evaluate CNC results as a classifier
@@ -586,6 +601,9 @@ fn calculate_binary_prc_auc(actual: &[bool], scores: &[f64]) -> f64 {
 }
 
 /// Display metrics in a formatted table suitable for academic reporting
+///
+/// Prints a nicely formatted table with all classification metrics including accuracy,
+/// precision, recall, F1-score, MCC, Kappa, ROC AUC, and PRC AUC.
 pub fn display_metrics_table(metrics: &ClassificationMetrics) {
     println!("\n╔════════════════════════════════════════════════════╗");
     println!("║            Classification Metrics                  ║");
@@ -607,9 +625,13 @@ pub fn display_metrics_table(metrics: &ClassificationMetrics) {
 /// Comparison result between two methods
 #[derive(Debug, Clone)]
 pub struct ComparisonResult {
+    /// Name of the dataset being compared
     pub dataset_name: String,
+    /// Classification metrics from standard CNC
     pub cnc_metrics: ClassificationMetrics,
+    /// Classification metrics from CNC-BPC
     pub cnc_bpc_metrics: ClassificationMetrics,
+    /// Number of minority classes kept in CNC-BPC
     pub cnc_bpc_n: usize,
 }
 
@@ -630,6 +652,9 @@ impl ComparisonResult {
 }
 
 /// Display a comparison table between CNC and CNC-BPC results
+///
+/// Prints a comprehensive comparison table showing metrics for both algorithms
+/// across multiple datasets, including a summary of wins/ties.
 pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
     println!("\n");
     println!("╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
