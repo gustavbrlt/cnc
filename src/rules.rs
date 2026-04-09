@@ -4,7 +4,7 @@
 //! extracted from CNC concepts.
 
 use std::collections::{HashMap, HashSet};
-use crate::cnc::{NominalDataset, CncResult};
+use crate::core::{NominalDataset, CncResult};
 
 /// Classification rule extracted from a CNC/CNC-BPC concept.
 ///

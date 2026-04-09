@@ -29,12 +29,12 @@
 //! # }
 //! ```
 
-pub mod cnc;
+pub mod core;
 pub mod metrics;
 pub mod rules;
 
 // Re-export main types and functions for cleaner API
-pub use cnc::*;
+pub use core::*;
 pub use rules::*;
 
 // Tests

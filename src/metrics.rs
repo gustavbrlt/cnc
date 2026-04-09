@@ -7,7 +7,7 @@
 //! - Precision-Recall Curve Area (PRC Area)
 
 use std::collections::HashMap;
-use crate::cnc::{CncResult, NominalDataset};
+use crate::core::{CncResult, NominalDataset};
 
 /// Confusion matrix for binary and multi-class classification
 #[derive(Debug, Clone)]

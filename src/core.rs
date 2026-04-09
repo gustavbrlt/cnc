@@ -1,7 +1,8 @@
-//! CNC (Classifier Nominal Concept) algorithm implementation.
+//! Core CNC (Classifier Nominal Concept) algorithm implementation.
 //!
-//! This module provides the CNC and CNC-BPC algorithms for classification of nominal
-//! (categorical) data using Formal Concept Analysis.
+//! This module provides the core CNC and CNC-BPC algorithms for classification of nominal
+//! (categorical) data using Formal Concept Analysis, along with dataset structures and
+//! ARFF file loading capabilities.
 
 use std::collections::{HashMap, HashSet};
 use std::fs;
