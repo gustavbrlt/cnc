@@ -172,7 +172,49 @@ impl std::fmt::Display for ClassificationRule {
     }
 }
 
-/// Extract classification rules from CNC concepts.
+/// Extracts classification rules from CNC concepts.
+///
+/// Each concept is transformed into a classification rule where:
+/// - The **intent** (common attribute-value pairs) becomes the rule **conditions**
+/// - The **majority class** in the extent becomes the **predicted class**
+/// - **Confidence** is the percentage of the majority class in the extent
+/// - **Support** is the number of objects in the extent
+///
+/// # Arguments
+///
+/// * `dataset` - The nominal dataset (used for class attribute name and calculating class distribution)
+/// * `result` - CNC result containing the concepts to extract rules from
+///
+/// # Returns
+///
+/// A vector of `ClassificationRule`, one for each non-empty concept
+///
+/// # Rule Structure
+///
+/// Each extracted rule has the form:
+/// ```text
+/// IF <conditions> THEN <class> = <value> (confidence=X%, support=N)
+/// ```
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc, extract_rules};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// println!("Extracted {} rules from {} concepts", rules.len(), result.concepts.len());
+///
+/// for rule in &rules {
+///     println!("Rule with {} conditions, confidence: {:.1}%",
+///              rule.conditions.len(), rule.confidence);
+/// }
+/// # Ok(())
+/// # }
+/// ```
 pub fn extract_rules(dataset: &NominalDataset, result: &CncResult) -> Vec<ClassificationRule> {
     let mut rules = Vec::new();
     let total_objects = dataset.objects.len();
@@ -204,6 +246,42 @@ pub fn extract_rules(dataset: &NominalDataset, result: &CncResult) -> Vec<Classi
 }
 
 /// Displays classification rules in a compact, readable format.
+///
+/// Each rule is printed on a single line showing conditions, predicted class,
+/// confidence, support, and coverage percentage.
+///
+/// # Arguments
+///
+/// * `rules` - Slice of classification rules to display
+///
+/// # Output Format
+///
+/// ```text
+/// 3 classification rule(s) extracted:
+/// ================================================================================
+///
+/// Rule 1:
+///   IF outlook=sunny THEN play=no (confidence=100.0%, support=3/14, coverage=21.4%)
+///
+/// Rule 2:
+///   IF outlook=overcast THEN play=yes (confidence=100.0%, support=4/14, coverage=28.6%)
+/// ================================================================================
+/// ```
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc, extract_rules, display_rules};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// display_rules(&rules);
+/// # Ok(())
+/// # }
+/// ```
 pub fn display_rules(rules: &[ClassificationRule]) {
     if rules.is_empty() {
         println!("No classification rules extracted");
@@ -221,7 +299,50 @@ pub fn display_rules(rules: &[ClassificationRule]) {
     println!("\n{}", "=".repeat(80));
 }
 
-/// Displays classification rules with detailed statistics and breakdowns.
+/// Displays classification rules with comprehensive details and statistics.
+///
+/// For each rule, this function shows:
+/// - All conditions (attribute-value pairs) listed individually
+/// - Predicted class with confidence percentage
+/// - Coverage statistics (support and percentage of dataset)
+/// - Names of all objects covered by the rule
+/// - Complete class distribution among covered objects
+///
+/// # Arguments
+///
+/// * `dataset` - The dataset (needed for object names and class information)
+/// * `rules` - Slice of classification rules to display
+///
+/// # Output Format
+///
+/// ```text
+/// Rule 1:
+///   Conditions (2 attribute(s)):
+///     - outlook = sunny
+///     - humidity = high
+///   Prediction:
+///     → class = no (confidence: 100.0%)
+///   Coverage:
+///     - Support: 3/14 objects (21.4%)
+///     - Covered objects: ["obj1", "obj2", "obj8"]
+///   Class distribution in covered objects:
+///     - no: 3 (100.0%) ← predicted
+/// ```
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc, extract_rules, display_rules_detailed};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let rules = extract_rules(&dataset, &result);
+///
+/// display_rules_detailed(&dataset, &rules);
+/// # Ok(())
+/// # }
+/// ```
 pub fn display_rules_detailed(dataset: &NominalDataset, rules: &[ClassificationRule]) {
     if rules.is_empty() {
         println!("No classification rules extracted");

@@ -161,13 +161,60 @@ pub struct Prediction {
     pub confidence: f64,
 }
 
-/// Evaluate CNC results as a classifier
+/// Evaluates CNC results as a classifier and computes comprehensive classification metrics.
 ///
-/// Each object covered by a concept is assigned the majority class of that concept.
-/// The confidence is the proportion of the majority class in the concept's extent.
-/// Objects covered by multiple concepts use the concept with highest confidence.
-/// Objects NOT covered by any concept are assigned the dataset's majority class
-/// with a low confidence, ensuring realistic evaluation metrics.
+/// This function treats the CNC concepts as a classification model and evaluates its
+/// performance against the actual class labels in the dataset.
+///
+/// # Classification Strategy
+///
+/// - **Covered objects**: Assigned the majority class of their concept (highest confidence)
+/// - **Multiple coverage**: If an object is in multiple concepts, use the one with highest confidence
+/// - **Uncovered objects**: Assigned the dataset's majority class with low confidence (0.0)
+///
+/// # Metrics Computed
+///
+/// - **Accuracy**: Overall correctness of predictions
+/// - **Macro-averaged**: Precision, Recall, F1-score (average across all classes)
+/// - **Per-class**: Individual metrics for each class (precision, recall, F1, support)
+/// - **MCC**: Matthews Correlation Coefficient (robust for imbalanced datasets)
+/// - **Kappa**: Cohen's Kappa (agreement correcting for chance)
+/// - **ROC AUC**: Area Under the Receiver Operating Characteristic curve
+/// - **PRC AUC**: Area Under the Precision-Recall curve
+/// - **Coverage**: Number and percentage of objects covered by concepts
+///
+/// # Arguments
+///
+/// * `dataset` - The nominal dataset containing actual class labels
+/// * `result` - CNC result with concepts to evaluate
+///
+/// # Returns
+///
+/// A `ClassificationMetrics` struct with all computed metrics
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc};
+/// use cnc::metrics::evaluate_cnc;
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+///
+/// let metrics = evaluate_cnc(&dataset, &result);
+///
+/// println!("Accuracy: {:.2}%", metrics.accuracy * 100.0);
+/// println!("Macro F1: {:.4}", metrics.macro_f1);
+/// println!("Coverage: {}/{} objects", metrics.coverage, metrics.total);
+///
+/// // Access per-class metrics
+/// for (class, m) in &metrics.per_class {
+///     println!("{}: P={:.3}, R={:.3}, F1={:.3}", class, m.precision, m.recall, m.f1);
+/// }
+/// # Ok(())
+/// # }
+/// ```
 pub fn evaluate_cnc(dataset: &NominalDataset, result: &CncResult) -> ClassificationMetrics {
     let n_objects = dataset.objects.len();
 

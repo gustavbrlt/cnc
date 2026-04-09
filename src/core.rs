@@ -414,8 +414,51 @@ pub fn compute_nominal_closure(dataset: &NominalDataset, attr_name: &str, attr_v
     (extent, intent)
 }
 
-/// CNC algorithm.
-/// Returns all concepts when there are ties in pertinence or frequency
+/// Runs the CNC (Classifier Nominal Concept) algorithm on a nominal dataset.
+///
+/// The CNC algorithm finds the most pertinent attribute(s) using information gain,
+/// identifies the most frequent value(s) for each pertinent attribute, and computes
+/// formal concepts (extent/intent pairs) that can be used for classification.
+///
+/// # Algorithm Steps
+///
+/// 1. **Find pertinent attributes**: Selects attribute(s) with maximum information gain
+/// 2. **Find frequent values**: For each pertinent attribute, finds the most frequent value(s)
+/// 3. **Compute concepts**: Calculates the closure (extent and intent) for each attribute-value pair
+///
+/// # Arguments
+///
+/// * `dataset` - The nominal dataset to analyze
+///
+/// # Returns
+///
+/// A `CncResult` containing:
+/// - `concepts`: Vector of tuples (attribute, value, extent, intent)
+/// - `pertinent_attrs`: List of attributes selected as most pertinent
+///
+/// # Ties Handling
+///
+/// When multiple attributes have the same information gain, or multiple values have
+/// the same frequency, all tied options are included in the result.
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+///
+/// println!("Found {} concepts", result.concepts.len());
+/// println!("Pertinent attributes: {:?}", result.pertinent_attrs);
+///
+/// for (attr, value, extent, intent) in &result.concepts {
+///     println!("Concept: {}={} covers {} objects", attr, value, extent.len());
+/// }
+/// # Ok(())
+/// # }
+/// ```
 pub fn cnc(dataset: &NominalDataset) -> CncResult {
     
     // Step 1: Find all most pertinent attributes (handle ties)
@@ -616,7 +659,36 @@ pub fn cnc_bpc(dataset: &NominalDataset, n: usize) -> CncBpcResult {
     }
 }
 
-/// Display the chosen pertinent attribute(s) and their most frequent values from CNC results
+/// Displays the pertinent attribute(s) and their most frequent values from CNC results.
+///
+/// This function provides a quick summary of which attributes were selected as most
+/// pertinent by the CNC algorithm and which values were most frequent for each.
+///
+/// # Arguments
+///
+/// * `dataset` - The dataset used for analysis
+/// * `results` - The CNC results containing pertinent attributes
+///
+/// # Output Format
+///
+/// ```text
+/// Most pertinent attribute(s): ["Outlook"]
+///   Most frequent value(s) for 'Outlook': ["Sunny"]
+/// ```
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc, display_cnc_chosen_attribute};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+///
+/// display_cnc_chosen_attribute(&dataset, &result);
+/// # Ok(())
+/// # }
+/// ```
 pub fn display_cnc_chosen_attribute(dataset : &NominalDataset, results : &CncResult) {
 
     println!("Most pertinent attribute(s): {:?}",
@@ -630,9 +702,47 @@ pub fn display_cnc_chosen_attribute(dataset : &NominalDataset, results : &CncRes
     }
 }
 
-/// Display CNC results in a standardized format
+/// Displays CNC results in a detailed, standardized format.
 ///
-/// Shows detailed information about each concept including extent, intent, and class distribution.
+/// For each concept, this function shows:
+/// - The pertinent attribute and its value
+/// - Extent: object indices and names covered by the concept
+/// - Intent: common attribute-value pairs shared by all objects in the extent
+/// - Class distribution: breakdown of class values in the extent
+///
+/// # Arguments
+///
+/// * `dataset` - The dataset (needed for object names and class information)
+/// * `results` - Vector of concepts, typically from `CncResult.concepts`
+///
+/// # Output Format
+///
+/// ```text
+/// 2 concept(s) found:
+///
+/// Concept 1:
+///   Pertinent attribute: 'Outlook' with value 'Sunny'
+///   Extent of the pertinent attribute(s): ["obj1", "obj2", "obj8"]
+///   Extent size: 3/14 objects (21.4%)
+///   Intent (common attributes): {"Outlook": "Sunny", "Humidity": "High"}
+///   Intent size: 2/4 attributes (50.0%)
+///   Class distribution in extent:
+///     No: 3 (100.0%) (majority class)
+/// ```
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc, display_cnc_results};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+///
+/// display_cnc_results(&dataset, &result.concepts);
+/// # Ok(())
+/// # }
+/// ```
 pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String, Vec<usize>, HashMap<String, String>)]) {
     if results.is_empty() {
         println!("No concepts found");
