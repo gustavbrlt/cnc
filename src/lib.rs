@@ -7,14 +7,14 @@
 //!
 //! - **CNC Algorithm**: Finds the most pertinent attribute and computes concepts for classification
 //! - **CNC-BPC**: Variant focused on minority classes for imbalanced datasets
-//! - **Classification Rules**: Extract, filter, sort, and analyze human-readable rules
+//! - **Classification Rules Module**: Extract, filter, sort, and analyze human-readable rules (see `rules` module)
 //! - **ARFF Support**: Load datasets from ARFF (Attribute-Relation File Format) files
 //! - **Metrics**: Comprehensive classification metrics (accuracy, precision, recall, F1, MCC, Kappa, etc.)
 //!
 //! ## Quick Start
 //!
 //! ```
-//! use cnc::{from_arff_auto, cnc, extract_rules, display_rules};
+//! use cnc::{from_arff_auto, cnc, display_cnc_results};
 //!
 //! # fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! // Load dataset from ARFF file
@@ -23,18 +23,19 @@
 //! // Run CNC algorithm
 //! let result = cnc(&dataset);
 //!
-//! // Extract and display classification rules
-//! let rules = extract_rules(&dataset, &result);
-//! display_rules(&rules);
+//! // Display results
+//! display_cnc_results(&dataset, &result.concepts);
 //! # Ok(())
 //! # }
 //! ```
 
 pub mod cnc;
 pub mod metrics;
+pub mod rules;
 
 // Re-export main types and functions for cleaner API
 pub use cnc::*;
+pub use rules::*;
 
 // Tests
 #[cfg(test)]
@@ -62,11 +63,11 @@ mod tests {
         display_cnc_results(dataset, &result.concepts);
 
         // Extract and display classification rules
-        let rules = cnc::extract_rules(dataset, &result);
-        cnc::display_rules(&rules);
+        let rules = extract_rules(dataset, &result);
+        display_rules(&rules);
 
         // Display rule statistics
-        let stats = cnc::get_rules_statistics(&rules);
+        let stats = get_rules_statistics(&rules);
         println!("\n{}", stats);
 
         // Calculate and display classification metrics
@@ -300,32 +301,32 @@ mod tests {
         let result = cnc(&dataset);
 
         // Extract rules
-        let rules = cnc::extract_rules(&dataset, &result);
+        let rules = extract_rules(&dataset, &result);
         println!("\n--- Classification Rules (compact) ---");
-        cnc::display_rules(&rules);
+        display_rules(&rules);
 
         // Detailed rules display
         println!("\n--- Classification Rules (detailed) ---");
-        cnc::display_rules_detailed(&dataset, &rules);
+        display_rules_detailed(&dataset, &rules);
 
         // Filter rules by confidence
         println!("\n--- Filtering Rules ---");
-        let high_conf_rules = cnc::filter_rules_by_confidence(&rules, 100.0);
+        let high_conf_rules = filter_rules_by_confidence(&rules, 100.0);
         println!("Rules with 100% confidence: {}", high_conf_rules.len());
 
-        let medium_conf_rules = cnc::filter_rules_by_confidence(&rules, 50.0);
+        let medium_conf_rules = filter_rules_by_confidence(&rules, 50.0);
         println!("Rules with ≥50% confidence: {}", medium_conf_rules.len());
 
         // Sort by confidence
         let mut sorted_rules = rules.clone();
-        cnc::sort_rules_by_confidence(&mut sorted_rules);
+        sort_rules_by_confidence(&mut sorted_rules);
         println!("\n--- Top 3 rules by confidence ---");
         for (i, rule) in sorted_rules.iter().take(3).enumerate() {
             println!("{}. {}", i + 1, rule);
         }
 
         // Statistics
-        let stats = cnc::get_rules_statistics(&rules);
+        let stats = get_rules_statistics(&rules);
         println!("\n{}", stats);
 
         assert_eq!(8, rules.len());
@@ -337,7 +338,7 @@ mod tests {
 
         let dataset = create_animal_dataset();
         let result = cnc(&dataset);
-        let rules = cnc::extract_rules(&dataset, &result);
+        let rules = extract_rules(&dataset, &result);
 
         println!("Testing rule matching on dataset objects:");
 
