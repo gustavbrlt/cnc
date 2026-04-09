@@ -22,6 +22,28 @@ pub struct ConfusionMatrix {
 
 impl ConfusionMatrix {
     /// Create a new confusion matrix from actual and predicted labels
+    ///
+    /// # Arguments
+    ///
+    /// * `actual` - Slice of actual class labels
+    /// * `predicted` - Slice of predicted class labels
+    ///
+    /// # Panics
+    ///
+    /// Panics if `actual` and `predicted` have different lengths.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::metrics::ConfusionMatrix;
+    ///
+    /// let actual = vec!["cat".to_string(), "dog".to_string(), "cat".to_string()];
+    /// let predicted = vec!["cat".to_string(), "cat".to_string(), "cat".to_string()];
+    ///
+    /// let cm = ConfusionMatrix::new(&actual, &predicted);
+    /// assert_eq!(cm.total, 3);
+    /// assert_eq!(cm.classes.len(), 2);
+    /// ```
     pub fn new(actual: &[String], predicted: &[String]) -> Self {
         assert_eq!(actual.len(), predicted.len(), "actual and predicted must have same length");
 
@@ -45,16 +67,64 @@ impl ConfusionMatrix {
     }
 
     /// Get count for a specific (actual, predicted) pair
+    ///
+    /// Returns the number of instances where the actual class was `actual`
+    /// and the predicted class was `predicted`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::metrics::ConfusionMatrix;
+    ///
+    /// let actual = vec!["A".to_string(), "A".to_string(), "B".to_string()];
+    /// let predicted = vec!["A".to_string(), "B".to_string(), "B".to_string()];
+    ///
+    /// let cm = ConfusionMatrix::new(&actual, &predicted);
+    /// assert_eq!(cm.get("A", "A"), 1);  // One correct A prediction
+    /// assert_eq!(cm.get("A", "B"), 1);  // One A misclassified as B
+    /// assert_eq!(cm.get("B", "B"), 1);  // One correct B prediction
+    /// ```
     pub fn get(&self, actual: &str, predicted: &str) -> usize {
         *self.matrix.get(&(actual.to_string(), predicted.to_string())).unwrap_or(&0)
     }
 
     /// Calculate True Positives for a specific class
+    ///
+    /// Returns the number of instances that were correctly classified as `class`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::metrics::ConfusionMatrix;
+    ///
+    /// let actual = vec!["A".to_string(), "A".to_string(), "B".to_string()];
+    /// let predicted = vec!["A".to_string(), "B".to_string(), "B".to_string()];
+    ///
+    /// let cm = ConfusionMatrix::new(&actual, &predicted);
+    /// assert_eq!(cm.true_positives("A"), 1);  // One A correctly predicted
+    /// assert_eq!(cm.true_positives("B"), 1);  // One B correctly predicted
+    /// ```
     pub fn true_positives(&self, class: &str) -> usize {
         self.get(class, class)
     }
 
     /// Calculate False Positives for a specific class (predicted as class but wasn't)
+    ///
+    /// Returns the number of instances that were incorrectly predicted as `class`
+    /// when they actually belonged to a different class.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::metrics::ConfusionMatrix;
+    ///
+    /// let actual = vec!["A".to_string(), "A".to_string(), "B".to_string()];
+    /// let predicted = vec!["A".to_string(), "B".to_string(), "A".to_string()];
+    ///
+    /// let cm = ConfusionMatrix::new(&actual, &predicted);
+    /// assert_eq!(cm.false_positives("A"), 1);  // B predicted as A
+    /// assert_eq!(cm.false_positives("B"), 1);  // A predicted as B
+    /// ```
     pub fn false_positives(&self, class: &str) -> usize {
         self.classes.iter()
             .filter(|c| *c != class)
@@ -63,6 +133,22 @@ impl ConfusionMatrix {
     }
 
     /// Calculate False Negatives for a specific class (was class but predicted as something else)
+    ///
+    /// Returns the number of instances that actually belonged to `class`
+    /// but were incorrectly predicted as a different class.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::metrics::ConfusionMatrix;
+    ///
+    /// let actual = vec!["A".to_string(), "A".to_string(), "B".to_string()];
+    /// let predicted = vec!["A".to_string(), "B".to_string(), "B".to_string()];
+    ///
+    /// let cm = ConfusionMatrix::new(&actual, &predicted);
+    /// assert_eq!(cm.false_negatives("A"), 1);  // One A predicted as B
+    /// assert_eq!(cm.false_negatives("B"), 0);  // All B correctly predicted
+    /// ```
     pub fn false_negatives(&self, class: &str) -> usize {
         self.classes.iter()
             .filter(|c| *c != class)
@@ -71,6 +157,22 @@ impl ConfusionMatrix {
     }
 
     /// Calculate True Negatives for a specific class
+    ///
+    /// Returns the number of instances that were correctly identified as NOT
+    /// belonging to `class` (both actual and predicted were other classes).
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::metrics::ConfusionMatrix;
+    ///
+    /// let actual = vec!["A".to_string(), "B".to_string(), "C".to_string()];
+    /// let predicted = vec!["A".to_string(), "B".to_string(), "C".to_string()];
+    ///
+    /// let cm = ConfusionMatrix::new(&actual, &predicted);
+    /// // For class A: B->B and C->C are true negatives
+    /// assert_eq!(cm.true_negatives("A"), 2);
+    /// ```
     pub fn true_negatives(&self, class: &str) -> usize {
         self.classes.iter()
             .filter(|actual| *actual != class)
@@ -651,6 +753,23 @@ fn calculate_binary_prc_auc(actual: &[bool], scores: &[f64]) -> f64 {
 ///
 /// Prints a nicely formatted table with all classification metrics including accuracy,
 /// precision, recall, F1-score, MCC, Kappa, ROC AUC, and PRC AUC.
+///
+/// # Example
+///
+/// ```no_run
+/// use cnc::{from_arff_auto, cnc};
+/// use cnc::metrics::{evaluate_cnc, display_metrics_table};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let metrics = evaluate_cnc(&dataset, &result);
+///
+/// // Display a nicely formatted table
+/// display_metrics_table(&metrics);
+/// # Ok(())
+/// # }
+/// ```
 pub fn display_metrics_table(metrics: &ClassificationMetrics) {
     println!("\n╔════════════════════════════════════════════════════╗");
     println!("║            Classification Metrics                  ║");
@@ -684,6 +803,34 @@ pub struct ComparisonResult {
 
 impl ComparisonResult {
     /// Returns which method is better based on F1-score (primary) and MCC (secondary)
+    ///
+    /// Compares CNC and CNC-BPC using a composite score:
+    /// `score = F1 + MCC * 0.5`
+    ///
+    /// Returns `"CNC"`, `"CNC-BPC"`, or `"Tie"`.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use cnc::{from_arff_auto, cnc, cnc_bpc};
+    /// use cnc::metrics::{evaluate_cnc, ComparisonResult};
+    ///
+    /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+    /// let cnc_result = cnc(&dataset);
+    /// let bpc_result = cnc_bpc(&dataset, 2);
+    ///
+    /// let comparison = ComparisonResult {
+    ///     dataset_name: "weather".to_string(),
+    ///     cnc_metrics: evaluate_cnc(&dataset, &cnc_result),
+    ///     cnc_bpc_metrics: evaluate_cnc(&dataset, &bpc_result.cnc_result),
+    ///     cnc_bpc_n: 2,
+    /// };
+    ///
+    /// println!("Winner: {}", comparison.winner());
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn winner(&self) -> &'static str {
         let cnc_score = self.cnc_metrics.macro_f1 + self.cnc_metrics.mcc * 0.5;
         let bpc_score = self.cnc_bpc_metrics.macro_f1 + self.cnc_bpc_metrics.mcc * 0.5;
@@ -702,6 +849,34 @@ impl ComparisonResult {
 ///
 /// Prints a comprehensive comparison table showing metrics for both algorithms
 /// across multiple datasets, including a summary of wins/ties.
+///
+/// # Example
+///
+/// ```no_run
+/// use cnc::{from_arff_auto, cnc, cnc_bpc};
+/// use cnc::metrics::{evaluate_cnc, ComparisonResult, display_comparison_table};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let datasets = vec!["weather.nominal.arff", "iris.arff"];
+/// let mut comparisons = Vec::new();
+///
+/// for dataset_path in datasets {
+///     let dataset = from_arff_auto(&format!("data-examples/{}", dataset_path))?;
+///     let cnc_result = cnc(&dataset);
+///     let bpc_result = cnc_bpc(&dataset, 2);
+///
+///     comparisons.push(ComparisonResult {
+///         dataset_name: dataset_path.to_string(),
+///         cnc_metrics: evaluate_cnc(&dataset, &cnc_result),
+///         cnc_bpc_metrics: evaluate_cnc(&dataset, &bpc_result.cnc_result),
+///         cnc_bpc_n: 2,
+///     });
+/// }
+///
+/// display_comparison_table(&comparisons);
+/// # Ok(())
+/// # }
+/// ```
 pub fn display_comparison_table(comparisons: &[ComparisonResult]) {
     println!("\n");
     println!("╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
