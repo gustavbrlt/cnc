@@ -309,7 +309,7 @@ impl NominalDataset {
         println!("Context:\n{}", &self);
     }
 
-    /// Displays only the dataset summary statistics.
+    /// Displays only the dataset statistics.
     ///
     /// This method prints:
     /// - Number of objects (samples/instances)
@@ -324,7 +324,7 @@ impl NominalDataset {
     /// use cnc::{from_arff_auto};
     ///
     /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-    /// dataset.display_dataset_summary();
+    /// dataset.display_statistics();
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     ///
@@ -342,7 +342,7 @@ impl NominalDataset {
     ///   flu: 1 (33.3%)
     ///   healthy: 1 (33.3%)
     /// ```
-    pub fn display_dataset_summary(&self) {
+    pub fn display_statistics(&self) {
         // Count descriptive attributes (excluding class)
         let desc_attrs: Vec<_> = self.attributes.iter()
             .filter(|attr| attr != &&self.class_attribute)
@@ -374,8 +374,8 @@ impl NominalDataset {
     /// Displays comprehensive summary about the dataset with smart selection.
     ///
     /// This method intelligently chooses what to display based on dataset size:
-    /// - **Small datasets** (≤ 15 objects with ≤ 7 possible values per attribute with ≤ 7 attributes): shows only the context table
-    /// - **All other datasets**: shows only the summary statistics
+    /// - Small datasets (≤ 15 objects with ≤ 7 possible values per attribute with ≤ 7 attributes): shows only the context table
+    /// - All other datasets: shows only the summary statistics
     ///
     /// # Example
     ///
@@ -390,14 +390,14 @@ impl NominalDataset {
     /// # See Also
     ///
     /// - [`display_context`] - Display only the formatted table
-    /// - [`display_dataset_summary`] - Display only the statistics
+    /// - [`display_statistics`] - Display only the statistics
     pub fn display_summary(&self) {
         let (show_context, show_summary) = self.determine_display_mode();
 
         if show_context {
             self.display_context();
         } else if show_summary {
-            self.display_dataset_summary();
+            self.display_statistics();
         }
     }
 
