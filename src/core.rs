@@ -285,15 +285,10 @@ impl NominalDataset {
         Some((majority_class, count, percentage))
     }
     
-    /// Displays comprehensive summary statistics about the dataset.
+    /// Displays only the dataset context (formatted table).
     ///
-    /// This method prints:
-    /// - The complete dataset context (formatted table of all objects and their attributes)
-    /// - Number of objects (samples/instances)
-    /// - Number and names of descriptive attributes
-    /// - Class attribute name
-    /// - Number of all possible values for each descriptive attribute
-    /// - Class distribution (count and percentage for each class)
+    /// This method prints the complete dataset as a formatted table showing all objects
+    /// and their attribute values, with the class attribute visually separated on the right.
     ///
     /// # Example
     ///
@@ -301,7 +296,7 @@ impl NominalDataset {
     /// use cnc::{from_arff_auto};
     ///
     /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-    /// dataset.display_summary();
+    /// dataset.display_context();
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     ///
@@ -314,7 +309,33 @@ impl NominalDataset {
     ///   patient1          high            yes       │        flu
     ///   patient2          none             no       │    healthy
     ///   patient3          mild            yes       │       cold
+    /// ```
+    pub fn display_context(&self) {
+        println!("Context:\n{}", &self);
+    }
+
+    /// Displays only the dataset summary statistics.
     ///
+    /// This method prints:
+    /// - Number of objects (samples/instances)
+    /// - Number and names of descriptive attributes
+    /// - Class attribute name
+    /// - Number of all possible values for each descriptive attribute
+    /// - Class distribution (count and percentage for each class)
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use cnc::{from_arff_auto};
+    ///
+    /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+    /// dataset.display_dataset_summary();
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    ///
+    /// # Output Example
+    ///
+    /// ```text
     /// Dataset Summary:
     /// - Objects: 3
     /// - Descriptive attributes: 2
@@ -326,36 +347,106 @@ impl NominalDataset {
     ///   flu: 1 (33.3%)
     ///   healthy: 1 (33.3%)
     /// ```
-    pub fn display_summary(&self) {
-
-        println!("Context:\n{}", &self);
-
+    pub fn display_dataset_summary(&self) {
         // Count descriptive attributes (excluding class)
         let desc_attrs: Vec<_> = self.attributes.iter()
             .filter(|attr| attr != &&self.class_attribute)
             .collect();
-            
+
         println!("Dataset Summary:");
         println!("- Objects: {}", self.objects.len());
         println!("- Descriptive attributes: {}", desc_attrs.len());
         println!("- Class attribute: {}", self.class_attribute);
-        
+
         for attr in &desc_attrs {
             let values = self.get_attribute_values(attr);
             println!("- Attribute '{}': no more than {} possible values", attr, values.len());
         }
-        
+
         // Show class distribution
         let class_values = self.get_class_values(&(0..self.objects.len()).collect::<Vec<_>>());
         let mut class_counts = HashMap::new();
         for class_val in class_values {
             *class_counts.entry(class_val).or_insert(0) += 1;
         }
-        
+
         println!("- Class distribution:");
         for (class_val, count) in class_counts {
             println!("  {}: {} ({:.1}%)", class_val, count, (count as f64 / self.objects.len() as f64) * 100.0);
         }
+    }
+
+    /// Displays comprehensive summary about the dataset with smart selection.
+    ///
+    /// This method intelligently chooses what to display based on dataset size:
+    /// - **Small datasets** (≤ 15 objects with ≤ 7 possible values per attribute with ≤ 7 attributes): shows only the context table
+    /// - **All other datasets**: shows only the summary statistics
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use cnc::{from_arff_auto};
+    ///
+    /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+    /// dataset.display_summary();
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    ///
+    /// # See Also
+    ///
+    /// - [`display_context`] - Display only the formatted table
+    /// - [`display_dataset_summary`] - Display only the statistics
+    pub fn display_summary(&self) {
+        let (show_context, show_summary) = self.determine_display_mode();
+
+        if show_context {
+            self.display_context();
+        } else if show_summary {
+            self.display_dataset_summary();
+        }
+    }
+
+    /// Determines what to display based on dataset characteristics.
+    ///
+    /// Returns a tuple `(show_context, show_summary)`:
+    /// - Small datasets: `(true, false)` - Context is readable and sufficient
+    /// - All other datasets: `(false, true)` - Summary is more appropriate
+    ///
+    /// A dataset is considered "small" if ALL of these conditions are met:
+    /// - Number of objects ≤ 15
+    /// - Maximum unique values per attribute ≤ 7
+    /// - Number of descriptive attributes ≤ 7
+    fn determine_display_mode(&self) -> (bool, bool) {
+        let num_objects = self.objects.len();
+
+        // Count descriptive attributes (excluding class)
+        let desc_attrs: Vec<_> = self.attributes.iter()
+            .filter(|attr| attr != &&self.class_attribute)
+            .collect();
+
+        let num_attributes = desc_attrs.len();
+
+        // Find maximum number of unique values across all descriptive attributes
+        let max_unique_values: usize = desc_attrs.iter()
+            .map(|attr| self.get_attribute_values(attr).len())
+            .max()
+            .unwrap_or(0);
+
+        // Decision thresholds
+        const MAX_OBJECTS_FOR_CONTEXT: usize = 15;
+        const MAX_UNIQUE_VALUES_FOR_CONTEXT: usize = 7;
+        const MAX_ATTRIBUTES_FOR_CONTEXT: usize = 7;
+
+        // Small dataset: context is readable and sufficient
+        if num_objects <= MAX_OBJECTS_FOR_CONTEXT
+            && max_unique_values <= MAX_UNIQUE_VALUES_FOR_CONTEXT
+            && num_attributes <= MAX_ATTRIBUTES_FOR_CONTEXT
+        {
+            return (true, false);
+        }
+
+        // All other cases: summary is more appropriate
+        (false, true)
     }
 }
 
