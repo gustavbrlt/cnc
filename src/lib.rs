@@ -55,7 +55,7 @@ mod tests {
 
     // Helper function to run CNC and display results with metrics
     fn run_cnc_test(dataset: &NominalDataset) -> CncResult {
-        // dataset.display_summary();
+        dataset.display_summary();
 
         println!("\n--- Running CNC ---");
         let result = cnc(dataset);
@@ -79,7 +79,7 @@ mod tests {
 
     // Helper function to run CNC-BPC and display results with metrics
     fn run_cnc_bpc_test(dataset: &NominalDataset, n: usize) -> CncBpcResult {
-        // dataset.display_summary();
+        dataset.display_summary();
 
         println!("\n--- Running CNC-BPC (n={}) ---", n);
         let result = cnc_bpc(dataset, n);

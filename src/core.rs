@@ -34,20 +34,60 @@ pub struct CncBpcResult {
     pub filtered_size: usize,
 }
 
-/// CNC (Classifier Nominal Concept)
-/// A classifier that uses Formal Concept Analysis to extract concepts from nominal (multi-valued) data.
-/// The algorithm finds the most pertinent attribute and computes its closure (concept).
-
-/// Nominal dataset structure for CNC
+/// Represents a nominal (categorical) dataset for classification using CNC/CNC-BPC.
+///
+/// A `NominalDataset` stores categorical data where both attributes and class values
+/// are represented as strings. This structure is designed for Formal Concept Analysis
+/// and works exclusively with nominal (non-numeric) data.
+///
+/// # Structure
+///
+/// - **Objects**: Individual instances/samples in the dataset (e.g., "patient1", "obj42")
+/// - **Attributes**: Features describing the objects (e.g., "color", "size", "temperature")
+/// - **Class attribute**: The target variable for classification (e.g., "diagnosis", "species")
+/// - **Data**: Attribute-value pairs for each object, stored as a vector of HashMaps
+///
+/// # Important Notes
+///
+/// - All values are **strings** (nominal/categorical data)
+/// - The class attribute is included in the `attributes` list but treated specially
+/// - Each object has one HashMap containing all its attribute-value pairs
+/// - Missing values should be handled before creating the dataset
+///
+/// # Example
+///
+/// ```
+/// use cnc::NominalDataset;
+/// use std::collections::HashMap;
+///
+/// let objects = vec!["patient1".to_string(), "patient2".to_string()];
+/// let attributes = vec!["fever".to_string(), "cough".to_string(), "diagnosis".to_string()];
+/// let class_attribute = "diagnosis".to_string();
+///
+/// let mut patient1_data = HashMap::new();
+/// patient1_data.insert("fever".to_string(), "high".to_string());
+/// patient1_data.insert("cough".to_string(), "yes".to_string());
+/// patient1_data.insert("diagnosis".to_string(), "flu".to_string());
+///
+/// let mut patient2_data = HashMap::new();
+/// patient2_data.insert("fever".to_string(), "none".to_string());
+/// patient2_data.insert("cough".to_string(), "no".to_string());
+/// patient2_data.insert("diagnosis".to_string(), "healthy".to_string());
+///
+/// let data = vec![patient1_data, patient2_data];
+///
+/// let dataset = NominalDataset::new(objects, attributes, class_attribute, data);
+/// assert_eq!(dataset.objects.len(), 2);
+/// ```
 #[derive(Debug, Clone)]
 pub struct NominalDataset {
-    /// Names/identifiers of objects in the dataset
+    /// Names/identifiers of objects (samples/instances) in the dataset
     pub objects: Vec<String>,
-    /// Names of all attributes (including class attribute)
+    /// Names of all attributes, including both descriptive attributes and the class attribute
     pub attributes: Vec<String>,
     /// Name of the class attribute (target variable for classification)
     pub class_attribute: String,
-    /// Attribute values for each object (one HashMap per object)
+    /// Attribute-value pairs for each object (one HashMap per object, indexed by object position)
     pub data: Vec<HashMap<String, String>>,
 }
 
@@ -112,7 +152,7 @@ impl NominalDataset {
         }
     }
     
-    /// Get all unique values for an attribute (sorted alphabetically)
+    /// Get all possible values for an attribute (sorted alphabetically)
     pub fn get_attribute_values(&self, attr_name: &str) -> Vec<String> {
         let mut values = HashSet::new();
         for obj_data in &self.data {
@@ -138,16 +178,71 @@ impl NominalDataset {
         groups
     }
     
-    /// Get class values for a group of objects by their indices
+    /// Extracts the class attribute values for a specific subset of objects.
+    ///
+    /// Given a list of object indices, this function retrieves the corresponding class
+    /// values in the same order as the indices. Objects without a class value are skipped.
+    ///
+    /// # Arguments
+    ///
+    /// * `object_indices` - Slice of object indices (positions in the dataset)
+    ///
+    /// # Returns
+    ///
+    /// A vector of class values (as strings) in the same order as `object_indices`.
+    /// If an object doesn't have a class value, it's omitted from the result.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::NominalDataset;
+    /// use std::collections::HashMap;
+    ///
+    /// let objects = vec!["o1".to_string(), "o2".to_string(), "o3".to_string()];
+    /// let attributes = vec!["attr".to_string(), "class".to_string()];
+    /// let mut data = vec![];
+    ///
+    /// for class_val in ["A", "B", "A"] {
+    ///     let mut obj = HashMap::new();
+    ///     obj.insert("attr".to_string(), "x".to_string());
+    ///     obj.insert("class".to_string(), class_val.to_string());
+    ///     data.push(obj);
+    /// }
+    ///
+    /// let dataset = NominalDataset::new(objects, attributes, "class".to_string(), data);
+    ///
+    /// // Get class values for objects at indices 0 and 2
+    /// let classes = dataset.get_class_values(&[0, 2]);
+    /// assert_eq!(classes, vec!["A".to_string(), "A".to_string()]);
+    /// ```
     pub fn get_class_values(&self, object_indices: &[usize]) -> Vec<String> {
         object_indices.iter()
             .filter_map(|&obj_idx| self.data[obj_idx].get(&self.class_attribute).cloned())
             .collect()
     }
     
-    /// Get the majority class from a class distribution
+    /// Finds the most frequent class in a collection of class values.
     ///
-    /// Returns (majority_class, count, percentage)
+    /// This static method analyzes a slice of class labels and determines which class
+    /// appears most often, along with its count and percentage of the total.
+    ///
+    /// # Arguments
+    ///
+    /// * `class_values` - Slice of class labels (can contain duplicates)
+    ///
+    /// # Returns
+    ///
+    /// Returns `Some((majority_class, count, percentage))` where:
+    /// - `majority_class`: The most frequent class label
+    /// - `count`: Number of times it appears
+    /// - `percentage`: Proportion of total (0.0 to 100.0)
+    ///
+    /// Returns `None` if the input is empty.
+    ///
+    /// # Note
+    ///
+    /// In case of a tie (multiple classes with the same maximum count), the behavior
+    /// is non-deterministic and depends on HashMap iteration order.
     ///
     /// # Example
     ///
@@ -160,6 +255,14 @@ impl NominalDataset {
     /// assert_eq!(majority, "A");
     /// assert_eq!(count, 2);
     /// assert_eq!(pct, 66.66666666666666);
+    /// ```
+    ///
+    /// ```
+    /// use cnc::NominalDataset;
+    ///
+    /// // Empty input returns None
+    /// let classes: Vec<String> = vec![];
+    /// assert!(NominalDataset::get_majority_class(&classes).is_none());
     /// ```
     pub fn get_majority_class(class_values: &[String]) -> Option<(String, usize, f64)> {
         if class_values.is_empty() {
@@ -182,9 +285,47 @@ impl NominalDataset {
         Some((majority_class, count, percentage))
     }
     
-    /// Display summary statistics about the dataset
+    /// Displays comprehensive summary statistics about the dataset.
     ///
-    /// Prints the dataset context, number of objects, attributes, and class distribution.
+    /// This method prints:
+    /// - The complete dataset context (formatted table of all objects and their attributes)
+    /// - Number of objects (samples/instances)
+    /// - Number and names of descriptive attributes
+    /// - Class attribute name
+    /// - Number of all possible values for each descriptive attribute
+    /// - Class distribution (count and percentage for each class)
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use cnc::{from_arff_auto};
+    ///
+    /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+    /// dataset.display_summary();
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    ///
+    /// # Output Example
+    ///
+    /// ```text
+    /// Context:
+    ///                    fever          cough       │  diagnosis
+    ///                                               │
+    ///   patient1          high            yes       │        flu
+    ///   patient2          none             no       │    healthy
+    ///   patient3          mild            yes       │       cold
+    ///
+    /// Dataset Summary:
+    /// - Objects: 3
+    /// - Descriptive attributes: 2
+    /// - Class attribute: diagnosis
+    /// - Attribute 'fever': no more than 3 possible values
+    /// - Attribute 'cough': no more than 2 possible values
+    /// - Class distribution:
+    ///   cold: 1 (33.3%)
+    ///   flu: 1 (33.3%)
+    ///   healthy: 1 (33.3%)
+    /// ```
     pub fn display_summary(&self) {
 
         println!("Context:\n{}", &self);
@@ -201,7 +342,7 @@ impl NominalDataset {
         
         for attr in &desc_attrs {
             let values = self.get_attribute_values(attr);
-            println!("- Attribute '{}': {} unique values", attr, values.len());
+            println!("- Attribute '{}': no more than {} possible values", attr, values.len());
         }
         
         // Show class distribution
