@@ -3,6 +3,7 @@
 //! This module provides standard classification metrics:
 //! - Accuracy, Recall, Precision, F1-score
 //! - Matthews Correlation Coefficient (MCC)
+//! - Cohen's Kappa
 //! - ROC Area Under Curve (AUC-ROC)
 //! - Precision-Recall Curve Area (PRC Area)
 
@@ -803,6 +804,7 @@ fn calculate_binary_prc_auc(actual: &[bool], scores: &[f64]) -> f64 {
 /// ╠════════════════════════════════════════════════════╣
 /// ║  Accuracy:          0.7143                         ║
 /// ║  Recall:            0.6667  (macro-averaged)       ║
+/// ║  Precision:         0.6190  (macro-averaged)       ║
 /// ║  F1-score:          0.6452  (macro-averaged)       ║
 /// ║  MCC:               0.4082                         ║
 /// ║  Kappa:             0.3878                         ║
@@ -820,6 +822,7 @@ pub fn display_metrics_table(metrics: &ClassificationMetrics) {
     println!("╠════════════════════════════════════════════════════╣");
     println!("║  Accuracy:    {:>11.4}                          ║", metrics.accuracy);
     println!("║  Recall:      {:>11.4}  (macro-averaged)        ║", metrics.macro_recall);
+    println!("║  Precision:   {:>11.4}  (macro-averaged)        ║", metrics.macro_precision);
     println!("║  F1-score:    {:>11.4}  (macro-averaged)        ║", metrics.macro_f1);
     println!("║  MCC:         {:>11.4}                          ║", metrics.mcc);
     println!("║  Kappa:       {:>11.4}                          ║", metrics.kappa);

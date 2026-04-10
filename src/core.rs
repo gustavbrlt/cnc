@@ -20,7 +20,7 @@ pub struct CncResult {
     pub pertinent_attrs: Vec<String>,
 }
 
-/// Result structure for CNC-BPC containing both the concepts and debug information
+/// Result structure for CNC-BPC containing both the concepts and debug information.
 /// Uses CncResult to avoid duplication and maintain consistency
 #[derive(Debug)]
 pub struct CncBpcResult {
