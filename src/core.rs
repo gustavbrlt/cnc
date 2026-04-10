@@ -232,19 +232,21 @@ impl NominalDataset {
     ///
     /// # Returns
     ///
-    /// Returns `Some((majority_class, count, percentage))` where:
-    /// - `majority_class`: The most frequent class label
-    /// - `count`: Number of times it appears
-    /// - `percentage`: Proportion of total (0.0 to 100.0)
+    /// - `Some((majority_class, count, percentage))` if the input contains at least one class:
+    ///   - `majority_class`: The name of the most frequent class label
+    ///   - `count`: Absolute number of occurrences of this class
+    ///   - `percentage`: Relative frequency as a percentage (range: 0.0 to 100.0)
     ///
-    /// Returns `None` if the input is empty.
+    /// - `None` if the input slice is empty
     ///
     /// # Note
     ///
     /// In case of a tie (multiple classes with the same maximum count), the behavior
     /// is non-deterministic and depends on HashMap iteration order.
     ///
-    /// # Example
+    /// # Examples
+    ///
+    /// Basic usage with a clear majority:
     ///
     /// ```
     /// use cnc::NominalDataset;
@@ -252,15 +254,16 @@ impl NominalDataset {
     /// let classes = vec!["A".to_string(), "A".to_string(), "B".to_string()];
     /// let (majority, count, pct) = NominalDataset::get_majority_class(&classes).unwrap();
     ///
-    /// assert_eq!(majority, "A");
-    /// assert_eq!(count, 2);
-    /// assert_eq!(pct, 66.66666666666666);
+    /// assert_eq!(majority, "A");          // Most frequent class
+    /// assert_eq!(count, 2);               // Appears 2 times
+    /// assert_eq!(pct, 66.66666666666666); // 2/3 = 66.67%
     /// ```
+    ///
+    /// Empty input returns `None`:
     ///
     /// ```
     /// use cnc::NominalDataset;
     ///
-    /// // Empty input returns None
     /// let classes: Vec<String> = vec![];
     /// assert!(NominalDataset::get_majority_class(&classes).is_none());
     /// ```
