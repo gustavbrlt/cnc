@@ -295,6 +295,7 @@ impl NominalDataset {
     /// ```
     ///
     /// # Output Example
+    /// ('diagnosis' being the attribute class in the weather.nominal.arff dataset)
     ///
     /// ```text
     /// Context:
