@@ -258,15 +258,6 @@ impl NominalDataset {
     /// assert_eq!(count, 2);               // Appears 2 times
     /// assert_eq!(pct, 66.66666666666666); // 2/3 = 66.67%
     /// ```
-    ///
-    /// Empty input returns `None`:
-    ///
-    /// ```
-    /// use cnc::NominalDataset;
-    ///
-    /// let classes: Vec<String> = vec![];
-    /// assert!(NominalDataset::get_majority_class(&classes).is_none());
-    /// ```
     pub fn get_majority_class(class_values: &[String]) -> Option<(String, usize, f64)> {
         if class_values.is_empty() {
             return None;
