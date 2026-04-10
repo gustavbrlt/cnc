@@ -702,76 +702,61 @@ pub fn display_cnc_chosen_attribute(dataset : &NominalDataset, results : &CncRes
     }
 }
 
-/// Displays CNC results in a detailed, standardized format.
+/// Internal function to display CNC results.
 ///
-/// For each concept, this function shows:
-/// - The pertinent attribute and its value
-/// - Extent: object indices and names covered by the concept
-/// - Intent: common attribute-value pairs shared by all objects in the extent
-/// - Class distribution: breakdown of class values in the extent
+/// This private function implements the core display logic and is called by the public
+/// `display_cnc_results_consistently` and `display_cnc_results_inconsistently` functions.
 ///
 /// # Arguments
 ///
 /// * `dataset` - The dataset (needed for object names and class information)
-/// * `results` - Vector of concepts, typically from `CncResult.concepts`
-///
-/// # Output Format
-///
-/// ```text
-/// 2 concept(s) found:
-///
-/// Concept 1:
-///   Pertinent attribute: 'Outlook' with value 'Sunny'
-///   Extent of the pertinent attribute(s): ["obj1", "obj2", "obj8"]
-///   Extent size: 3/14 objects (21.4%)
-///   Intent (common attributes): {"Outlook": "Sunny", "Humidity": "High"}
-///   Intent size: 2/4 attributes (50.0%)
-///   Class distribution in extent:
-///     No: 3 (100.0%) (majority class)
-/// ```
-///
-/// # Example
-///
-/// ```
-/// use cnc::{from_arff_auto, cnc, display_cnc_results};
-///
-/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
-/// let result = cnc(&dataset);
-///
-/// display_cnc_results(&dataset, &result.concepts);
-/// # Ok(())
-/// # }
-/// ```
-pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String, Vec<usize>, HashMap<String, String>)]) {
+/// * `results` - Vector of concepts (pertinent_attr, attr_value, extent, intent)
+/// * `sort_output` - If true, sorts Intent attributes and class distribution alphabetically
+fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String, Vec<usize>, HashMap<String, String>)], sort_output: bool) {
     if results.is_empty() {
         println!("No concepts found");
         return;
     }
-    
-    // There is a theroem ("connexion de Galois") saying that A''' = A'.
+
+    // There is a theorem ("connexion de Galois") saying that A''' = A'.
     println!("\n{} concept(s) found:", results.len());
-    
+
     for (i, (pertinent_attr, attr_value, extent, intent)) in results.iter().enumerate() {
         println!("\nConcept {}:", i + 1);
         println!("  Pertinent attribute: '{}' with value '{}'", pertinent_attr, attr_value);
-        
+
         // Show extent (objects)
         let extent_objects: Vec<String> = extent.iter()
             .map(|&obj_idx| dataset.objects[obj_idx].clone())
             .collect();
         println!("  Extent of the pertinent attribute(s): {:?}", extent_objects);
-        println!("  Extent size: {}/{} objects ({:.1}%)", 
-                 extent.len(), dataset.objects.len(), 
+        println!("  Extent size: {}/{} objects ({:.1}%)",
+                 extent.len(), dataset.objects.len(),
                  (extent.len() as f64 / dataset.objects.len() as f64) * 100.0);
-        
+
         // Show intent (common attributes)
-        println!("  Intent (common attributes) of the found extent : {:?}", intent);
+        if sort_output {
+            // Sorted version for deterministic output
+            let mut sorted_intent: Vec<_> = intent.iter().collect();
+            sorted_intent.sort_by_key(|(k, _)| *k);
+            print!("  Intent (common attributes) of the found extent : {{");
+            for (idx, (attr, value)) in sorted_intent.iter().enumerate() {
+                if idx > 0 {
+                    print!(", ");
+                }
+                print!("\"{}\": \"{}\"", attr, value);
+            }
+            println!("}}");
+        } else {
+            // Fast version with no sorting
+            println!("  Intent (common attributes) of the found extent : {:?}", intent);
+        }
+
         let desc_attrs_count = dataset.attributes.iter().filter(|a| *a != &dataset.class_attribute).count();
-        println!("  Intent size: {}/{} attributes ({:.1}%)", 
+        println!("  Intent size: {}/{} attributes ({:.1}%)",
                  intent.len(), desc_attrs_count,
                  (intent.len() as f64 / desc_attrs_count as f64) * 100.0);
-        
+
         // Show class distribution in extent
         let class_values = dataset.get_class_values(&extent);
         let majority_class = NominalDataset::get_majority_class(&class_values)
@@ -783,16 +768,140 @@ pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String,
         }
 
         println!("  Class distribution in extent:");
-        for (class_val, count) in &class_counts {
-            let percentage = (*count as f64 / extent.len() as f64) * 100.0;
-            let majority_marker = if Some(class_val.clone()) == majority_class {
-                " (majority class)"
-            } else {
-                ""
-            };
-            println!("    {}: {} ({:.1}%){}", class_val, count, percentage, majority_marker);
+
+        if sort_output {
+            // Sorted version for deterministic output
+            let mut sorted_classes: Vec<_> = class_counts.iter().collect();
+            sorted_classes.sort_by_key(|(k, _)| *k);
+            for (class_val, count) in sorted_classes {
+                let percentage = (*count as f64 / extent.len() as f64) * 100.0;
+                if Some(class_val) == majority_class.as_ref() {
+                    println!("    {}: {} ({:.1}%) (majority class)", class_val, count, percentage);
+                } else {
+                    println!("    {}: {} ({:.1}%)", class_val, count, percentage);
+                }
+            }
+        } else {
+            // Fast version with no sorting
+            for (class_val, count) in &class_counts {
+                let percentage = (*count as f64 / extent.len() as f64) * 100.0;
+                let majority_marker = if Some(class_val.clone()) == majority_class {
+                    " (majority class)"
+                } else {
+                    ""
+                };
+                println!("    {}: {} ({:.1}%){}", class_val, count, percentage, majority_marker);
+            }
         }
     }
+}
+
+/// Display CNC/CNC-BPC results with **consistent, deterministic output**.
+///
+/// This function displays the concepts found by CNC/CNC-BPC with:
+/// - Intent attributes sorted alphabetically by attribute name
+/// - Class distribution sorted alphabetically by class name
+///
+/// This ensures **deterministic and reproducible output**, which is useful for:
+/// - Automated testing
+/// - Generating consistent documentation
+/// - Comparing results across runs
+///
+/// # Performance Note
+///
+/// This function sorts the Intent attributes and class distribution for each concept.
+/// If you don't need deterministic output and want optimal performance, use
+/// [`display_cnc_results_inconsistently`] instead.
+///
+/// # Arguments
+///
+/// * `dataset` - The nominal dataset
+/// * `results` - Vector of concepts (pertinent_attr, attr_value, extent, intent)
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc, display_cnc_results_consistently};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+///
+/// // Deterministic display (for tests and documentation)
+/// display_cnc_results_consistently(&dataset, &result.concepts);
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Output Format
+///
+/// ```text
+/// Concept 1:
+///   Pertinent attribute: 'Windy' with value 'False'
+///   Extent of the pertinent attribute(s): ["o9", "o10", "o13"]
+///   Extent size: 3/5 objects (60.0%)
+///   Intent (common attributes) of the found extent : {"Humidity": "Normal", "Windy": "False"}
+///   Intent size: 2/4 attributes (50.0%)
+///   Class distribution in extent:
+///     Yes: 3 (100.0%) (majority class)
+/// ```
+///
+/// Note: Intent attributes are sorted alphabetically (Humidity before Windy).
+pub fn display_cnc_results_consistently(dataset: &NominalDataset, results: &[(String, String, Vec<usize>, HashMap<String, String>)]) {
+    display_cnc_results(dataset, results, true);
+}
+
+/// Display CNC/CNC-BPC results with **inconsistent, optimized output**.
+///
+/// This function displays the concepts found by CNC/CNC-BPC with:
+/// - Intent attributes in HashMap iteration order (non-deterministic)
+/// - Class distribution in HashMap iteration order (non-deterministic)
+///
+/// This provides **optimal performance** (no sorting overhead) but:
+/// - Output order may vary between runs
+/// - Not suitable for automated testing or result comparison
+///
+/// # Performance Note
+///
+/// This function is the fastest option as it avoids sorting. If you need
+/// deterministic output, use [`display_cnc_results_consistently`] instead.
+///
+/// # Arguments
+///
+/// * `dataset` - The nominal dataset
+/// * `results` - Vector of concepts (pertinent_attr, attr_value, extent, intent)
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc, display_cnc_results_inconsistently};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+///
+/// // Fast display (non-deterministic order)
+/// display_cnc_results_inconsistently(&dataset, &result.concepts);
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Output Format
+///
+/// ```text
+/// Concept 1:
+///   Pertinent attribute: 'Windy' with value 'False'
+///   Extent of the pertinent attribute(s): ["o9", "o10", "o13"]
+///   Extent size: 3/5 objects (60.0%)
+///   Intent (common attributes) of the found extent : {"Windy": "False", "Humidity": "Normal"}
+///   Intent size: 2/4 attributes (50.0%)
+///   Class distribution in extent:
+///     Yes: 3 (100.0%) (majority class)
+/// ```
+///
+/// Note: Intent attribute order is non-deterministic and may vary between runs.
+pub fn display_cnc_results_inconsistently(dataset: &NominalDataset, results: &[(String, String, Vec<usize>, HashMap<String, String>)]) {
+    display_cnc_results(dataset, results, false);
 }
 
 /// Loads an ARFF file and converts it to a NominalDataset for CNC/CNC-BPC.
@@ -843,7 +952,7 @@ pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String,
 /// # Example
 ///
 /// ```no_run
-/// use cnc::{from_arff, cnc, display_cnc_results};
+/// use cnc::{from_arff, cnc, display_cnc_results_consistently};
 ///
 /// // Load the dataset
 /// let dataset = from_arff("data-examples/weather.nominal.arff", "play")?;
@@ -855,7 +964,7 @@ pub fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String,
 /// let result = cnc(&dataset);
 ///
 /// // Display results
-/// display_cnc_results(&dataset, &result.concepts);
+/// display_cnc_results_consistently(&dataset, &result.concepts);
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
 ///
@@ -980,13 +1089,13 @@ pub fn from_arff(
 /// # Example: Quick Start
 ///
 /// ```no_run
-/// use cnc::{from_arff_auto, cnc, display_cnc_results};
+/// use cnc::{from_arff_auto, cnc, display_cnc_results_consistently};
 ///
 /// // Automatically uses last attribute as class
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
 ///
 /// let result = cnc(&dataset);
-/// display_cnc_results(&dataset, &result.concepts);
+/// display_cnc_results_consistently(&dataset, &result.concepts);
 ///
 /// println!("Found {} concepts", result.concepts.len());
 /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -995,7 +1104,7 @@ pub fn from_arff(
 /// # Example: Complete Workflow
 ///
 /// ```no_run
-/// use cnc::{from_arff_auto, cnc_bpc, display_cnc_results};
+/// use cnc::{from_arff_auto, cnc_bpc, display_cnc_results_consistently};
 ///
 /// // Load dataset (uses last attribute as class)
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
@@ -1006,7 +1115,7 @@ pub fn from_arff(
 ///          result.filtered_size, result.original_size);
 ///
 /// // Display results
-/// display_cnc_results(&dataset, &result.cnc_result.concepts);
+/// display_cnc_results_consistently(&dataset, &result.cnc_result.concepts);
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
 ///

@@ -14,7 +14,7 @@
 //! ## Quick Start
 //!
 //! ```
-//! use cnc::{from_arff_auto, cnc, display_cnc_results};
+//! use cnc::{from_arff_auto, cnc, display_cnc_results_consistently};
 //!
 //! # fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! // Load dataset from ARFF file
@@ -24,7 +24,7 @@
 //! let result = cnc(&dataset);
 //!
 //! // Display results
-//! display_cnc_results(&dataset, &result.concepts);
+//! display_cnc_results_consistently(&dataset, &result.concepts);
 //! # Ok(())
 //! # }
 //! ```
@@ -60,7 +60,7 @@ mod tests {
         println!("\n--- Running CNC ---");
         let result = cnc(dataset);
         display_cnc_chosen_attribute(dataset, &result);
-        display_cnc_results(dataset, &result.concepts);
+        display_cnc_results_consistently(dataset, &result.concepts);
 
         // Extract and display classification rules
         let rules = extract_rules(dataset, &result);
@@ -87,7 +87,7 @@ mod tests {
         println!("Filtered: {}/{} objects ({:.1}%)",
                  result.filtered_size, result.original_size,
                  (result.filtered_size as f64 / result.original_size as f64) * 100.0);
-        display_cnc_results(dataset, &result.cnc_result.concepts);
+        display_cnc_results_consistently(dataset, &result.cnc_result.concepts);
 
         // Calculate and display classification metrics
         let metrics = evaluate_cnc(dataset, &result.cnc_result);
