@@ -624,7 +624,7 @@ fn find_most_frequent_values(dataset: &NominalDataset, attr_name: &str) -> Vec<S
         .collect()
 }
 
-/// Compute closure for nominal data (group objects by attribute value and find common attributes)
+/// Compute closure for nominal data (group objects by attribute value and find common attributes).
 ///
 /// This function computes the formal concept closure for a given attribute-value pair.
 /// It returns the extent (object indices) and intent (common attribute-value pairs).
@@ -978,13 +978,6 @@ pub fn cnc_bpc(dataset: &NominalDataset, n: usize) -> CncBpcResult {
 /// * `dataset` - The dataset used for analysis
 /// * `results` - The CNC results containing pertinent attributes
 ///
-/// # Output Format
-///
-/// ```text
-/// Most pertinent attribute(s): ["Outlook"]
-///   Most frequent value(s) for 'Outlook': ["Sunny"]
-/// ```
-///
 /// # Example
 ///
 /// ```
@@ -998,6 +991,13 @@ pub fn cnc_bpc(dataset: &NominalDataset, n: usize) -> CncBpcResult {
 /// # Ok(())
 /// # }
 /// ```
+/// # Output Format
+///
+/// ```text
+/// Most pertinent attribute(s): ["Outlook"]
+///   Most frequent value(s) for 'Outlook': ["Sunny"]
+/// ```
+///
 pub fn display_cnc_chosen_attribute(dataset : &NominalDataset, results : &CncResult) {
 
     println!("Most pertinent attribute(s): {:?}",
@@ -1105,7 +1105,7 @@ fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String, Vec
     }
 }
 
-/// Display CNC/CNC-BPC results with **deterministic output**.
+/// Display CNC/CNC-BPC results with deterministic output.
 ///
 /// Intent attributes and class distribution are sorted alphabetically,
 /// ensuring reproducible output across runs. Useful for tests and documentation.
@@ -1148,9 +1148,9 @@ pub fn display_cnc_results_consistently(dataset: &NominalDataset, results: &[(St
     display_cnc_results(dataset, results, true);
 }
 
-/// Display CNC/CNC-BPC results with **non-deterministic output**.
+/// Display CNC/CNC-BPC results with non-deterministic output.
 ///
-/// Same as [`display_cnc_results_consistently`] but without sorting:
+/// Same as [`display_cnc_results_consistently`] but without sorting (i.e should be slighlty faster):
 /// intent attributes and class distribution appear in HashMap iteration order,
 /// which may vary between runs.
 ///
@@ -1183,7 +1183,13 @@ pub fn display_cnc_results_inconsistently(dataset: &NominalDataset, results: &[(
 ///
 /// # Returns
 ///
-/// A `Result` containing the `NominalDataset` or an error
+/// A `Result` containing the [`NominalDataset`], or an error.
+///
+/// # Errors
+///
+/// - File cannot be read
+/// - File is not valid ARFF format
+/// - Class attribute name not found in the file
 ///
 /// # Important Notes
 ///
@@ -1234,13 +1240,9 @@ pub fn display_cnc_results_inconsistently(dataset: &NominalDataset, results: &[(
 /// println!("Minority classes kept: {:?}", result.minority_classes);
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
+/// # See Also
 ///
-/// # Errors
-///
-/// Returns an error if:
-/// - File cannot be read
-/// - File is not valid ARFF format
-/// - Class attribute name not found in the file
+/// - [`from_arff_auto`] - Load ARFF with implicit class attribute name
 pub fn from_arff(
     file_path: &str,
     class_attr_name: &str,
@@ -1376,8 +1378,6 @@ pub fn from_arff(
 /// # See Also
 ///
 /// - [`from_arff`] - Load ARFF with explicit class attribute name
-/// - [`cnc`] - Run the CNC algorithm
-/// - [`cnc_bpc`] - Run CNC-BPC for imbalanced data
 pub fn from_arff_auto(
     file_path: &str,
 ) -> Result<NominalDataset, Box<dyn std::error::Error>> {
