@@ -8,6 +8,24 @@ use std::collections::{HashMap, HashSet};
 use std::fs;
 
 /// Result structure for CNC containing both the concepts and debug information.
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+///
+/// println!("Pertinent attributes: {:?}", result.pertinent_attrs);
+/// for (attr, value, extent, intent) in &result.concepts {
+///     println!("{}={} -> {} objects, {} common attributes",
+///              attr, value, extent.len(), intent.len());
+/// }
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Debug)]
 pub struct CncResult {
     /// List of concepts: (attribute_name, attribute_value, extent, intent)
@@ -21,7 +39,25 @@ pub struct CncResult {
 }
 
 /// Result structure for CNC-BPC containing both the concepts and debug information.
-/// Uses CncResult to avoid duplication and maintain consistency.
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc_bpc};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc_bpc(&dataset, 1);
+///
+/// println!("Minority classes: {:?}", result.minority_classes);
+/// println!("Filtered: {}/{} objects", result.filtered_size, result.original_size);
+///
+/// for (attr, value, extent, intent) in &result.cnc_result.concepts {
+///     println!("{}={} -> {} objects", attr, value, extent.len());
+/// }
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Debug)]
 pub struct CncBpcResult {
     /// The CNC result computed on the filtered dataset
@@ -339,15 +375,15 @@ impl NominalDataset {
     /// ```
     ///
     /// # Output Example
-    /// ('diagnosis' being the attribute class in the weather.nominal.arff dataset)
+    /// (first 3 rows of weather.nominal.arff, where 'play' is the class attribute)
     ///
     /// ```text
     /// Context:
-    ///                    fever          cough       │  diagnosis
-    ///                                               │
-    ///   patient1          high            yes       │        flu
-    ///   patient2          none             no       │    healthy
-    ///   patient3          mild            yes       │       cold
+    ///                outlook    temperature       humidity          windy       │      play
+    ///                                                                           │
+    ///     obj_0        sunny            hot           high          FALSE       │        no
+    ///     obj_1        sunny            hot           high           TRUE       │        no
+    ///     obj_2     overcast            hot           high          FALSE       │       yes
     /// ```
     pub fn display_context(&self) {
         println!("Context:\n{}", &self);
@@ -373,18 +409,20 @@ impl NominalDataset {
     /// ```
     ///
     /// # Output Example
+    /// (for weather.nominal.arff)
     ///
     /// ```text
     /// Dataset Summary:
-    /// - Objects: 3
-    /// - Descriptive attributes: 2
-    /// - Class attribute: diagnosis
-    /// - Attribute 'fever': no more than 3 possible values
-    /// - Attribute 'cough': no more than 2 possible values
+    /// - Objects: 14
+    /// - Descriptive attributes: 4
+    /// - Class attribute: play
+    /// - Attribute 'outlook': no more than 3 possible values
+    /// - Attribute 'temperature': no more than 3 possible values
+    /// - Attribute 'humidity': no more than 2 possible values
+    /// - Attribute 'windy': no more than 2 possible values
     /// - Class distribution:
-    ///   cold: 1 (33.3%)
-    ///   flu: 1 (33.3%)
-    ///   healthy: 1 (33.3%)
+    ///   yes: 9 (64.3%)
+    ///   no: 5 (35.7%)
     /// ```
     pub fn display_statistics(&self) {
         // Count descriptive attributes (excluding class)
@@ -1067,22 +1105,13 @@ fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String, Vec
     }
 }
 
-/// Display CNC/CNC-BPC results with **consistent, deterministic output**.
+/// Display CNC/CNC-BPC results with **deterministic output**.
 ///
-/// This function displays the concepts found by CNC/CNC-BPC with:
-/// - Intent attributes sorted alphabetically by attribute name
-/// - Class distribution sorted alphabetically by class name
+/// Intent attributes and class distribution are sorted alphabetically,
+/// ensuring reproducible output across runs. Useful for tests and documentation.
 ///
-/// This ensures **deterministic and reproducible output**, which is useful for:
-/// - Automated testing
-/// - Generating consistent documentation
-/// - Comparing results across runs
-///
-/// # Performance Note
-///
-/// This function sorts the Intent attributes and class distribution for each concept.
-/// If you don't need deterministic output and want optimal performance, use
-/// [`display_cnc_results_inconsistently`] instead.
+/// For non-deterministic output (HashMap iteration order), see
+/// [`display_cnc_results_inconsistently`].
 ///
 /// # Arguments
 ///
@@ -1098,7 +1127,6 @@ fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String, Vec
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
 /// let result = cnc(&dataset);
 ///
-/// // Deterministic display (for tests and documentation)
 /// display_cnc_results_consistently(&dataset, &result.concepts);
 /// # Ok(())
 /// # }
@@ -1116,31 +1144,15 @@ fn display_cnc_results(dataset: &NominalDataset, results: &[(String, String, Vec
 ///   Class distribution in extent:
 ///     Yes: 3 (100.0%) (majority class)
 /// ```
-///
-/// Note: Intent attributes are sorted alphabetically (Humidity before Windy).
 pub fn display_cnc_results_consistently(dataset: &NominalDataset, results: &[(String, String, Vec<usize>, HashMap<String, String>)]) {
     display_cnc_results(dataset, results, true);
 }
 
-/// Display CNC/CNC-BPC results with **inconsistent, optimized output**.
+/// Display CNC/CNC-BPC results with **non-deterministic output**.
 ///
-/// This function displays the concepts found by CNC/CNC-BPC with:
-/// - Intent attributes in HashMap iteration order (non-deterministic)
-/// - Class distribution in HashMap iteration order (non-deterministic)
-///
-/// This provides **optimal performance** (no sorting overhead) but:
-/// - Output order may vary between runs
-/// - Not suitable for automated testing or result comparison
-///
-/// # Performance Note
-///
-/// This function is the fastest option as it avoids sorting. If you need
-/// deterministic output, use [`display_cnc_results_consistently`] instead.
-///
-/// # Arguments
-///
-/// * `dataset` - The nominal dataset
-/// * `results` - Vector of concepts (pertinent_attr, attr_value, extent, intent)
+/// Same as [`display_cnc_results_consistently`] but without sorting:
+/// intent attributes and class distribution appear in HashMap iteration order,
+/// which may vary between runs.
 ///
 /// # Example
 ///
@@ -1151,26 +1163,10 @@ pub fn display_cnc_results_consistently(dataset: &NominalDataset, results: &[(St
 /// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
 /// let result = cnc(&dataset);
 ///
-/// // Fast display (non-deterministic order)
 /// display_cnc_results_inconsistently(&dataset, &result.concepts);
 /// # Ok(())
 /// # }
 /// ```
-///
-/// # Output Format
-///
-/// ```text
-/// Concept 1:
-///   Pertinent attribute: 'Windy' with value 'False'
-///   Extent of the pertinent attribute(s): ["o9", "o10", "o13"]
-///   Extent size: 3/5 objects (60.0%)
-///   Intent (common attributes) of the found extent : {"Windy": "False", "Humidity": "Normal"}
-///   Intent size: 2/4 attributes (50.0%)
-///   Class distribution in extent:
-///     Yes: 3 (100.0%) (majority class)
-/// ```
-///
-/// Note: Intent attribute order is non-deterministic and may vary between runs.
 pub fn display_cnc_results_inconsistently(dataset: &NominalDataset, results: &[(String, String, Vec<usize>, HashMap<String, String>)]) {
     display_cnc_results(dataset, results, false);
 }
@@ -1200,25 +1196,12 @@ pub fn display_cnc_results_inconsistently(dataset: &NominalDataset, results: &[(
 ///
 /// ## Finding the Class Attribute Name
 ///
-/// The class attribute name must match exactly. Common patterns:
+/// The class attribute name must match exactly. Examples with some files in dataset-examples:  
 /// - `weather.nominal.arff` → `"play"`
 /// - `contact-lenses.arff` → `"contact-lenses"`
 /// - `iris.arff` → `"class"`
 ///
 /// Find it by looking at the last `@attribute` line in the ARFF file.
-///
-/// ## Recommended Datasets
-///
-/// **Nominal datasets** (ready to use):
-/// - `weather.nominal.arff` - 14 objects, 5 attributes, 2 classes
-/// - `contact-lenses.arff` - 24 objects, 5 attributes, 3 classes
-/// - `vote.arff` - Congressional voting records
-/// - `labor.arff` - Labor negotiations
-///
-/// **Numeric datasets** (require discretization for best results):
-/// - `iris.arff` - 4 numeric attributes
-/// - `diabetes.arff` - Numeric health data
-/// - `cpu.arff` - Computer performance
 ///
 /// # Example
 ///
