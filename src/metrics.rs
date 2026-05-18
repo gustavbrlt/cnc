@@ -10,7 +10,21 @@
 use std::collections::HashMap;
 use crate::core::{CncResult, NominalDataset};
 
-/// Confusion matrix for binary and multi-class classification
+/// Confusion matrix for binary and multi-class classification.
+///
+/// # Example
+///
+/// ```
+/// use cnc::metrics::ConfusionMatrix;
+///
+/// let actual = vec!["A".to_string(), "A".to_string(), "B".to_string()];
+/// let predicted = vec!["A".to_string(), "B".to_string(), "B".to_string()];
+///
+/// let cm = ConfusionMatrix::new(&actual, &predicted);
+/// assert_eq!(cm.true_positives("A"), 1);
+/// assert_eq!(cm.false_negatives("A"), 1);
+/// assert_eq!(cm.true_positives("B"), 1);
+/// ```
 #[derive(Debug, Clone)]
 pub struct ConfusionMatrix {
     /// Map of (actual_class, predicted_class) -> count
@@ -186,7 +200,25 @@ impl ConfusionMatrix {
     }
 }
 
-/// Classification metrics results
+/// Classification metrics results returned by [`evaluate_cnc`].
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc};
+/// use cnc::metrics::evaluate_cnc;
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let metrics = evaluate_cnc(&dataset, &result);
+///
+/// println!("Accuracy: {:.2}%", metrics.accuracy * 100.0);
+/// println!("MCC: {:.4}", metrics.mcc);
+/// println!("Coverage: {}/{}", metrics.coverage, metrics.total);
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Debug, Clone)]
 pub struct ClassificationMetrics {
     /// Overall classification accuracy (0.0 to 1.0)
@@ -213,7 +245,28 @@ pub struct ClassificationMetrics {
     pub total: usize,
 }
 
-/// Per-class metrics
+/// Per-class metrics (precision, recall, F1, support) for a single class.
+///
+/// Accessible via [`ClassificationMetrics::per_class`].
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc};
+/// use cnc::metrics::evaluate_cnc;
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let result = cnc(&dataset);
+/// let metrics = evaluate_cnc(&dataset, &result);
+///
+/// for (class, m) in &metrics.per_class {
+///     println!("{}: P={:.3} R={:.3} F1={:.3} (support={})",
+///              class, m.precision, m.recall, m.f1, m.support);
+/// }
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Debug, Clone)]
 pub struct PerClassMetrics {
     /// Precision for this class (0.0 to 1.0)
@@ -253,7 +306,7 @@ impl std::fmt::Display for ClassificationMetrics {
     }
 }
 
-/// Prediction with confidence score for ROC/PRC calculations
+/// Prediction with confidence score, used internally by [`evaluate_cnc`] for ROC/PRC calculations.
 #[derive(Debug, Clone)]
 pub struct Prediction {
     /// Index of the object being predicted
@@ -293,7 +346,7 @@ pub struct Prediction {
 ///
 /// # Returns
 ///
-/// A `ClassificationMetrics` struct with all computed metrics
+/// A [`ClassificationMetrics`] struct with all computed metrics
 ///
 /// # Example
 ///
@@ -772,7 +825,7 @@ fn calculate_binary_prc_auc(actual: &[bool], scores: &[f64]) -> f64 {
     auc
 }
 
-/// Display metrics in a formatted table suitable for academic reporting
+/// Display [`ClassificationMetrics`] in a formatted table suitable for academic reporting.
 ///
 /// Prints a nicely formatted table with all classification metrics including accuracy,
 /// precision, recall, F1-score, MCC, Kappa, ROC AUC, and PRC AUC.
@@ -831,7 +884,30 @@ pub fn display_metrics_table(metrics: &ClassificationMetrics) {
     println!("╚════════════════════════════════════════════════════╝");
 }
 
-/// Comparison result between two methods
+/// Comparison result between CNC and CNC-BPC on a dataset.
+///
+/// # Example
+///
+/// ```
+/// use cnc::{from_arff_auto, cnc, cnc_bpc};
+/// use cnc::metrics::{evaluate_cnc, ComparisonResult};
+///
+/// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let dataset = from_arff_auto("data-examples/weather.nominal.arff")?;
+/// let cnc_result = cnc(&dataset);
+/// let bpc_result = cnc_bpc(&dataset, 1);
+///
+/// let comparison = ComparisonResult {
+///     dataset_name: "weather".to_string(),
+///     cnc_metrics: evaluate_cnc(&dataset, &cnc_result),
+///     cnc_bpc_metrics: evaluate_cnc(&dataset, &bpc_result.cnc_result),
+///     cnc_bpc_n: 1,
+/// };
+///
+/// println!("Winner: {}", comparison.winner());
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Debug, Clone)]
 pub struct ComparisonResult {
     /// Name of the dataset being compared
@@ -889,7 +965,7 @@ impl ComparisonResult {
     }
 }
 
-/// Display a comparison table between CNC and CNC-BPC results
+/// Display a comparison table between CNC and CNC-BPC [`ComparisonResult`]s.
 ///
 /// Prints a comprehensive comparison table showing metrics for both algorithms
 /// across multiple datasets, including a summary of wins/ties.
