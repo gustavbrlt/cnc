@@ -53,32 +53,6 @@ pub struct CncBpcResult {
 /// - The class attribute is included in the `attributes` list but treated specially
 /// - Each object has one HashMap containing all its attribute-value pairs
 /// - Missing values should be handled before creating the dataset
-///
-/// # Example
-///
-/// ```
-/// use cnc::NominalDataset;
-/// use std::collections::HashMap;
-///
-/// let objects = vec!["patient1".to_string(), "patient2".to_string()];
-/// let attributes = vec!["fever".to_string(), "cough".to_string(), "diagnosis".to_string()];
-/// let class_attribute = "diagnosis".to_string();
-///
-/// let mut patient1_data = HashMap::new();
-/// patient1_data.insert("fever".to_string(), "high".to_string());
-/// patient1_data.insert("cough".to_string(), "yes".to_string());
-/// patient1_data.insert("diagnosis".to_string(), "flu".to_string());
-///
-/// let mut patient2_data = HashMap::new();
-/// patient2_data.insert("fever".to_string(), "none".to_string());
-/// patient2_data.insert("cough".to_string(), "no".to_string());
-/// patient2_data.insert("diagnosis".to_string(), "healthy".to_string());
-///
-/// let data = vec![patient1_data, patient2_data];
-///
-/// let dataset = NominalDataset::new(objects, attributes, class_attribute, data);
-/// assert_eq!(dataset.objects.len(), 2);
-/// ```
 #[derive(Debug, Clone)]
 pub struct NominalDataset {
     /// Names/identifiers of objects (samples/instances) in the dataset
@@ -142,7 +116,33 @@ impl std::fmt::Display for NominalDataset {
 }
 
 impl NominalDataset {
-    /// Create a new nominal dataset
+    /// Create a new nominal dataset.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::NominalDataset;
+    /// use std::collections::HashMap;
+    ///
+    /// let objects = vec!["patient1".to_string(), "patient2".to_string()];
+    /// let attributes = vec!["fever".to_string(), "cough".to_string(), "diagnosis".to_string()];
+    /// let class_attribute = "diagnosis".to_string();
+    ///
+    /// let mut patient1_data = HashMap::new();
+    /// patient1_data.insert("fever".to_string(), "high".to_string());
+    /// patient1_data.insert("cough".to_string(), "yes".to_string());
+    /// patient1_data.insert("diagnosis".to_string(), "flu".to_string());
+    ///
+    /// let mut patient2_data = HashMap::new();
+    /// patient2_data.insert("fever".to_string(), "none".to_string());
+    /// patient2_data.insert("cough".to_string(), "no".to_string());
+    /// patient2_data.insert("diagnosis".to_string(), "healthy".to_string());
+    ///
+    /// let data = vec![patient1_data, patient2_data];
+    ///
+    /// let dataset = NominalDataset::new(objects, attributes, class_attribute, data);
+    /// assert_eq!(dataset.objects.len(), 2);
+    /// ```
     pub fn new(objects: Vec<String>, attributes: Vec<String>, class_attribute: String, data: Vec<HashMap<String, String>>) -> Self {
         Self {
             objects,
@@ -152,7 +152,32 @@ impl NominalDataset {
         }
     }
     
-    /// Get all possible values for an attribute (sorted alphabetically)
+    /// Get all possible values for an attribute (sorted alphabetically).
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::NominalDataset;
+    /// use std::collections::HashMap;
+    ///
+    /// let mut data = vec![];
+    /// for (color, class) in [("red", "A"), ("blue", "A"), ("red", "B")] {
+    ///     let mut obj = HashMap::new();
+    ///     obj.insert("color".to_string(), color.to_string());
+    ///     obj.insert("class".to_string(), class.to_string());
+    ///     data.push(obj);
+    /// }
+    ///
+    /// let dataset = NominalDataset::new(
+    ///     vec!["o1".into(), "o2".into(), "o3".into()],
+    ///     vec!["color".into(), "class".into()],
+    ///     "class".into(),
+    ///     data,
+    /// );
+    ///
+    /// let values = dataset.get_attribute_values("color");
+    /// assert_eq!(values, vec!["blue".to_string(), "red".to_string()]);
+    /// ```
     pub fn get_attribute_values(&self, attr_name: &str) -> Vec<String> {
         let mut values = HashSet::new();
         for obj_data in &self.data {
@@ -165,9 +190,35 @@ impl NominalDataset {
         result
     }
     
-    /// Group objects by attribute value
+    /// Group objects by attribute value.
     ///
     /// Returns a HashMap mapping attribute values to vectors of object indices.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cnc::NominalDataset;
+    /// use std::collections::HashMap;
+    ///
+    /// let mut data = vec![];
+    /// for (color, class) in [("red", "A"), ("blue", "B"), ("red", "A")] {
+    ///     let mut obj = HashMap::new();
+    ///     obj.insert("color".to_string(), color.to_string());
+    ///     obj.insert("class".to_string(), class.to_string());
+    ///     data.push(obj);
+    /// }
+    ///
+    /// let dataset = NominalDataset::new(
+    ///     vec!["o1".into(), "o2".into(), "o3".into()],
+    ///     vec!["color".into(), "class".into()],
+    ///     "class".into(),
+    ///     data,
+    /// );
+    ///
+    /// let groups = dataset.group_by_attribute_value("color");
+    /// assert_eq!(groups["red"], vec![0, 2]);
+    /// assert_eq!(groups["blue"], vec![1]);
+    /// ```
     pub fn group_by_attribute_value(&self, attr_name: &str) -> HashMap<String, Vec<usize>> {
         let mut groups = HashMap::new();
         for (obj_idx, obj_data) in self.data.iter().enumerate() {
