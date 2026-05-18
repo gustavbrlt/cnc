@@ -40,13 +40,6 @@ pub struct CncBpcResult {
 /// are represented as strings. This structure is designed for Formal Concept Analysis
 /// and works exclusively with nominal (non-numeric) data.
 ///
-/// # Structure
-///
-/// - **Objects**: Individual instances/samples in the dataset (e.g., "patient1", "obj42")
-/// - **Attributes**: Features describing the objects (e.g., "color", "size", "temperature")
-/// - **Class attribute**: The target variable for classification (e.g., "diagnosis", "species")
-/// - **Data**: Attribute-value pairs for each object, stored as a vector of HashMaps
-///
 /// # Important Notes
 ///
 /// - All values are **strings** (nominal/categorical data)
@@ -55,11 +48,11 @@ pub struct CncBpcResult {
 /// - Missing values should be handled before creating the dataset
 #[derive(Debug, Clone)]
 pub struct NominalDataset {
-    /// Names/identifiers of objects (samples/instances) in the dataset
+    /// Names/identifiers of objects (samples/instances) in the dataset (e.g., "patient1", "obj42")
     pub objects: Vec<String>,
-    /// Names of all attributes, including both descriptive attributes and the class attribute
+    /// Names of all attributes, including both descriptive attributes and the class attribute (e.g., "color", "size", "temperature")
     pub attributes: Vec<String>,
-    /// Name of the class attribute (target variable for classification)
+    /// Name of the class attribute (target variable for classification) (e.g., "diagnosis", "species")
     pub class_attribute: String,
     /// Attribute-value pairs for each object (one HashMap per object, indexed by object position)
     pub data: Vec<HashMap<String, String>>,
