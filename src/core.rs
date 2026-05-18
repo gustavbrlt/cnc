@@ -7,7 +7,7 @@
 use std::collections::{HashMap, HashSet};
 use std::fs;
 
-/// Result structure for CNC containing both the concepts and debug information
+/// Result structure for CNC containing both the concepts and debug information.
 #[derive(Debug)]
 pub struct CncResult {
     /// List of concepts: (attribute_name, attribute_value, extent, intent)
@@ -21,7 +21,7 @@ pub struct CncResult {
 }
 
 /// Result structure for CNC-BPC containing both the concepts and debug information.
-/// Uses CncResult to avoid duplication and maintain consistency
+/// Uses CncResult to avoid duplication and maintain consistency.
 #[derive(Debug)]
 pub struct CncBpcResult {
     /// The CNC result computed on the filtered dataset
@@ -389,8 +389,8 @@ impl NominalDataset {
     ///
     /// # See Also
     ///
-    /// - [`display_context`] - Display only the formatted table
-    /// - [`display_statistics`] - Display only the statistics
+    /// - [`Self::display_context`] - Display only the formatted table
+    /// - [`Self::display_statistics`] - Display only the statistics
     pub fn display_summary(&self) {
         let (show_context, show_summary) = self.determine_display_mode();
 
